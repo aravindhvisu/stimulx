@@ -86,7 +86,7 @@ Note. ***p < .001, F(1, 177) = 84.3, ηp² = .32. Generated via Stimulx.in.`;
         </div>
         <h2 className="text-xl font-bold text-[#1a1633]">Statistical Analysis & Open Science Exports</h2>
         <p className="text-[13px] text-[#6b6890] mt-1">
-          Automated reaction time trimming (<200ms / >2.5 SD) · Repeated measures ANOVA · Export to R, SPSS, jamovi
+          Automated reaction time trimming (&lt;200ms / &gt;2.5 SD) · Repeated measures ANOVA · Export to R, SPSS, jamovi
         </p>
       </header>
 
