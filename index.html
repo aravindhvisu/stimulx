@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stimulx.sc — Open Indian Behavioural Science</title>
+<title>Stimulx.in — Open Indian Behavioural Science</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -132,7 +132,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <div class="topbar">
   <div class="logo" onclick="goTo('home')">
     <div class="lmark"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2.5" fill="#fff"/><circle cx="7" cy="2" r="1.2" fill="rgba(255,255,255,.5)"/><circle cx="7" cy="12" r="1.2" fill="rgba(255,255,255,.5)"/><circle cx="2" cy="7" r="1.2" fill="rgba(255,255,255,.5)"/><circle cx="12" cy="7" r="1.2" fill="rgba(255,255,255,.5)"/></svg></div>
-    Stimulx<span class="lta">.sc</span>
+    Stimulx<span class="lta">.in</span>
   </div>
   <div class="np">Non-profit</div>
   <div class="snav" id="snav">
@@ -140,25 +140,27 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
     <span class="sarr">›</span>
     <button class="sb" id="n-brainstorm" onclick="goTo('brainstorm')"><div class="sn">0</div>Brainstorm</button>
     <span class="sarr">›</span>
-    <button class="sb active" id="n-ethics" onclick="goTo('ethics')"><div class="sn">1</div>Ethics</button>
+    <button class="sb" id="n-grants" onclick="goTo('grants')"><div class="sn">1</div>Grants</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-design" onclick="goTo('design')"><div class="sn">2</div>Design</button>
+    <button class="sb active" id="n-ethics" onclick="goTo('ethics')"><div class="sn">2</div>Ethics</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-recruit" onclick="goTo('recruit')"><div class="sn">3</div>Recruitment</button>
+    <button class="sb" id="n-design" onclick="goTo('design')"><div class="sn">3</div>Design</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-builder" onclick="goTo('builder')"><div class="sn">4</div>Experiment</button>
+    <button class="sb" id="n-recruit" onclick="goTo('recruit')"><div class="sn">4</div>Recruitment</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-pool" onclick="goTo('pool')"><div class="sn">5</div>Participant Pool</button>
+    <button class="sb" id="n-builder" onclick="goTo('builder')"><div class="sn">5</div>Experiment</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-analysis" onclick="goTo('analysis')"><div class="sn">6</div>Analysis</button>
+    <button class="sb" id="n-pool" onclick="goTo('pool')"><div class="sn">6</div>Participant Pool</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-writing" onclick="goTo('writing')"><div class="sn">7</div>Write & Review</button>
+    <button class="sb" id="n-analysis" onclick="goTo('analysis')"><div class="sn">7</div>Analysis</button>
     <span class="sarr">›</span>
-    <button class="sb" id="n-publish" onclick="goTo('publish')"><div class="sn">8</div>Publish</button>
+    <button class="sb" id="n-writing" onclick="goTo('writing')"><div class="sn">8</div>Write & Review</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-publish" onclick="goTo('publish')"><div class="sn">9</div>Publish</button>
     <button class="sb community-tab" id="n-community" onclick="goTo('community')"><div class="sn" style="background:rgba(139,92,246,.3);color:#c4b5fd">✦</div>Community</button>
   </div>
   <div class="tba">
-    <button class="tb" onclick="toast('Project saved ✓')">Saved</button>
+    <button class="tb" onclick="toast('Project saved in India vault ✓')">Saved</button>
     <button class="tb tbp" onclick="advanceStage()">Next stage →</button>
   </div>
 </div>
@@ -169,11 +171,11 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <div class="screen" id="home" style="flex-direction:column;overflow-y:auto;background:var(--ink)">
   <div style="padding:52px 48px 36px;position:relative;overflow:hidden">
     <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,133,43,.07) 1.5px,transparent 1.5px);background-size:32px 32px"></div>
-    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(232,133,43,.6);margin-bottom:10px;position:relative">stimulx.sc — Open Indian Behavioural Science</div>
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(232,133,43,.6);margin-bottom:10px;position:relative">stimulx.in — Open Indian Behavioural Science</div>
     <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,42px);font-weight:600;color:#fff;line-height:1.15;max-width:600px;position:relative">From a spark of curiosity<br>to <em style="color:var(--saffron-l)">published science</em> —<br>one platform.</div>
     <div style="font-size:14px;color:rgba(255,255,255,.42);max-width:500px;margin-top:12px;line-height:1.75;font-weight:300;position:relative">A non-profit research infrastructure for Indian psychologists, neuroscientists, students, and service users. Built for NIMHANS, SCARF, TISS — and every researcher who comes after.</div>
     <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;position:relative">
-      <span style="font-size:11px;padding:4px 12px;border-radius:100px;background:rgba(232,133,43,.15);border:1px solid rgba(232,133,43,.25);color:var(--saffron-l)">✦ Non-profit · stimulx.sc</span>
+      <span style="font-size:11px;padding:4px 12px;border-radius:100px;background:rgba(232,133,43,.15);border:1px solid rgba(232,133,43,.25);color:var(--saffron-l)">✦ Non-profit · stimulx.in</span>
       <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">22 Indian languages</span>
       <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">IEC/ICMR ethics</span>
       <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">Open access</span>
@@ -343,14 +345,14 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div class="ch"><div class="ct">Feasibility Check</div><div class="cs">Complete before committing to a study — review funding, population, timeline, ethics complexity</div></div>
         <div class="cb">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-            <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--gt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Population available?</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Yes — sufficient pool on stimulx.sc</option><option>Partial — need external recruitment</option><option>No — need scoping study first</option></select></div></div>
-            <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--bt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Funding status</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Unfunded (stimulx.sc non-profit covers platform)</option><option>Applying — ICSSR</option><option>Applying — DST-SERB</option><option>Funded — approved</option></select></div></div>
+            <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--gt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Population available?</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Yes — sufficient pool on stimulx.in</option><option>Partial — need external recruitment</option><option>No — need scoping study first</option></select></div></div>
+            <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--bt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Funding status</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Unfunded (stimulx.in non-profit covers platform)</option><option>Applying — ICSSR</option><option>Applying — DST-SERB</option><option>Funded — approved</option></select></div></div>
             <div style="background:var(--abg);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--at);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Ethics complexity</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Low — observational, non-clinical adult</option><option>Medium — deception or sensitive content</option><option>High — clinical, vulnerable, minors</option></select></div></div>
             <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--pt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Realistic timeline</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>3–6 months (online, already designed)</option><option>6–12 months</option><option>12–24 months</option><option>Multi-year longitudinal</option></select></div></div>
           </div>
           <div class="fg"><label class="fl">Team resources</label><select class="fs"><option>Solo researcher / student project</option><option>Small team 2–4 people</option><option>Lab with research assistant support</option><option>Multi-site collaboration</option></select></div>
           <div class="fg"><label class="fl">Participant compensation budget</label><select class="fs"><option>₹0 — altruistic / course credit only</option><option>₹50–100 per participant</option><option>₹100–500 per participant</option><option>Not yet decided</option></select></div>
-          <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:13px;margin-top:4px"><div style="font-size:12px;font-weight:600;color:var(--gt);margin-bottom:4px">✓ Feasibility assessment: This study is feasible on stimulx.sc</div><div style="font-size:11px;color:var(--gt);line-height:1.6">Sufficient pool (247 matching participants) · Low ethics complexity · Platform covers infrastructure costs · Estimated 3–4 months to data collection complete</div></div>
+          <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:13px;margin-top:4px"><div style="font-size:12px;font-weight:600;color:var(--gt);margin-bottom:4px">✓ Feasibility assessment: This study is feasible on stimulx.in</div><div style="font-size:11px;color:var(--gt);line-height:1.6">Sufficient pool (247 matching participants) · Low ethics complexity · Platform covers infrastructure costs · Estimated 3–4 months to data collection complete</div></div>
         </div>
       </div>
     </div>
@@ -364,7 +366,144 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div style="background:var(--surface);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Caregiver idea selected')"><div style="font-size:12px;font-weight:600;color:var(--ink)">Caregiver burden — SCARF</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">2 papers · Needs SCARF partnership</div></div>
       </div>
       <hr class="divider">
-      <button class="btn btn-p btn-w" onclick="goTo('ethics');toast('Moving Stroop idea to Stage 1 — Ethics')">Move to Stage 1 →</button>
+      <button class="btn btn-p btn-w" onclick="goTo('grants');toast('Moving Stroop idea to Stage 1 — Grants')">Move to Stage 1 (Grants) →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GRANTS ═══ -->
+<div class="screen" id="grants">
+  <div class="sb-left">
+    <div class="ss">Grant Builder</div>
+    <div class="si active" id="g-prop" onclick="gTab('prop')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="1" width="10" height="12" rx="1.5"/><path d="M4.5 4.5h5M4.5 7h5M4.5 9.5h3"/></svg>Proposal Drafter</div>
+    <div class="si" id="g-budg" onclick="gTab('budg')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5.5"/><path d="M7 4.5v5M5 6h4"/></svg>DST/ICMR Budgeter</div>
+    <div class="si" id="g-schemes" onclick="gTab('schemes')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 12h10M7 2l5 4H2l5-4z"/></svg>Funding Schemes</div>
+    <div class="si" id="g-endorse" onclick="gTab('endorse')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5.5"/><path d="M4.5 7l2 2 4-4"/></svg>Endorsements</div>
+  </div>
+  <div class="content">
+    <div class="pg-hdr">
+      <div class="stag">Stage 1 — Grants & Indian Funding</div>
+      <div class="pg-title">Research Grant Proposal Studio (ICSSR / DST / ICMR)</div>
+      <div class="pg-sub">Government of India DST manpower norms · JRF/SRF stipend calculator · 1-click official export</div>
+    </div>
+
+    <div id="g-prop-c">
+      <div class="card">
+        <div class="ch">
+          <div class="ct">ICSSR / DST Major Research Project Drafter</div>
+          <span class="b bg">Agency Aligned</span>
+        </div>
+        <div class="cb">
+          <div class="fg">
+            <label class="fl">Project Title (Grant Submission)</label>
+            <input class="fi" value="Cross-Linguistic Cognitive Control and Normative Executive Profiles in Multilingual Indian Adults">
+          </div>
+          <div class="fg">
+            <label class="fl">Specific Aims & Objectives</label>
+            <textarea class="fta">1. Establish baseline normative Stroop cognitive reaction-time distributions across Hindi and Dravidian language speakers (N = 600).&#10;2. Evaluate whether cross-linguistic interference patterns differ between early simultaneous vs late sequential bilinguals.&#10;3. Develop open, standardized, culturally-adapted psychometric stimuli accessible to academic institutions across India via Stimulx.in.</textarea>
+          </div>
+          <div class="fg">
+            <label class="fl">Significance in Indian National Context (Societal Relevance)</label>
+            <textarea class="fta">India contains over 1.4 billion individuals speaking 22 official languages, yet cognitive assessment norms relied upon in clinical neuropsychology (NIMHANS, SCARF) continue to predominantly utilize Western monolingual metrics. This research addresses a vital scientific sovereignty gap, providing culturally and linguistically calibrated normative datasets.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="g-budg-c" style="display:none">
+      <div class="card">
+        <div class="ch">
+          <div>
+            <div class="ct">Budget Justification (Official DST OM Norms)</div>
+            <div class="cs">JRF: ₹37,000/mo + HRA · 8% Institutional Overhead</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:18px;font-weight:700;color:var(--saffron);font-family:'DM Mono',monospace">₹28.42 Lakhs</div>
+            <div style="font-size:10px;color:var(--ink-faint)">Total Grant Requested</div>
+          </div>
+        </div>
+        <div class="cb">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div style="background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--ink);margin-bottom:8px">Manpower Costs</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px">
+                <span>Junior Research Fellow (JRF) × 1</span>
+                <span style="font-family:'DM Mono',monospace;font-weight:600">₹11.27 L (24 Mo)</span>
+              </div>
+              <div style="font-size:10px;color:var(--ink-soft)">₹37,000/mo + 27% HRA (Bengaluru/Mumbai Metro)</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--ink);margin-bottom:8px">Consumables & Field Travel</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px">
+                <span>Field Travel across 4 States</span>
+                <span style="font-family:'DM Mono',monospace">₹3.50 L</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px">
+                <span>Participant Honorarium</span>
+                <span style="font-family:'DM Mono',monospace">₹2.00 L</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px">
+                <span>Apparatus & IT Equipment</span>
+                <span style="font-family:'DM Mono',monospace">₹2.50 L</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+                <span>Institutional Overhead (8%)</span>
+                <span style="font-family:'DM Mono',monospace;font-weight:600;color:var(--saffron)">₹2.10 L</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-p" onclick="toast('Official DST Budget Table downloaded (.xlsx) ✓')">Download Budget Schedule</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="g-schemes-c" style="display:none">
+      <div class="card">
+        <div class="ch"><div class="ct">Matched Indian Grant Schemes</div></div>
+        <div class="cb" style="display:flex;flex-direction:column;gap:9px">
+          <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:12px;font-weight:600;color:var(--ink)">ICSSR Major Research Projects</div>
+              <span class="b bg">Ceiling: ₹30 Lakhs</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Social & Behavioural Sciences · National Priority Areas · 24 Months</div>
+          </div>
+          <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:12px;font-weight:600;color:var(--ink)">DST-ANRF Core Research Grant (CRG)</div>
+              <span class="b bb">Ceiling: ₹60 Lakhs</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Cognitive Science & Neurobiology · Multi-centric investigations · 36 Months</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="g-endorse-c" style="display:none">
+      <div class="card">
+        <div class="ch"><div class="ct">Institutional Endorsement Check</div><span class="b bg">Ready</span></div>
+        <div class="cb">
+          <div class="trow"><div><div class="tl">Hosting on Mumbai servers declared (DPDP Act 2023)</div></div><div class="tog on"></div></div>
+          <div class="trow"><div><div class="tl">Certificate from Head of Institution auto-filled</div></div><div class="tog on"></div></div>
+          <div class="trow"><div><div class="tl">Co-Investigator endorsement letter from SCARF attached</div></div><div class="tog on"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rp">
+    <div style="padding:13px 15px;border-bottom:1px solid var(--bd)">
+      <div class="ct">Grant Dossier</div>
+      <div class="cs" style="margin-top:2px">Target: ICSSR Major</div>
+    </div>
+    <div style="padding:13px 15px">
+      <div style="background:var(--saffron-bg);border:1px solid rgba(232,133,43,.25);border-radius:8px;padding:11px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--saffron)">Total Budget: ₹28.42 Lakhs</div>
+        <div style="font-size:10px;color:var(--ink-soft);margin-top:2px">1 JRF · 24 Months · 4 States</div>
+      </div>
+      <button class="btn btn-p btn-w" onclick="toast('ICSSR Application Proposal downloaded (.docx) ✓')">Export Proposal (.docx)</button>
+      <hr class="divider">
+      <button class="btn btn-s btn-w" onclick="goTo('ethics');toast('Advancing to Stage 2 — Ethics')">Advance to Ethics (Stage 2) →</button>
     </div>
   </div>
 </div>
@@ -395,7 +534,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div class="trow"><div><div class="tl">Right to withdraw post-completion</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
         <div class="trow"><div><div class="tl">Anonymous participation option</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
         <div class="trow"><div><div class="tl">Participants notified of published outcomes</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-        <div class="trow"><div><div class="tl">Debrief screen provided on completion</div><div class="tsub">Required for all stimulx.sc studies</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">Debrief screen provided on completion</div><div class="tsub">Required for all stimulx.in studies</div></div><div class="tog on"></div></div>
         <div class="trow"><div><div class="tl">Helpline numbers on debrief screen</div><div class="tsub">iCall · Vandrevala Foundation · NIMHANS</div></div><div class="tog on"></div></div>
       </div></div>
     </div>
@@ -411,12 +550,12 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
     </div>
     <div id="e-dp-c" style="display:none">
       <div class="card"><div class="ch"><div class="ct">Data Privacy</div><div class="cs">DPDP 2023 · India-hosted · Pseudonymised</div><span class="b bg">Compliant</span></div><div class="cb">
-        <div class="trow"><div><div class="tl">Data stored in India only</div><div class="tsub">Stimulx.sc servers — Mumbai</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">Data stored in India only</div><div class="tsub">Stimulx.in servers — Mumbai</div></div><div class="tog on"></div></div>
         <div class="trow"><div><div class="tl">IP address never stored</div></div><div class="tog on"></div></div>
         <div class="trow"><div><div class="tl">Participant IDs pseudonymised</div><div class="tsub">Mapping key held by PI only, separately</div></div><div class="tog on"></div></div>
         <div class="trow"><div><div class="tl">Researchers contact participants ONLY during active experiment window</div><div class="tsub">Pool members are NOT contactable at other times</div></div><div class="tog on"></div></div>
         <div class="trow"><div><div class="tl">Data destroyed after 5 years (ICMR)</div></div><div class="tog on"></div></div>
-        <div style="background:var(--bbg);border-radius:8px;padding:11px 13px;margin-top:10px;border:1px solid rgba(59,130,246,.15)"><div style="font-size:12px;font-weight:600;color:var(--bt);margin-bottom:3px">Participant pool contact rules</div><div style="font-size:11px;color:var(--bt);line-height:1.6">Stimulx.sc pool members have opted in to be contacted for research. However, their contact details are never shared. Researchers may only message participants via the stimulx.sc platform, only when a study is live, and only to participants who match inclusion criteria. No exceptions.</div></div>
+        <div style="background:var(--bbg);border-radius:8px;padding:11px 13px;margin-top:10px;border:1px solid rgba(59,130,246,.15)"><div style="font-size:12px;font-weight:600;color:var(--bt);margin-bottom:3px">Participant pool contact rules</div><div style="font-size:11px;color:var(--bt);line-height:1.6">Stimulx.in pool members have opted in to be contacted for research. However, their contact details are never shared. Researchers may only message participants via the stimulx.in platform, only when a study is live, and only to participants who match inclusion criteria. No exceptions.</div></div>
       </div></div>
     </div>
     <div id="e-pid-c" style="display:none">
@@ -516,9 +655,9 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   <div class="content">
     <div class="pg-hdr"><div class="stag">Stage 3 — Recruitment</div><div class="pg-title">Ethics-First Recruitment</div><div class="pg-sub">Every recruitment material leads with participant rights. Privacy · Consent · Compensation · Debrief — always visible.</div></div>
     <div style="background:var(--ink);border-radius:12px;padding:16px 18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08)">
-      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:6px">Stimulx.sc Recruitment Principles</div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:6px">Stimulx.in Recruitment Principles</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Participant contact details are NEVER shared with researchers. All contact is via the stimulx.sc platform only.</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Participant contact details are NEVER shared with researchers. All contact is via the stimulx.in platform only.</div>
         <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Participants can be contacted ONLY when a study is live and they match inclusion criteria. No cold messaging.</div>
         <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Every study invitation includes: what the study involves, how long it takes, compensation offered, and how to withdraw.</div>
         <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>A debrief screen with support resources (iCall, Vandrevala Foundation, NIMHANS helpline) is mandatory on all studies.</div>
@@ -529,7 +668,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div class="card">
           <div class="ch"><div class="ct">WhatsApp Message</div><div class="cs">Auto-generated · Leads with participant rights</div></div>
           <div class="cb">
-            <div style="background:var(--surface);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--ink-mid);line-height:1.7;border:1px solid var(--bd)"><strong>📣 Research Study — stimulx.sc (Non-profit)</strong><br><br>आपकी भागीदारी पूरी तरह स्वैच्छिक है। आप किसी भी समय बिना कारण बताए हट सकते हैं।<br><br>🔒 आपका डेटा भारत में सुरक्षित रहेगा। आपकी contact details किसी के साथ share नहीं होंगी।<br><br>💰 Compensation: ₹100 Amazon voucher<br>⏱ Time: ~8 minutes<br>📱 Online — from anywhere<br><br>👇 stimulx.sc/s/stroop-2025</div>
+            <div style="background:var(--surface);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--ink-mid);line-height:1.7;border:1px solid var(--bd)"><strong>📣 Research Study — stimulx.in (Non-profit)</strong><br><br>आपकी भागीदारी पूरी तरह स्वैच्छिक है। आप किसी भी समय बिना कारण बताए हट सकते हैं।<br><br>🔒 आपका डेटा भारत में सुरक्षित रहेगा। आपकी contact details किसी के साथ share नहीं होंगी।<br><br>💰 Compensation: ₹100 Amazon voucher<br>⏱ Time: ~8 minutes<br>📱 Online — from anywhere<br><br>👇 stimulx.in/s/stroop-2025</div>
             <div style="display:flex;gap:7px;margin-top:10px"><button class="btn btn-sm btn-s" onclick="toast('WhatsApp message copied')">Copy</button><button class="btn btn-sm" onclick="toast('Translated to Tamil')">TA</button><button class="btn btn-sm" onclick="toast('Translated to Telugu')">TE</button><button class="btn btn-sm" onclick="toast('Translated to Kannada')">KN</button></div>
           </div>
         </div>
@@ -547,11 +686,11 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div class="card">
           <div class="ch"><div class="ct">Awareness Campaign</div><div class="cs">Recruit INTO the pool — separate from study invites</div></div>
           <div class="cb">
-            <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:9px;padding:12px 13px;margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:var(--pt);margin-bottom:4px">Pool membership ≠ study invitation</div><div style="font-size:11px;color:var(--pt);line-height:1.6">Signing up to the stimulx.sc participant pool means you're open to being invited to future studies — nothing more. Your data isn't shared. You won't be contacted outside of study windows. You can leave the pool anytime.</div></div>
+            <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:9px;padding:12px 13px;margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:var(--pt);margin-bottom:4px">Pool membership ≠ study invitation</div><div style="font-size:11px;color:var(--pt);line-height:1.6">Signing up to the stimulx.in participant pool means you're open to being invited to future studies — nothing more. Your data isn't shared. You won't be contacted outside of study windows. You can leave the pool anytime.</div></div>
             <div style="background:var(--ink);border-radius:9px;padding:14px;margin-bottom:10px">
               <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Instagram awareness post</div>
               <div style="font-size:14px;font-weight:600;color:#fff;line-height:1.4;margin-bottom:6px">Be part of Indian psychology research.</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">Join the stimulx.sc participant pool. Contribute to studies on language, memory, and mental health. You're in control — participate only when you want to, in your own language, from home.</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">Join the stimulx.in participant pool. Contribute to studies on language, memory, and mental health. You're in control — participate only when you want to, in your own language, from home.</div>
               <div style="font-size:11px;color:var(--saffron-l);margin-top:8px;font-weight:600">🔒 Your data stays in India. Always.</div>
             </div>
             <div style="display:flex;gap:7px"><button class="btn btn-sm btn-s" onclick="toast('Instagram post downloaded as PNG')">Download PNG</button><button class="btn btn-sm" onclick="toast('Service user version generated')">Service user version</button></div>
@@ -560,7 +699,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div class="card">
           <div class="ch"><div class="ct">Service User Specific Campaign</div><div class="cs">For people with lived experience of mental health conditions</div></div>
           <div class="cb">
-            <div style="background:var(--tbg);border:1px solid rgba(13,148,136,.2);border-radius:9px;padding:12px 13px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--tt);margin-bottom:4px">Respectful, empowering language</div><div style="font-size:11px;color:var(--tt);line-height:1.6">Your experience matters. Stimulx.sc works with people who have lived experience of mental health challenges — as equal contributors to research, not just as subjects. You set the boundaries.</div></div>
+            <div style="background:var(--tbg);border:1px solid rgba(13,148,136,.2);border-radius:9px;padding:12px 13px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--tt);margin-bottom:4px">Respectful, empowering language</div><div style="font-size:11px;color:var(--tt);line-height:1.6">Your experience matters. Stimulx.in works with people who have lived experience of mental health challenges — as equal contributors to research, not just as subjects. You set the boundaries.</div></div>
             <div class="fg"><label class="fl">Campaign language</label><select class="fs"><option>Tamil — Chennai / SCARF partnerships</option><option>Hindi — NIMHANS partnerships</option><option>All languages</option></select></div>
             <div class="trow"><div><div class="tl">Peer researcher involvement</div><div class="tsub">Service users trained as co-researchers</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
           </div>
@@ -609,7 +748,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
       <div class="stat-c"><div class="sv">22</div><div class="sk">States</div></div>
       <div class="stat-c"><div class="sv">18</div><div class="sk">Languages</div></div>
     </div>
-    <div class="card"><div class="ch"><div class="ct">Pool Members — Matching your criteria</div><div class="cs">247 match Hindi-English bilingual, 18–45 · Contact only via platform during study window</div><button class="ca" onclick="toast('Invitations sent via stimulx.sc — no contact details shared')">Invite matching (247)</button></div><div class="cb" style="overflow-x:auto">
+    <div class="card"><div class="ch"><div class="ct">Pool Members — Matching your criteria</div><div class="cs">247 match Hindi-English bilingual, 18–45 · Contact only via platform during study window</div><button class="ca" onclick="toast('Invitations sent via stimulx.in — no contact details shared')">Invite matching (247)</button></div><div class="cb" style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse">
         <thead><tr style="border-bottom:1px solid var(--bd)"><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Participant</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Age</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">State</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Languages</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Studies done</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Status</th></tr></thead>
         <tbody>
@@ -660,7 +799,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
         <div style="font-size:10px;color:var(--ink-faint);margin-top:6px;display:flex;gap:10px"><span>2h ago</span><span style="color:var(--saffron);cursor:pointer" onclick="toast('Reply thread opened')">Reply</span><span style="color:var(--ink-faint);cursor:pointer" onclick="toast('Comment resolved')">Resolve</span></div>
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink);border-bottom:1.5px solid var(--bdm);padding-bottom:8px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">Methods <button class="btn btn-sm" onclick="toast('Methods auto-filled from experiment settings')">Auto-fill</button></div>
-      <p style="font-size:14px;color:var(--ink-mid);line-height:1.8" contenteditable="true">Participants (N=178) were recruited via stimulx.sc and WhatsApp outreach. Ethics approval was obtained from the IEC, NIMHANS (Ref: IEC/NIMHANS/2025/041). All participants provided informed consent via stimulx.sc's multilingual consent system...</p>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.8" contenteditable="true">Participants (N=178) were recruited via stimulx.in and WhatsApp outreach. Ethics approval was obtained from the IEC, NIMHANS (Ref: IEC/NIMHANS/2025/041). All participants provided informed consent via stimulx.in's multilingual consent system...</p>
     </div>
     <div class="rp"><div style="padding:13px 15px;border-bottom:1px solid var(--bd)"><div class="ct">Community Reviewers</div></div><div style="padding:13px 15px">
       <div style="display:flex;flex-direction:column;gap:8px">
@@ -793,10 +932,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
     <!-- SERVICE USERS TAB -->
     <div id="c-service-c" style="display:none">
-      <div class="pg-hdr"><div class="stag">Community — Service Users</div><div class="pg-title">Lived Experience in Research</div><div class="pg-sub">People with lived experience of mental health conditions are not just research subjects on stimulx.sc — they are contributors, reviewers, and co-researchers.</div></div>
+      <div class="pg-hdr"><div class="stag">Community — Service Users</div><div class="pg-title">Lived Experience in Research</div><div class="pg-sub">People with lived experience of mental health conditions are not just research subjects on stimulx.in — they are contributors, reviewers, and co-researchers.</div></div>
       <div style="background:var(--ink);border-radius:12px;padding:20px 22px;margin-bottom:14px">
-        <div style="font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:#fff;margin-bottom:10px;line-height:1.5">"Your experience of living with mental illness is knowledge. Stimulx.sc is a place where that knowledge shapes research — not just as data, but as insight."</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.4)">Stimulx.sc founding principle</div>
+        <div style="font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:#fff;margin-bottom:10px;line-height:1.5">"Your experience of living with mental illness is knowledge. Stimulx.in is a place where that knowledge shapes research — not just as data, but as insight."</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4)">Stimulx.in founding principle</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="card"><div class="ch"><div class="ct">For Service Users</div></div><div class="cb" style="display:flex;flex-direction:column;gap:9px">
@@ -804,7 +943,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
           <div style="background:var(--pbg);border-radius:8px;padding:10px 12px;cursor:pointer;border:1px solid rgba(139,92,246,.2)" onclick="toast('Peer researcher training opened')"><div style="font-size:12px;font-weight:600;color:var(--pt)">Peer Researcher Training</div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Free training to become a co-researcher. Help design studies, review consent forms, analyse lived experience data.</div></div>
           <div style="background:var(--gbg);border-radius:8px;padding:10px 12px;cursor:pointer;border:1px solid rgba(34,197,94,.2)" onclick="toast('Consent language review opened')"><div style="font-size:12px;font-weight:600;color:var(--gt)">Review consent form language</div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Is our language clear and respectful? Your feedback directly changes how forms are written.</div></div>
         </div></div>
-        <div class="card"><div class="ch"><div class="ct">Your Rights on stimulx.sc</div></div><div class="cb">
+        <div class="card"><div class="ch"><div class="ct">Your Rights on stimulx.in</div></div><div class="cb">
           <div style="display:flex;flex-direction:column;gap:8px">
             <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>Your contact details are never shared with researchers.</div>
             <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>You will only be contacted about studies you match and during active study windows.</div>
@@ -844,8 +983,8 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <div id="toast"></div>
 
 <script>
-const stages=['home','brainstorm','ethics','design','recruit','builder','pool','analysis','writing','publish'];
-const navMap={brainstorm:'n-brainstorm',ethics:'n-ethics',design:'n-design',recruit:'n-recruit',builder:'n-builder',pool:'n-pool',analysis:'n-analysis',writing:'n-writing',publish:'n-publish',community:'n-community'};
+const stages=['home','brainstorm','grants','ethics','design','recruit','builder','pool','analysis','writing','publish'];
+const navMap={brainstorm:'n-brainstorm',grants:'n-grants',ethics:'n-ethics',design:'n-design',recruit:'n-recruit',builder:'n-builder',pool:'n-pool',analysis:'n-analysis',writing:'n-writing',publish:'n-publish',community:'n-community'};
 let cur='ethics';
 
 function goTo(id){
@@ -871,6 +1010,15 @@ function bsTab(t){
   ['ideas','journals','gaps','feasibility'].forEach(x=>{
     const c=document.getElementById('bs-'+x+'-c');
     const s=document.getElementById('bs-'+x);
+    if(c)c.style.display=x===t?'':'none';
+    if(s)s.classList.toggle('active',x===t);
+  });
+}
+// Grants tabs
+function gTab(t){
+  ['prop','budg','schemes','endorse'].forEach(x=>{
+    const c=document.getElementById('g-'+x+'-c');
+    const s=document.getElementById('g-'+x);
     if(c)c.style.display=x===t?'':'none';
     if(s)s.classList.toggle('active',x===t);
   });

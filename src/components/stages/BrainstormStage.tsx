@@ -397,7 +397,7 @@ export function BrainstormStage({ onAdvance, onToast }: BrainstormStageProps) {
                   Target Pool Availability
                 </div>
                 <select className="w-full bg-white border border-emerald-300 rounded p-1.5 text-[12px] text-emerald-950 outline-none">
-                  <option>Yes — 247 verified participants on stimulx.sc</option>
+                  <option>Yes — 247 verified participants on stimulx.in</option>
                   <option>Partial — requires external university recruitment</option>
                   <option>Rare clinical population</option>
                 </select>

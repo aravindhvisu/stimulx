@@ -1,10 +1,10 @@
-# Stimulx.sc (அறிவு / Stimulx)
+# Stimulx.in (அறிவு / Stimulx)
 ### Open Indian Behavioural Science Research Infrastructure
 
 [![Status: In Development](https://img.shields.io/badge/status-30--day--shipping-orange.svg)](#)
 [![Compliance](https://img.shields.io/badge/compliance-ICMR%202017%20%7C%20DPDP%202023-emerald.svg)](#)
 [![Region](https://img.shields.io/badge/data%20residency-India%20(Mumbai)-blue.svg)](#)
-[![Domain](https://img.shields.io/badge/domain-stimulx.sc-purple.svg)](#)
+[![Domain](https://img.shields.io/badge/domain-stimulx.in-purple.svg)](#)
 
 Stimulx is an open-source, non-profit digital research infrastructure built for Indian psychologists, neuroscientists, students, and lived-experience participants. Built for institutions such as **NIMHANS**, **SCARF**, **TISS**, **Delhi University**, and every researcher across India.
 

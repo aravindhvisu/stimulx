@@ -2,7 +2,7 @@
   "name": "stimulx",
   "version": "1.0.0",
   "private": true,
-  "description": "Stimulx.sc — Open Indian Behavioural Science Research Infrastructure",
+  "description": "Stimulx.in — Open Indian Behavioural Science Research Infrastructure",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

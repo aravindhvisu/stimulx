@@ -1,6 +1,7 @@
 export type StageId =
   | 'home'
   | 'brainstorm'
+  | 'grants'
   | 'ethics'
   | 'design'
   | 'recruit'
@@ -19,6 +20,42 @@ export interface IdeaItem {
   papersCount: number;
   gapIdentified: boolean;
   status: 'draft' | 'ready' | 'archived';
+}
+
+export interface GrantAgency {
+  id: string;
+  name: string;
+  code: 'ICSSR' | 'DST_SERB' | 'ICMR' | 'DBT_INDIA_ALLIANCE' | 'UGC';
+  fullName: string;
+  scheme: string;
+  maxBudgetLakhs: number;
+  deadline: string;
+  description: string;
+  eligibleInstitutions: string[];
+}
+
+export interface BudgetBreakdown {
+  jrfStipend: number; // ₹37,000/mo DST norm
+  jrfMonths: number;
+  equipment: number;
+  fieldWorkTravel: number;
+  participantHonorarium: number;
+  contingency: number;
+  overhead: number;
+}
+
+export interface GrantProposal {
+  id: string;
+  agencyCode: string;
+  title: string;
+  principalInvestigator: string;
+  institution: string;
+  durationMonths: number;
+  totalBudgetINR: number;
+  specificAims: string[];
+  significanceIndianContext: string;
+  methodologyOverview: string;
+  expectedOutcomes: string;
 }
 
 export interface ResearchGap {
@@ -71,18 +108,13 @@ export interface ExperimentTrial {
   rt: number; // in milliseconds
 }
 
-export interface StudyProject {
+export interface CollaborationMatch {
   id: string;
-  title: string;
+  name: string;
   institution: string;
-  studyType: string;
-  scientificRationale: string;
-  targetN: number;
-  ageRange: string;
-  compensation: string;
-  methodology: 'quant' | 'qual' | 'mixed';
-  designType: string;
-  primaryDV: string;
-  groupsCount: string;
-  currentStage: StageId;
+  role: string;
+  skills: string[];
+  languages: string[];
+  grantSeeking: string;
+  matchScore: number;
 }

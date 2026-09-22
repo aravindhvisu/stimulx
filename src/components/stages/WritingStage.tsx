@@ -18,11 +18,11 @@ interface WritingStageProps {
 
 export function WritingStage({ onAdvance, onToast }: WritingStageProps) {
   const [abstract, setAbstract] = useState(
-    "The Stroop colour-word interference task has been extensively investigated in Western monolingual populations, yet normative data for Hindi-speaking bilingual adults in India remains scarce. This study administered a computerized Stroop task in Hindi and English to 178 bilingual adults across India via Stimulx.sc. Participants demonstrated robust Stroop interference in both languages (Hindi: 72ms, English: 71ms), with no significant difference between conditions, indicating symmetrical cognitive control costs."
+    "The Stroop colour-word interference task has been extensively investigated in Western monolingual populations, yet normative data for Hindi-speaking bilingual adults in India remains scarce. This study administered a computerized Stroop task in Hindi and English to 178 bilingual adults across India via Stimulx.in. Participants demonstrated robust Stroop interference in both languages (Hindi: 72ms, English: 71ms), with no significant difference between conditions, indicating symmetrical cognitive control costs."
   );
 
   const [methods, setMethods] = useState(
-    "Participants (N = 178; Mage = 24.3) were recruited via the Stimulx.sc pan-India participant pool. Ethics approval was obtained from the Institutional Ethics Committee (Ref: IEC/NIMHANS/2025/041). All participants provided voluntary digital informed consent in Hindi or English in strict compliance with ICMR 2017 and DPDP 2023 regulations."
+    "Participants (N = 178; Mage = 24.3) were recruited via the Stimulx.in pan-India participant pool. Ethics approval was obtained from the Institutional Ethics Committee (Ref: IEC/NIMHANS/2025/041). All participants provided voluntary digital informed consent in Hindi or English in strict compliance with ICMR 2017 and DPDP 2023 regulations."
   );
 
   const [comments, setComments] = useState([

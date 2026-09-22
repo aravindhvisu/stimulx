@@ -19,7 +19,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Stimulx.sc — Open Indian Behavioural Science",
+  title: "Stimulx.in — Open Indian Behavioural Science",
   description:
     "A non-profit research infrastructure for Indian psychologists, neuroscientists, students, and service users. DPDP Act 2023 & ICMR 2017 compliant.",
 };

@@ -21,10 +21,10 @@ export function RecruitmentStage({ onAdvance, onToast }: RecruitmentStageProps) 
   const [waLanguage, setWaLanguage] = useState<"hi" | "ta" | "te" | "kn">("hi");
 
   const waMessages = {
-    hi: `📣 Research Study — stimulx.sc (Non-profit)\n\nआपकी भागीदारी पूरी तरह स्वैच्छिक है। आप किसी भी समय बिना कारण बताए हट सकते हैं।\n\n🔒 आपका डेटा भारत में सुरक्षित रहेगा। आपकी contact details किसी के साथ share नहीं होंगी।\n\n💰 Compensation: ₹100 Amazon voucher\n⏱ Time: ~8 minutes\n📱 Online — from anywhere\n\n👇 https://stimulx.sc/s/stroop-2025`,
-    ta: `📣 ஆய்வுக் கல்வி — stimulx.sc (இலாப நோக்கற்ற)\n\nஉங்கள் பங்கேற்பு முற்றிலும் தன்னார்வமானது. நீங்கள் எந்த நேரத்திலும் வெளியேறலாம்.\n\n🔒 உங்கள் தரவு இந்தியாவில் மட்டுமே பாதுகாக்கப்படும். உங்களின் தொடர்பு விவரங்கள் பகிரப்படாது.\n\n💰 ஊக்கத்தொகை: ₹100 பரிசு கூப்பன்\n⏱ நேரம்: ~8 நிமிடங்கள்\n📱 ஆன்லைனில் பங்கேற்கலாம்\n\n👇 https://stimulx.sc/s/stroop-2025`,
-    te: `📣 పరిశోధనా అధ్యయనం — stimulx.sc (లాభాపేక్ష లేనిది)\n\nమీ భాగస్వామ్యం పూర్తిగా స్వచ్ఛందమైనది. మీరు ఎప్పుడైనా విరమించుకోవచ్చు.\n\n🔒 మీ డేటా భారతదేశంలోనే భద్రంగా ఉంటుంది.\n\n💰 గౌరవ భృతి: ₹100 వోచర్\n⏱ సమయం: ~8 నిమిషాలు\n\n👇 https://stimulx.sc/s/stroop-2025`,
-    kn: `📣 ಸಂಶೋಧನಾ ಯೋಜನೆ — stimulx.sc (ಲಾಭರಹಿತ)\n\nನಿಮ್ಮ ಭಾಗವಹಿಸುವಿಕೆ ಸಂಪೂರ್ಣವಾಗಿ ಐಚ್ಛಿಕವಾಗಿದೆ. ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ನೀವು ಹಿಂದೆ ಸರಿಯಬಹುದು.\n\n🔒 ನಿಮ್ಮ ಡೇಟಾ ಭಾರತದಲ್ಲಿಯೇ ಸುರಕ್ಷಿತವಾಗಿರುತ್ತದೆ.\n\n💰 ಸಂಭಾವನೆ: ₹100 ವೋಚರ್\n⏱ ಸಮಯ: ~8 ನಿಮಿಷ\n\n👇 https://stimulx.sc/s/stroop-2025`,
+    hi: `📣 Research Study — stimulx.in (Non-profit)\n\nआपकी भागीदारी पूरी तरह स्वैच्छिक है। आप किसी भी समय बिना कारण बताए हट सकते हैं।\n\n🔒 आपका डेटा भारत में सुरक्षित रहेगा। आपकी contact details किसी के साथ share नहीं होंगी।\n\n💰 Compensation: ₹100 Amazon voucher\n⏱ Time: ~8 minutes\n📱 Online — from anywhere\n\n👇 https://stimulx.in/s/stroop-2025`,
+    ta: `📣 ஆய்வுக் கல்வி — stimulx.in (இலாப நோக்கற்ற)\n\nஉங்கள் பங்கேற்பு முற்றிலும் தன்னார்வமானது. நீங்கள் எந்த நேரத்திலும் வெளியேறலாம்.\n\n🔒 உங்கள் தரவு இந்தியாவில் மட்டுமே பாதுகாக்கப்படும். உங்களின் தொடர்பு விவரங்கள் பகிரப்படாது.\n\n💰 ஊக்கத்தொகை: ₹100 பரிசு கூப்பன்\n⏱ நேரம்: ~8 நிமிடங்கள்\n📱 ஆன்லைனில் பங்கேற்கலாம்\n\n👇 https://stimulx.in/s/stroop-2025`,
+    te: `📣 పరిశోధనా అధ్యయనం — stimulx.in (లాభాపేక్ష లేనిది)\n\nమీ భాగస్వామ్యం పూర్తిగా స్వచ్ఛందమైనది. మీరు ఎప్పుడైనా విరమించుకోవచ్చు.\n\n🔒 మీ డేటా భారతదేశంలోనే భద్రంగా ఉంటుంది.\n\n💰 గౌరవ భృతి: ₹100 వోచర్\n⏱ సమయం: ~8 నిమిషాలు\n\n👇 https://stimulx.in/s/stroop-2025`,
+    kn: `📣 ಸಂಶೋಧನಾ ಯೋಜನೆ — stimulx.in (ಲಾಭರಹಿತ)\n\nನಿಮ್ಮ ಭಾಗವಹಿಸುವಿಕೆ ಸಂಪೂರ್ಣವಾಗಿ ಐಚ್ಛಿಕವಾಗಿದೆ. ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ನೀವು ಹಿಂದೆ ಸರಿಯಬಹುದು.\n\n🔒 ನಿಮ್ಮ ಡೇಟಾ ಭಾರತದಲ್ಲಿಯೇ ಸುರಕ್ಷಿತವಾಗಿರುತ್ತದೆ.\n\n💰 ಸಂಭಾವನೆ: ₹100 ವೋಚರ್\n⏱ ಸಮಯ: ~8 ನಿಮಿಷ\n\n👇 https://stimulx.in/s/stroop-2025`,
   };
 
   const handleCopyWA = () => {
@@ -133,7 +133,7 @@ export function RecruitmentStage({ onAdvance, onToast }: RecruitmentStageProps) 
               Join the Stimulx community pool. Participate in studies in your native language, from home. Your data remains in India. Always.
             </p>
             <div className="text-[11px] text-[#f9a94e] font-mono pt-1">
-              stimulx.sc/pool
+              stimulx.in/pool
             </div>
           </div>
 

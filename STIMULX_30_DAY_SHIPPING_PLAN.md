@@ -1,7 +1,7 @@
-# Stimulx.sc — 30-Day Product & Engineering Launch Plan
+# Stimulx.in — 30-Day Product & Engineering Launch Plan
 **Target Ship Date: 30 Days from Kickoff**  
-**Product**: Stimulx.sc (Open Indian Behavioural Science Infrastructure)  
-**Domain**: `stimulx.sc` (Unregistered / Available)  
+**Product**: Stimulx.in (Open Indian Behavioural Science Infrastructure)  
+**Domain**: `stimulx.in` (Unregistered / Available)  
 **Hosting & Legal**: Hosted in Mumbai (AWS `ap-south-1` / Supabase Mumbai) for DPDP Act 2023 & ICMR 2017 Compliance  
 
 ---
@@ -42,7 +42,7 @@ The product covers the entire 9-stage research lifecycle:
 
 ### Phase 1: Foundation, Ethics & Design (Days 1 – 10)
 * **Day 1: Project Initialization & Domain Setup**
-  * Acquire `stimulx.sc` on registrar.
+  * Acquire `stimulx.in` on registrar.
   * Initialize Next.js project with TypeScript, Tailwind CSS, ESLint, Prettier.
   * Setup GitHub repository, Supabase Mumbai project, and Vercel staging deployment.
 * **Day 2: Authentication & Role-Based Access Control**
@@ -109,7 +109,7 @@ The product covers the entire 9-stage research lifecycle:
   * Verify RTL / Indic font rendering (Devanagari, Tamil, Telugu, Kannada).
 * **Day 29: Production Staging & Final Dress Rehearsal**
   * End-to-end trial run: Idea -> IEC approval -> jsPsych Stroop study live -> 50 participant test runs -> Analysis export.
-  * DNS cutover: configure `stimulx.sc` records pointing to Vercel/AWS.
+  * DNS cutover: configure `stimulx.in` records pointing to Vercel/AWS.
 * **Day 30: Public Launch**
   * Announcement to Indian research networks (NIMHANS alumni, SCARF, TISS psychology mailing lists).
   * Open registration for researchers and participants.
@@ -120,7 +120,7 @@ The product covers the entire 9-stage research lifecycle:
 1. **Week 1 Milestone**: Functional IEC ethics application generator + Scale library with auto-scoring.
 2. **Week 2 Milestone**: Fully operational Stroop experiment running via jsPsych with sub-millisecond precision.
 3. **Week 3 Milestone**: End-to-end participant recruitment loop (invite -> consent -> experiment -> debrief -> voucher).
-4. **Week 4 Milestone**: Analysis export + community review + public launch on `stimulx.sc`.
+4. **Week 4 Milestone**: Analysis export + community review + public launch on `stimulx.in`.
 
 ---
 

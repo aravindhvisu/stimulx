@@ -5,6 +5,7 @@ import { StageId } from "@/types";
 import { Topbar } from "@/components/Topbar";
 import { HomeStage } from "@/components/stages/HomeStage";
 import { BrainstormStage } from "@/components/stages/BrainstormStage";
+import { GrantStage } from "@/components/stages/GrantStage";
 import { EthicsStage } from "@/components/stages/EthicsStage";
 import { DesignStage } from "@/components/stages/DesignStage";
 import { RecruitmentStage } from "@/components/stages/RecruitmentStage";
@@ -18,6 +19,7 @@ import { CommunityStage } from "@/components/stages/CommunityStage";
 const STAGE_FLOW: StageId[] = [
   "home",
   "brainstorm",
+  "grants",
   "ethics",
   "design",
   "recruit",
@@ -30,7 +32,7 @@ const STAGE_FLOW: StageId[] = [
 
 export default function StimulxApp() {
   const [currentStage, setCurrentStage] = useState<StageId>("home");
-  const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(["ethics"]));
+  const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(["grants", "ethics"]));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -77,6 +79,9 @@ export default function StimulxApp() {
         {currentStage === "home" && <HomeStage onNavigate={handleNavigate} />}
         {currentStage === "brainstorm" && (
           <BrainstormStage onAdvance={handleAdvance} onToast={showToast} />
+        )}
+        {currentStage === "grants" && (
+          <GrantStage onAdvance={handleAdvance} onToast={showToast} />
         )}
         {currentStage === "ethics" && (
           <EthicsStage onAdvance={handleAdvance} onToast={showToast} />

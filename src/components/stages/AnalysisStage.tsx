@@ -21,7 +21,7 @@ export function AnalysisStage({ onAdvance, onToast }: AnalysisStageProps) {
   const [copiedAPA, setCopiedAPA] = useState(false);
 
   const handleDownloadR = () => {
-    const rScript = `# Stimulx.sc Auto-generated R Script
+    const rScript = `# Stimulx.in Auto-generated R Script
 # Multilingual Stroop Effect Analysis (Hindi vs English)
 
 library(tidyverse)
@@ -70,7 +70,7 @@ Condition          Congruent M (SD)      Incongruent M (SD)      Interference Ef
 Hindi              451 (68)              523 (74)                +72ms***
 English            478 (71)              549 (80)                +71ms***
 -----------------------------------------------------------------------------------------
-Note. ***p < .001, F(1, 177) = 84.3, ηp² = .32. Generated via Stimulx.sc.`;
+Note. ***p < .001, F(1, 177) = 84.3, ηp² = .32. Generated via Stimulx.in.`;
 
     navigator.clipboard?.writeText(apaTable);
     setCopiedAPA(true);

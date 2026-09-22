@@ -15,14 +15,15 @@ interface TopbarProps {
 const STAGES: { id: StageId; label: string; num: string }[] = [
   { id: "home", label: "Home", num: "⌂" },
   { id: "brainstorm", label: "Brainstorm", num: "0" },
-  { id: "ethics", label: "Ethics", num: "1" },
-  { id: "design", label: "Design", num: "2" },
-  { id: "recruit", label: "Recruitment", num: "3" },
-  { id: "builder", label: "Experiment", num: "4" },
-  { id: "pool", label: "Participant Pool", num: "5" },
-  { id: "analysis", label: "Analysis", num: "6" },
-  { id: "writing", label: "Write & Review", num: "7" },
-  { id: "publish", label: "Publish", num: "8" },
+  { id: "grants", label: "Grants", num: "1" },
+  { id: "ethics", label: "Ethics", num: "2" },
+  { id: "design", label: "Design", num: "3" },
+  { id: "recruit", label: "Recruitment", num: "4" },
+  { id: "builder", label: "Experiment", num: "5" },
+  { id: "pool", label: "Pool", num: "6" },
+  { id: "analysis", label: "Analysis", num: "7" },
+  { id: "writing", label: "Write & Review", num: "8" },
+  { id: "publish", label: "Publish", num: "9" },
 ];
 
 export function Topbar({
@@ -39,7 +40,7 @@ export function Topbar({
         className="flex items-center gap-2 text-[15px] font-semibold text-white pr-4 border-r border-white/10 mr-2 shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
         onClick={() => onNavigate("home")}
       >
-        <div className="w-[26px] height-[26px] bg-[#e8852b] rounded-lg flex items-center justify-center p-1.5 shadow-sm">
+        <div className="w-[26px] h-[26px] bg-[#e8852b] rounded-lg flex items-center justify-center p-1.5 shadow-sm">
           <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5">
             <circle cx="7" cy="7" r="2.5" fill="#fff" />
             <circle cx="7" cy="2" r="1.2" fill="rgba(255,255,255,.6)" />
@@ -49,7 +50,7 @@ export function Topbar({
           </svg>
         </div>
         <span>Stimulx</span>
-        <span className="text-[11px] opacity-45 font-mono">.sc</span>
+        <span className="text-[11px] opacity-75 text-[#f9a94e] font-mono">.in</span>
       </div>
 
       <div className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider shrink-0 mr-2">
@@ -97,7 +98,7 @@ export function Topbar({
           onClick={() => onNavigate("community")}
           className={`flex items-center gap-1.5 h-[34px] px-3 ml-2 rounded-md text-[11px] font-medium border transition-all shrink-0 ${
             currentStage === "community"
-              ? "bg-purple-500/20 border-purple-500/40 text-purple-200"
+              ? "bg-purple-500/20 border-purple-500/40 text-purple-200 font-semibold"
               : "border-white/10 text-white/50 hover:bg-white/5 hover:text-white/80"
           }`}
         >
