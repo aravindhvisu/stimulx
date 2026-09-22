@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stimulx.sc — Open Indian Behavioural Science</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1633;--ink-mid:#2e2a50;--ink-soft:#6b6890;--ink-faint:#a09ec0;
+  --saffron:#e8852b;--saffron-l:#f9a94e;--saffron-bg:rgba(232,133,43,0.09);
+  --surface:#f5f3ef;--s2:#eceae4;--white:#fff;
+  --bd:rgba(26,22,51,0.08);--bdm:rgba(26,22,51,0.13);--bds:rgba(26,22,51,0.2);
+  --green:#22c55e;--gbg:#f0fdf4;--gt:#15803d;
+  --red:#ef4444;--rbg:#fef2f2;--rt:#b91c1c;
+  --amber:#f59e0b;--abg:#fffbeb;--at:#92400e;
+  --blue:#3b82f6;--bbg:#eff6ff;--bt:#1d4ed8;
+  --purple:#8b5cf6;--pbg:#fdf4ff;--pt:#6d28d9;
+  --teal:#0d9488;--tbg:#f0fdfa;--tt:#0f766e;
+}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{height:52px;flex-shrink:0;background:var(--ink);display:flex;align-items:center;padding:0 14px;gap:0;border-bottom:1px solid rgba(255,255,255,0.06);z-index:200;overflow:hidden}
+.logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#fff;padding-right:16px;border-right:1px solid rgba(255,255,255,0.1);margin-right:10px;flex-shrink:0;cursor:pointer}
+.lmark{width:26px;height:26px;background:var(--saffron);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.lmark svg{width:14px;height:14px}
+.lta{font-size:11px;opacity:.45;font-family:'DM Mono',monospace;margin-left:2px;letter-spacing:0.02em}
+.np{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.25);color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;letter-spacing:.05em;text-transform:uppercase;flex-shrink:0}
+.snav{display:flex;align-items:center;gap:1px;flex:1;overflow-x:auto;padding:0 6px}
+.snav::-webkit-scrollbar{display:none}
+.sb{display:flex;align-items:center;gap:5px;height:34px;padding:0 10px;border-radius:6px;border:none;background:transparent;color:rgba(255,255,255,.38);font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.sb:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7)}
+.sb.active{background:rgba(255,255,255,.1);color:#fff}
+.sb.done .sn{background:var(--green)!important;color:#fff!important}
+.sn{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.sb.active .sn{background:var(--saffron);color:#fff}
+.sarr{color:rgba(255,255,255,.15);font-size:11px;flex-shrink:0;padding:0 1px}
+/* community tab special */
+.sb.community-tab{color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);border-radius:7px;margin-left:4px}
+.sb.community-tab.active{background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.4);color:#c4b5fd}
+.tba{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tb{height:30px;padding:0 12px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.tb:hover{background:rgba(255,255,255,.12);color:#fff}
+.tbp{background:var(--saffron);border-color:transparent;color:#fff;font-weight:600}
+.tbp:hover{background:var(--saffron-l)}
+/* ── MAIN ── */
+.main{flex:1;display:flex;overflow:hidden}
+.screen{display:none;flex:1;overflow:hidden}
+.screen.active{display:flex}
+/* ── LAYOUT PRIMITIVES ── */
+.layout{display:flex;flex:1;overflow:hidden}
+.sb-left{width:218px;flex-shrink:0;background:var(--white);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow-y:auto}
+.content{flex:1;overflow-y:auto;padding:26px 30px}
+.rp{width:268px;flex-shrink:0;background:var(--white);border-left:1px solid var(--bd);overflow-y:auto}
+/* ── SIDEBAR NAV ── */
+.ss{padding:11px 14px 5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-faint)}
+.si{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;transition:all .12s;border-left:2px solid transparent;font-size:12px;font-weight:500;color:var(--ink-soft)}
+.si:hover{background:var(--surface);color:var(--ink)}
+.si.active{background:var(--saffron-bg);border-left-color:var(--saffron);color:var(--saffron)}
+.si svg{width:14px;height:14px;flex-shrink:0}
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.ch{padding:13px 17px 11px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ct{font-size:13px;font-weight:600;color:var(--ink)}
+.cs{font-size:11px;color:var(--ink-faint);margin-top:1px}
+.cb{padding:16px 17px}
+.ca{font-size:12px;font-weight:500;color:var(--saffron);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;white-space:nowrap}
+/* ── FIELDS ── */
+.fg{margin-bottom:12px}
+.fl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:4px;display:block}
+.fi,.fs,.fta{width:100%;background:var(--surface);border:1px solid var(--bdm);border-radius:7px;padding:7px 10px;font-size:13px;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--saffron);background:#fff}
+.fta{resize:vertical;min-height:72px;line-height:1.6}
+.fs{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a09ec0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;cursor:pointer}
+.frow{display:flex;gap:10px}
+.frow .fg{flex:1;margin-bottom:0}
+/* ── TOGGLES ── */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)}
+.trow:last-child{border-bottom:none}
+.tl{font-size:12px;color:var(--ink-mid)}
+.tsub{font-size:10px;color:var(--ink-faint);margin-top:1px}
+.tog{width:32px;height:17px;background:var(--bdm);border-radius:9px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--saffron)}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform .2s}
+.tog.on::after{transform:translateX(15px)}
+/* ── BADGES ── */
+.b{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.bg{background:var(--gbg);color:var(--gt)}
+.ba{background:var(--abg);color:var(--at)}
+.bb{background:var(--bbg);color:var(--bt)}
+.bp{background:var(--pbg);color:var(--pt)}
+.bs{background:var(--saffron-bg);color:var(--saffron)}
+.bt2{background:var(--tbg);color:var(--tt)}
+.br{background:var(--rbg);color:var(--rt)}
+/* ── BUTTONS ── */
+.btn{height:32px;padding:0 14px;border-radius:7px;border:1px solid var(--bdm);background:var(--surface);color:var(--ink-soft);font-size:12px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn:hover{border-color:var(--bds);color:var(--ink)}
+.btn svg{width:12px;height:12px}
+.btn-p{background:var(--ink);color:#fff;border-color:transparent}
+.btn-p:hover{background:var(--saffron)}
+.btn-s{background:var(--saffron);color:#fff;border-color:transparent}
+.btn-s:hover{background:var(--saffron-l)}
+.btn-sm{height:27px;padding:0 11px;font-size:11px;border-radius:6px}
+.btn-w{width:100%}
+/* ── MISC ── */
+.pg-hdr{margin-bottom:22px}
+.pg-title{font-size:19px;font-weight:600;color:var(--ink)}
+.pg-sub{font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.6}
+.stag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--saffron);margin-bottom:7px}
+.divider{border:none;border-top:1px solid var(--bd);margin:14px 0}
+.pbar-w{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;margin-top:4px}
+.pbar{height:100%;border-radius:3px;background:var(--saffron);transition:width .6s ease}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sc-card{background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px 13px;cursor:pointer;transition:all .15s}
+.sc-card:hover{border-color:var(--saffron);background:#fff}
+.sn2{font-size:12px;font-weight:600;color:var(--ink)}
+.sm{font-size:11px;color:var(--ink-soft);margin-top:2px}
+.2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat-g{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat-c{background:var(--white);border:1px solid var(--bd);border-radius:9px;padding:12px 14px}
+.sv{font-size:22px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;line-height:1}
+.sk{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-top:4px}
+/* ── TOAST ── */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:rgba(255,255,255,.85);font-size:13px;padding:9px 18px;border-radius:9px;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .25s,opacity .25s;opacity:0;z-index:9999;pointer-events:none;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <div class="logo" onclick="goTo('home')">
+    <div class="lmark"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2.5" fill="#fff"/><circle cx="7" cy="2" r="1.2" fill="rgba(255,255,255,.5)"/><circle cx="7" cy="12" r="1.2" fill="rgba(255,255,255,.5)"/><circle cx="2" cy="7" r="1.2" fill="rgba(255,255,255,.5)"/><circle cx="12" cy="7" r="1.2" fill="rgba(255,255,255,.5)"/></svg></div>
+    Stimulx<span class="lta">.sc</span>
+  </div>
+  <div class="np">Non-profit</div>
+  <div class="snav" id="snav">
+    <button class="sb" onclick="goTo('home')"><div class="sn">⌂</div>Home</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-brainstorm" onclick="goTo('brainstorm')"><div class="sn">0</div>Brainstorm</button>
+    <span class="sarr">›</span>
+    <button class="sb active" id="n-ethics" onclick="goTo('ethics')"><div class="sn">1</div>Ethics</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-design" onclick="goTo('design')"><div class="sn">2</div>Design</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-recruit" onclick="goTo('recruit')"><div class="sn">3</div>Recruitment</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-builder" onclick="goTo('builder')"><div class="sn">4</div>Experiment</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-pool" onclick="goTo('pool')"><div class="sn">5</div>Participant Pool</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-analysis" onclick="goTo('analysis')"><div class="sn">6</div>Analysis</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-writing" onclick="goTo('writing')"><div class="sn">7</div>Write & Review</button>
+    <span class="sarr">›</span>
+    <button class="sb" id="n-publish" onclick="goTo('publish')"><div class="sn">8</div>Publish</button>
+    <button class="sb community-tab" id="n-community" onclick="goTo('community')"><div class="sn" style="background:rgba(139,92,246,.3);color:#c4b5fd">✦</div>Community</button>
+  </div>
+  <div class="tba">
+    <button class="tb" onclick="toast('Project saved ✓')">Saved</button>
+    <button class="tb tbp" onclick="advanceStage()">Next stage →</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══ HOME ═══ -->
+<div class="screen" id="home" style="flex-direction:column;overflow-y:auto;background:var(--ink)">
+  <div style="padding:52px 48px 36px;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,133,43,.07) 1.5px,transparent 1.5px);background-size:32px 32px"></div>
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(232,133,43,.6);margin-bottom:10px;position:relative">stimulx.sc — Open Indian Behavioural Science</div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,42px);font-weight:600;color:#fff;line-height:1.15;max-width:600px;position:relative">From a spark of curiosity<br>to <em style="color:var(--saffron-l)">published science</em> —<br>one platform.</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.42);max-width:500px;margin-top:12px;line-height:1.75;font-weight:300;position:relative">A non-profit research infrastructure for Indian psychologists, neuroscientists, students, and service users. Built for NIMHANS, SCARF, TISS — and every researcher who comes after.</div>
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;position:relative">
+      <span style="font-size:11px;padding:4px 12px;border-radius:100px;background:rgba(232,133,43,.15);border:1px solid rgba(232,133,43,.25);color:var(--saffron-l)">✦ Non-profit · stimulx.sc</span>
+      <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">22 Indian languages</span>
+      <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">IEC/ICMR ethics</span>
+      <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">Open access</span>
+      <span style="font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45)">DPDP 2023</span>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:0 48px 48px">
+    <div style="grid-column:1/-1;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:2px">Research Lifecycle</div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all .2s" onclick="goTo('brainstorm')" onmouseover="this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+      <div style="font-size:10px;color:rgba(232,133,43,.5);font-family:'DM Mono',monospace;margin-bottom:8px">STAGE 0</div>
+      <div style="width:32px;height:32px;background:rgba(139,92,246,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8b5cf6" stroke-width="1.4"><circle cx="8" cy="6" r="3"/><path d="M8 9v2M5 13h6"/><path d="M4 6a4 4 0 0 1 8 0"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:5px">Brainstorm</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.5">Ideas → concepts → open journals → feasibility check</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all .2s" onclick="goTo('ethics')" onmouseover="this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+      <div style="font-size:10px;color:rgba(232,133,43,.5);font-family:'DM Mono',monospace;margin-bottom:8px">STAGE 1</div>
+      <div style="width:32px;height:32px;background:rgba(59,130,246,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#3b82f6" stroke-width="1.4"><path d="M8 2l4.5 1.8v4.2c0 3.6-4.5 6-4.5 6S3.5 11.6 3.5 8V3.8L8 2z"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:5px">Ethics & IEC</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.5">IEC application · ICMR consent · DPDP 2023</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all .2s" onclick="goTo('design')" onmouseover="this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+      <div style="font-size:10px;color:rgba(232,133,43,.5);font-family:'DM Mono',monospace;margin-bottom:8px">STAGE 2</div>
+      <div style="width:32px;height:32px;background:rgba(232,133,43,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#e8852b" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M2 7h12M7 7v7"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:5px">Design & Methods</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.5">Qual + Quant · All group types · Scale library</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all .2s" onclick="goTo('recruit')" onmouseover="this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+      <div style="font-size:10px;color:rgba(232,133,43,.5);font-family:'DM Mono',monospace;margin-bottom:8px">STAGE 3</div>
+      <div style="width:32px;height:32px;background:rgba(34,197,94,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#22c55e" stroke-width="1.4"><path d="M8 2C5.8 2 4 3.8 4 6s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zM2 14c0-2.5 2.5-4 6-4s6 1.5 6 4"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:5px">Recruitment</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.5">Ethics-first · Privacy · Consent · Campaign</div>
+    </div>
+    <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.18);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all .2s" onclick="goTo('community')" onmouseover="this.style.background='rgba(139,92,246,.14)'" onmouseout="this.style.background='rgba(139,92,246,.08)'">
+      <div style="font-size:10px;color:rgba(139,92,246,.6);font-family:'DM Mono',monospace;margin-bottom:8px">COMMUNITY</div>
+      <div style="width:32px;height:32px;background:rgba(139,92,246,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8b5cf6" stroke-width="1.4"><circle cx="5" cy="5" r="2"/><circle cx="11" cy="5" r="2"/><circle cx="8" cy="11" r="2"/><path d="M7 5h2M6.5 9l-2-2M9.5 9l2-2"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:#c4b5fd;margin-bottom:5px">Community</div>
+      <div style="font-size:11px;color:rgba(139,92,246,.5);line-height:1.5">Learn · Share · Build · Contribute science</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BRAINSTORM ═══ -->
+<div class="screen" id="brainstorm">
+  <div class="sb-left">
+    <div class="ss">Workspace</div>
+    <div class="si active" id="bs-ideas" onclick="bsTab('ideas')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="6" r="3"/><path d="M7 9v2M5 12h4"/></svg>Idea Board</div>
+    <div class="si" id="bs-journals" onclick="bsTab('journals')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="1" width="10" height="12" rx="1.5"/><path d="M4.5 4.5h5M4.5 7h5M4.5 9.5h3"/></svg>Open Journals</div>
+    <div class="si" id="bs-gaps" onclick="bsTab('gaps')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 2v10M2 7h10"/></svg>Research Gaps</div>
+    <div class="si" id="bs-feasibility" onclick="bsTab('feasibility')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 10l3-4 2 2 5-6"/></svg>Feasibility Check</div>
+  </div>
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 0 — Brainstorm</div><div class="pg-title">From Curiosity to Research Question</div><div class="pg-sub">Capture ideas · Link to existing literature · Identify gaps · Check feasibility before committing</div></div>
+
+    <!-- IDEAS TAB -->
+    <div id="bs-ideas-c">
+      <div class="card">
+        <div class="ch"><div><div class="ct">Idea Board</div><div class="cs">Each idea links to concepts, literature, and known gaps</div></div><button class="btn btn-sm btn-s" onclick="addIdea()">+ New idea</button></div>
+        <div class="cb" id="idea-board">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div style="background:#fef3e8;border:1px solid rgba(232,133,43,.25);border-radius:10px;padding:14px;cursor:pointer" onclick="toast('Idea expanded — linking to literature')">
+              <div style="font-size:12px;font-weight:600;color:var(--saffron);margin-bottom:6px">💡 Stroop in Hindi bilinguals</div>
+              <div style="font-size:11px;color:var(--ink-mid);line-height:1.6">Does language dominance modulate Stroop interference in Hindi-English code-switchers?</div>
+              <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap"><span class="b bs">Cognitive</span><span class="b bb">Bilingualism</span></div>
+              <div style="font-size:10px;color:var(--ink-faint);margin-top:8px">3 linked papers · 1 gap identified</div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:14px;cursor:pointer" onclick="toast('Mental health stigma idea expanded')">
+              <div style="font-size:12px;font-weight:600;color:var(--gt);margin-bottom:6px">💡 Stigma in rural Tamil Nadu</div>
+              <div style="font-size:11px;color:var(--ink-mid);line-height:1.6">How does mental health stigma differ between urban Chennai and rural Tirunelveli populations?</div>
+              <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap"><span class="b bg">Stigma</span><span class="b bt2">Mixed methods</span></div>
+              <div style="font-size:10px;color:var(--ink-faint);margin-top:8px">5 linked papers · 2 gaps identified</div>
+            </div>
+            <div style="background:#f0f9ff;border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:14px;cursor:pointer" onclick="toast('Caregiver burden idea expanded')">
+              <div style="font-size:12px;font-weight:600;color:var(--bt);margin-bottom:6px">💡 Caregiver burden — schizophrenia</div>
+              <div style="font-size:11px;color:var(--ink-mid);line-height:1.6">Lived experience of family caregivers of people with schizophrenia in South India — qualitative exploration</div>
+              <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap"><span class="b bp">Qualitative</span><span class="b ba">SCARF relevant</span></div>
+              <div style="font-size:10px;color:var(--ink-faint);margin-top:8px">2 linked papers · Gap confirmed</div>
+            </div>
+            <div style="background:var(--surface);border:1.5px dashed var(--bdm);border-radius:10px;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:100px" onclick="addIdea()">
+              <div style="text-align:center;color:var(--ink-faint)"><div style="font-size:22px;margin-bottom:5px">+</div><div style="font-size:11px">Add idea</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Concept Map — Stroop Bilingualism</div><div class="cs">Auto-generated from your idea · Click nodes to explore</div></div>
+        <div class="cb">
+          <div style="background:var(--surface);border-radius:10px;padding:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;min-height:120px">
+            <div style="background:var(--ink);color:#fff;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600">Stroop Effect</div>
+            <div style="color:var(--ink-faint);font-size:18px">↔</div>
+            <div style="background:var(--bbg);color:var(--bt);padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer" onclick="toast('Bilingualism literature loaded')">Bilingualism</div>
+            <div style="color:var(--ink-faint);font-size:18px">↔</div>
+            <div style="background:var(--pbg);color:var(--pt);padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer" onclick="toast('Code-switching literature loaded')">Code-switching</div>
+            <div style="color:var(--ink-faint);font-size:18px">↔</div>
+            <div style="background:var(--saffron-bg);color:var(--saffron);padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer" onclick="toast('Indian languages neuroscience literature loaded')">Indian Languages</div>
+            <div style="color:var(--ink-faint);font-size:18px">↔</div>
+            <div style="background:var(--tbg);color:var(--tt);padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer" onclick="toast('Cognitive control literature loaded')">Cognitive Control</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOURNALS TAB -->
+    <div id="bs-journals-c" style="display:none">
+      <div class="card">
+        <div class="ch"><div><div class="ct">Open Access Journals — India Relevant</div><div class="cs">Search across PubMed, PsyArXiv, OpenDOAR for Indian psychology research</div></div><button class="btn btn-sm btn-p" onclick="toast('Full journal search opened')">Search all</button></div>
+        <div class="cb">
+          <input class="fi" placeholder="Search by keyword, author, DOI, construct…" style="margin-bottom:12px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd);cursor:pointer" onclick="toast('Paper opened — linked to Stroop idea')">
+              <div style="display:flex;justify-content:space-between;align-items:start;gap:10px">
+                <div style="font-size:12px;font-weight:600;color:var(--ink);line-height:1.4">Stroop interference in Hindi: Normative data from 200 Indian adults</div>
+                <span class="b bg">Open Access</span>
+              </div>
+              <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Kar, B.R. et al. (2022) · Indian Journal of Psychological Medicine · NIMHANS sample</div>
+              <div style="display:flex;gap:6px;margin-top:7px"><button class="btn btn-sm" onclick="toast('Added to Stroop idea references')">Link to idea</button><button class="btn btn-sm" onclick="toast('PDF opened')">Read PDF</button></div>
+            </div>
+            <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd);cursor:pointer" onclick="toast('Paper opened')">
+              <div style="display:flex;justify-content:space-between;align-items:start;gap:10px">
+                <div style="font-size:12px;font-weight:600;color:var(--ink);line-height:1.4">Mental health stigma in rural India: A systematic review</div>
+                <span class="b bg">Open Access</span>
+              </div>
+              <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Shidhaye, R. et al. (2015) · Indian Journal of Psychiatry · PubMed Central</div>
+              <div style="display:flex;gap:6px;margin-top:7px"><button class="btn btn-sm" onclick="toast('Linked to Stigma idea')">Link to idea</button><button class="btn btn-sm" onclick="toast('PDF opened')">Read PDF</button></div>
+            </div>
+            <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd);cursor:pointer" onclick="toast('Preprint opened from PsyArXiv')">
+              <div style="display:flex;justify-content:space-between;align-items:start;gap:10px">
+                <div style="font-size:12px;font-weight:600;color:var(--ink);line-height:1.4">Caregiver burden and family functioning in schizophrenia: South Indian context</div>
+                <span class="b ba">Preprint</span>
+              </div>
+              <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Thara, R. & Padmavati, R. (2023) · PsyArXiv · SCARF Chennai</div>
+              <div style="display:flex;gap:6px;margin-top:7px"><button class="btn btn-sm" onclick="toast('Linked to caregiver idea')">Link to idea</button><button class="btn btn-sm" onclick="toast('Preprint opened')">Read</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAPS TAB -->
+    <div id="bs-gaps-c" style="display:none">
+      <div class="card">
+        <div class="ch"><div class="ct">Known Research Gaps in Indian Psychology</div><div class="cs">Community-curated · Last updated 3 days ago</div></div>
+        <div class="cb">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="background:#fdf4ff;border:1px solid var(--purple-border,#d8b4fe);border-radius:9px;padding:12px 14px;cursor:pointer" onclick="toast('Gap details opened — 3 researchers interested')">
+              <div style="font-size:12px;font-weight:600;color:var(--pt)">No normative Stroop data for Dravidian language speakers</div>
+              <div style="font-size:11px;color:var(--ink-mid);margin-top:3px;line-height:1.5">Tamil, Telugu, Kannada, Malayalam populations unrepresented in cognitive norm databases. 200M+ speakers.</div>
+              <div style="display:flex;gap:6px;margin-top:8px"><span class="b bp">High priority</span><span class="b bs">Stimulx can fill this</span><button class="btn btn-sm" onclick="toast('Gap linked to your Stroop idea!')">Link to my idea</button></div>
+            </div>
+            <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:12px 14px;cursor:pointer" onclick="toast('Gap details opened')">
+              <div style="font-size:12px;font-weight:600;color:var(--gt)">Validated psychometric tools for tribal populations in Northeast India</div>
+              <div style="font-size:11px;color:var(--ink-mid);margin-top:3px;line-height:1.5">Most tools validated only on urban Hindi/English speakers. 8% of India's population excluded from mental health research.</div>
+              <div style="display:flex;gap:6px;margin-top:8px"><span class="b bg">Community need</span></div>
+            </div>
+            <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:9px;padding:12px 14px;cursor:pointer" onclick="toast('Gap details opened')">
+              <div style="font-size:12px;font-weight:600;color:var(--bt)">Service user perspectives in Indian mental health research almost absent</div>
+              <div style="font-size:11px;color:var(--ink-mid);margin-top:3px;line-height:1.5">The vast majority of Indian psychiatric research is researcher-led. Co-produced and PPI research is near-zero.</div>
+              <div style="display:flex;gap:6px;margin-top:8px"><span class="b bb">Service users</span><span class="b bp">Qualitative gap</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEASIBILITY TAB -->
+    <div id="bs-feasibility-c" style="display:none">
+      <div class="card">
+        <div class="ch"><div class="ct">Feasibility Check</div><div class="cs">Complete before committing to a study — review funding, population, timeline, ethics complexity</div></div>
+        <div class="cb">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--gt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Population available?</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Yes — sufficient pool on stimulx.sc</option><option>Partial — need external recruitment</option><option>No — need scoping study first</option></select></div></div>
+            <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--bt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Funding status</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Unfunded (stimulx.sc non-profit covers platform)</option><option>Applying — ICSSR</option><option>Applying — DST-SERB</option><option>Funded — approved</option></select></div></div>
+            <div style="background:var(--abg);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--at);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Ethics complexity</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>Low — observational, non-clinical adult</option><option>Medium — deception or sensitive content</option><option>High — clinical, vulnerable, minors</option></select></div></div>
+            <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:9px;padding:13px"><div style="font-size:11px;font-weight:600;color:var(--pt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Realistic timeline</div><div class="fg" style="margin-bottom:0"><select class="fs"><option>3–6 months (online, already designed)</option><option>6–12 months</option><option>12–24 months</option><option>Multi-year longitudinal</option></select></div></div>
+          </div>
+          <div class="fg"><label class="fl">Team resources</label><select class="fs"><option>Solo researcher / student project</option><option>Small team 2–4 people</option><option>Lab with research assistant support</option><option>Multi-site collaboration</option></select></div>
+          <div class="fg"><label class="fl">Participant compensation budget</label><select class="fs"><option>₹0 — altruistic / course credit only</option><option>₹50–100 per participant</option><option>₹100–500 per participant</option><option>Not yet decided</option></select></div>
+          <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:13px;margin-top:4px"><div style="font-size:12px;font-weight:600;color:var(--gt);margin-bottom:4px">✓ Feasibility assessment: This study is feasible on stimulx.sc</div><div style="font-size:11px;color:var(--gt);line-height:1.6">Sufficient pool (247 matching participants) · Low ethics complexity · Platform covers infrastructure costs · Estimated 3–4 months to data collection complete</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rp">
+    <div style="padding:13px 15px;border-bottom:1px solid var(--bd)"><div class="ct">My Ideas</div><div class="cs" style="margin-top:3px">3 ideas · 1 ready for Stage 1</div></div>
+    <div style="padding:13px 15px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--saffron-bg);border:1px solid rgba(232,133,43,.2);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Stroop idea selected')"><div style="font-size:12px;font-weight:600;color:var(--saffron)">Stroop — Hindi bilinguals</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">3 papers · Feasibility ✓</div><span class="b bg" style="margin-top:5px;display:inline-flex">Ready →</span></div>
+        <div style="background:var(--surface);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Stigma idea selected')"><div style="font-size:12px;font-weight:600;color:var(--ink)">Stigma — rural Tamil Nadu</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">5 papers · Feasibility pending</div></div>
+        <div style="background:var(--surface);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Caregiver idea selected')"><div style="font-size:12px;font-weight:600;color:var(--ink)">Caregiver burden — SCARF</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">2 papers · Needs SCARF partnership</div></div>
+      </div>
+      <hr class="divider">
+      <button class="btn btn-p btn-w" onclick="goTo('ethics');toast('Moving Stroop idea to Stage 1 — Ethics')">Move to Stage 1 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ETHICS ═══ -->
+<div class="screen" id="ethics">
+  <div class="sb-left">
+    <div class="ss">IEC Application</div>
+    <div class="si active" id="e-si" onclick="eTab('si')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5.5"/><path d="M4.5 7l2 2 4-4"/></svg>Study Information</div>
+    <div class="si" id="e-pr" onclick="eTab('pr')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 2v10M2 7h10"/></svg>Participant Rights</div>
+    <div class="si" id="e-cf" onclick="eTab('cf')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="1" width="10" height="12" rx="1.5"/><path d="M4 5h6M4 7.5h4"/></svg>Consent Forms</div>
+    <div class="si" id="e-dp" onclick="eTab('dp')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 1l4.5 1.8v4c0 3.5-4.5 6-4.5 6S2.5 10.3 2.5 6.8V2.8L7 1z"/></svg>Data Privacy</div>
+    <div class="si" id="e-pid" onclick="eTab('pid')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="5" r="3"/><path d="M2 13c0-2.5 2-4 5-4s5 1.5 5 4"/></svg>PI Declaration</div>
+  </div>
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 1 — Ethics</div><div class="pg-title">IEC Application & Ethics Framework</div><div class="pg-sub">ICMR-aligned · Auto-formatted for NIMHANS, SCARF, TISS committees · DPDP 2023 compliant</div></div>
+    <div id="e-si-c">
+      <div class="card"><div class="ch"><div class="ct">Study Information</div><span class="b ba">In Progress</span></div><div class="cb">
+        <div class="fg"><label class="fl">Study Title</label><input class="fi" value="Multilingual Stroop interference in Hindi and English: A cross-linguistic comparison in Indian adults"></div>
+        <div class="frow"><div class="fg"><label class="fl">Institution</label><select class="fs"><option>NIMHANS, Bengaluru</option><option>SCARF, Chennai</option><option>TISS, Mumbai</option><option>Other</option></select></div><div class="fg"><label class="fl">Study Type</label><select class="fs"><option>Observational Behavioural</option><option>Experimental RCT</option><option>Qualitative</option><option>Mixed Methods</option></select></div></div>
+        <div class="fg"><label class="fl">Scientific Rationale</label><textarea class="fta">Stroop interference has been studied extensively in Western samples. Hindi-speaking bilingual adults in India represent a large unstudied population. This study establishes normative data while examining cross-linguistic interference effects in a bilingual Indian sample.</textarea></div>
+        <div class="frow"><div class="fg"><label class="fl">Target N</label><input class="fi" type="number" value="150"></div><div class="fg"><label class="fl">Age range</label><input class="fi" value="18–45 years"></div><div class="fg"><label class="fl">Compensation</label><select class="fs"><option>₹100 Amazon voucher</option><option>Course credit (SONA)</option><option>None</option></select></div></div>
+      </div></div>
+    </div>
+    <div id="e-pr-c" style="display:none">
+      <div class="card"><div class="ch"><div class="ct">Participant Rights</div><span class="b bg">ICMR Compliant</span></div><div class="cb">
+        <div class="fg"><label class="fl">Voluntary participation statement</label><textarea class="fta">Participation is entirely voluntary. You may withdraw at any point without giving a reason and without penalty to your academic standing. Data collected before withdrawal will be deleted on request within 30 days.</textarea></div>
+        <div class="trow"><div><div class="tl">Right to withdraw post-completion</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Anonymous participation option</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Participants notified of published outcomes</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Debrief screen provided on completion</div><div class="tsub">Required for all stimulx.sc studies</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">Helpline numbers on debrief screen</div><div class="tsub">iCall · Vandrevala Foundation · NIMHANS</div></div><div class="tog on"></div></div>
+      </div></div>
+    </div>
+    <div id="e-cf-c" style="display:none">
+      <div class="card"><div class="ch"><div class="ct">Consent Forms — 22 Languages</div></div><div class="cb">
+        <div class="sc-grid">
+          <div class="sc-card" onclick="toast('Hindi consent form opened')"><div class="sn2">Consent — Hindi</div><div class="sm">ICMR template · ✓ Approved</div><div style="margin-top:6px"><span class="b bg">हिन्दी ✓</span></div></div>
+          <div class="sc-card" onclick="toast('Tamil consent form opened')"><div class="sn2">Consent — Tamil</div><div class="sm">ICMR template · Needs review</div><div style="margin-top:6px"><span class="b ba">தமிழ் ◑</span></div></div>
+          <div class="sc-card" onclick="toast('Telugu consent generated')"><div class="sn2">Consent — Telugu</div><div class="sm">Auto-generated draft</div><div style="margin-top:6px"><span class="b ba">తెలుగు Draft</span></div></div>
+          <div class="sc-card" onclick="toast('Generating all 22 language versions')"><div class="sn2">+ Generate all 22 languages</div><div class="sm">AI-assisted · Human review required</div><div style="margin-top:6px"><span class="b bb">AI-assisted</span></div></div>
+        </div>
+      </div></div>
+    </div>
+    <div id="e-dp-c" style="display:none">
+      <div class="card"><div class="ch"><div class="ct">Data Privacy</div><div class="cs">DPDP 2023 · India-hosted · Pseudonymised</div><span class="b bg">Compliant</span></div><div class="cb">
+        <div class="trow"><div><div class="tl">Data stored in India only</div><div class="tsub">Stimulx.sc servers — Mumbai</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">IP address never stored</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">Participant IDs pseudonymised</div><div class="tsub">Mapping key held by PI only, separately</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">Researchers contact participants ONLY during active experiment window</div><div class="tsub">Pool members are NOT contactable at other times</div></div><div class="tog on"></div></div>
+        <div class="trow"><div><div class="tl">Data destroyed after 5 years (ICMR)</div></div><div class="tog on"></div></div>
+        <div style="background:var(--bbg);border-radius:8px;padding:11px 13px;margin-top:10px;border:1px solid rgba(59,130,246,.15)"><div style="font-size:12px;font-weight:600;color:var(--bt);margin-bottom:3px">Participant pool contact rules</div><div style="font-size:11px;color:var(--bt);line-height:1.6">Stimulx.sc pool members have opted in to be contacted for research. However, their contact details are never shared. Researchers may only message participants via the stimulx.sc platform, only when a study is live, and only to participants who match inclusion criteria. No exceptions.</div></div>
+      </div></div>
+    </div>
+    <div id="e-pid-c" style="display:none">
+      <div class="card"><div class="ch"><div class="ct">PI Declaration</div></div><div class="cb">
+        <div class="frow"><div class="fg"><label class="fl">PI Name</label><input class="fi" placeholder="Full name…"></div><div class="fg"><label class="fl">Designation</label><input class="fi" placeholder="Assistant Professor, Clinical Psychology…"></div></div>
+        <div class="fg"><label class="fl">Declaration</label><textarea class="fta">I confirm that this study will be conducted in accordance with ICMR National Ethical Guidelines (2017), the Helsinki Declaration, and all applicable Indian law including the DPDP Act 2023.</textarea></div>
+        <button class="btn btn-p" onclick="toast('IEC PDF generated — formatted for NIMHANS committee')">Generate IEC PDF →</button>
+      </div></div>
+    </div>
+  </div>
+  <div class="rp"><div style="padding:13px 15px;border-bottom:1px solid var(--bd)"><div class="ct">IEC Checklist</div><div class="cs" style="margin-top:2px">5 of 7 complete</div></div><div style="padding:13px 15px"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--ink-soft)">Complete</span><span style="font-size:11px;font-weight:600;font-family:'DM Mono',monospace">5/7</span></div><div class="pbar-w"><div class="pbar" style="width:71%"></div></div></div><div style="display:flex;flex-direction:column;gap:7px;font-size:12px"><span style="color:var(--gt)">✓ Study Information</span><span style="color:var(--gt)">✓ Participant Rights</span><span style="color:var(--at)">◑ Consent Forms (2 pending)</span><span style="color:var(--gt)">✓ Risk Assessment</span><span style="color:var(--gt)">✓ Data Privacy</span><span style="color:var(--gt)">✓ Vulnerability Protocol</span><span style="color:var(--ink-faint)">○ PI Declaration</span></div><hr class="divider"><button class="btn btn-p btn-w" onclick="toast('IEC PDF generated and downloaded')">Export IEC PDF</button></div></div>
+</div>
+
+<!-- ═══ DESIGN ═══ -->
+<div class="screen" id="design">
+  <div class="sb-left">
+    <div class="ss">Study Design</div>
+    <div class="si active">Protocol & Measures</div>
+    <div class="si" onclick="toast('Scale library opened')">Scale Library</div>
+    <div class="si" onclick="toast('Power analysis tool')">Power Analysis</div>
+    <div class="si" onclick="toast('Pre-registration')">Pre-register (OSF)</div>
+  </div>
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 2 — Design & Methods</div><div class="pg-title">Study Design, Measures & Protocol</div><div class="pg-sub">Quantitative · Qualitative · Mixed Methods — all supported. All group types in dropdowns.</div></div>
+    <div class="card">
+      <div class="ch"><div class="ct">Methodology Type</div><div class="cs">Defines which tools and analysis options appear throughout the platform</div></div>
+      <div class="cb">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+          <div class="method-card" id="mq" style="background:var(--bbg);border:2px solid var(--blue);border-radius:9px;padding:12px;cursor:pointer;text-align:center" onclick="selectMethod('quant')">
+            <div style="font-size:16px;margin-bottom:5px">📊</div>
+            <div style="font-size:12px;font-weight:600;color:var(--bt)">Quantitative</div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:3px">Experiments, surveys, RT tasks, scales</div>
+          </div>
+          <div class="method-card" id="mql" style="background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px;cursor:pointer;text-align:center" onclick="selectMethod('qual')">
+            <div style="font-size:16px;margin-bottom:5px">💬</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-mid)">Qualitative</div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:3px">Interviews, focus groups, thematic analysis</div>
+          </div>
+          <div class="method-card" id="mmx" style="background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px;cursor:pointer;text-align:center" onclick="selectMethod('mixed')">
+            <div style="font-size:16px;margin-bottom:5px">🔀</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-mid)">Mixed Methods</div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:3px">Sequential, concurrent, embedded</div>
+          </div>
+        </div>
+        <div id="design-quant">
+          <div class="frow">
+            <div class="fg"><label class="fl">Study Design</label><select class="fs"><option>Within-subjects (repeated measures)</option><option>Between-subjects</option><option>Mixed factorial</option><option>Cross-sectional survey</option><option>Longitudinal cohort</option><option>Case-control</option><option>Single case experimental</option></select></div>
+            <div class="fg"><label class="fl">Primary DV</label><select class="fs"><option>Reaction time (ms)</option><option>Accuracy (%)</option><option>Questionnaire score</option><option>Physiological measure</option><option>Multiple DVs</option></select></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Number of groups</label><select class="fs" id="grp-n" onchange="updateGroups(this.value)"><option>2 groups (A/B)</option><option>3 groups</option><option>4 groups</option><option>Single group (pre-post)</option><option>Single group (post-only)</option></select></div>
+            <div class="fg"><label class="fl">Group assignment</label><select class="fs"><option>Randomised (Latin square)</option><option>Random allocation</option><option>Counterbalanced ABBA</option><option>Matched pairs</option><option>Convenience sample</option><option>Stratified random</option></select></div>
+          </div>
+          <div id="group-list" style="display:flex;flex-direction:column;gap:6px;margin-top:2px">
+            <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:10px"><span style="font-size:10px;font-weight:700;color:var(--bt);width:20px">A</span><input class="fi" value="Stroop — Hindi stimuli" style="flex:1;background:transparent;border-color:transparent;padding:2px 6px"><select class="fs" style="width:160px;background:#fff"><option>40 trials</option><option>20 trials</option><option>80 trials</option></select></div>
+            <div style="background:var(--saffron-bg);border:1px solid rgba(232,133,43,.2);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:10px"><span style="font-size:10px;font-weight:700;color:var(--saffron);width:20px">B</span><input class="fi" value="Stroop — English stimuli" style="flex:1;background:transparent;border-color:transparent;padding:2px 6px"><select class="fs" style="width:160px;background:#fff"><option>40 trials</option><option>20 trials</option><option>80 trials</option></select></div>
+          </div>
+        </div>
+        <div id="design-qual" style="display:none">
+          <div class="frow">
+            <div class="fg"><label class="fl">Qualitative Approach</label><select class="fs"><option>Thematic Analysis (Braun & Clarke)</option><option>Grounded Theory</option><option>IPA (Interpretative Phenomenological)</option><option>Narrative Inquiry</option><option>Framework Analysis</option><option>Content Analysis</option><option>Discourse Analysis</option></select></div>
+            <div class="fg"><label class="fl">Data Collection Method</label><select class="fs"><option>Semi-structured interviews</option><option>Focus groups</option><option>Unstructured interviews</option><option>Participant observation</option><option>Document analysis</option><option>Diary / journal entries</option></select></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Sample strategy</label><select class="fs"><option>Purposive sampling</option><option>Theoretical sampling</option><option>Snowball sampling</option><option>Maximum variation</option><option>Criterion sampling</option></select></div>
+            <div class="fg"><label class="fl">Target sample size</label><select class="fs"><option>6–12 (IPA standard)</option><option>12–20 (Thematic)</option><option>Until saturation</option><option>Fixed N — specify</option></select></div>
+          </div>
+          <div class="fg"><label class="fl">Language of interviews</label><select class="fs"><option>Tamil</option><option>Hindi</option><option>Bilingual (participant choice)</option><option>All 22 languages — interpreter supported</option></select></div>
+        </div>
+        <div id="design-mixed" style="display:none">
+          <div class="frow">
+            <div class="fg"><label class="fl">Mixed methods design</label><select class="fs"><option>Sequential explanatory (Quant → Qual)</option><option>Sequential exploratory (Qual → Quant)</option><option>Concurrent triangulation</option><option>Embedded (Qual within Quant)</option><option>Transformative</option></select></div>
+            <div class="fg"><label class="fl">Integration point</label><select class="fs"><option>At interpretation stage</option><option>At analysis stage</option><option>At data collection</option><option>Throughout</option></select></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">Scale Library</div><div class="cs">Licensed for non-profit Indian research — ICD-11 aligned where noted</div><button class="ca" onclick="toast('Full 120+ scale library opened')">View all →</button></div>
+      <div class="cb">
+        <div class="sc-grid">
+          <div class="sc-card" onclick="toast('PHQ-9 added — free, no restrictions')"><div style="display:flex;justify-content:space-between"><div class="sn2">PHQ-9</div><span class="b bg">Free · Unrestricted</span></div><div class="sm">Depression · Pfizer · 10 Indian languages</div></div>
+          <div class="sc-card" onclick="toast('GAD-7 added')"><div style="display:flex;justify-content:space-between"><div class="sn2">GAD-7</div><span class="b bg">Free · Unrestricted</span></div><div class="sm">Anxiety · Pfizer · 7 Indian languages</div></div>
+          <div class="sc-card" onclick="toast('WHO-DAS 2.0 added — ICD-11 aligned')"><div style="display:flex;justify-content:space-between"><div class="sn2">WHO-DAS 2.0</div><span class="b bb">ICD-11 ✦</span></div><div class="sm">Disability · WHO · Hindi + EN validated</div></div>
+          <div class="sc-card" onclick="toast('DASS-21 added — non-commercial only')"><div style="display:flex;justify-content:space-between"><div class="sn2">DASS-21</div><span class="b ba">Non-commercial</span></div><div class="sm">Depression/Anxiety/Stress · UNSW</div></div>
+          <div class="sc-card" onclick="toast('PSS-10 added')"><div style="display:flex;justify-content:space-between"><div class="sn2">PSS-10</div><span class="b bg">Free</span></div><div class="sm">Perceived Stress · India validated</div></div>
+          <div class="sc-card" onclick="toast('Contribute a translation')"><div style="display:flex;justify-content:space-between"><div class="sn2">+ Contribute translation</div><span class="b bp">Community</span></div><div class="sm">Validate scales in TA · TE · KN · ML *</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rp"><div style="padding:13px 15px;border-bottom:1px solid var(--bd)"><div class="ct">Pre-registration</div></div><div style="padding:13px 15px"><div class="trow"><div><div class="tl">Register on OSF</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div><div class="tl">AsPredicted.org</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><hr class="divider"><button class="btn btn-p btn-w" onclick="toast('Pre-reg draft generated')">Generate pre-reg →</button></div></div>
+</div>
+
+<!-- ═══ RECRUITMENT ═══ -->
+<div class="screen" id="recruit">
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 3 — Recruitment</div><div class="pg-title">Ethics-First Recruitment</div><div class="pg-sub">Every recruitment material leads with participant rights. Privacy · Consent · Compensation · Debrief — always visible.</div></div>
+    <div style="background:var(--ink);border-radius:12px;padding:16px 18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:6px">Stimulx.sc Recruitment Principles</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Participant contact details are NEVER shared with researchers. All contact is via the stimulx.sc platform only.</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Participants can be contacted ONLY when a study is live and they match inclusion criteria. No cold messaging.</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>Every study invitation includes: what the study involves, how long it takes, compensation offered, and how to withdraw.</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;align-items:start"><span style="color:var(--saffron-l);flex-shrink:0">✦</span>A debrief screen with support resources (iCall, Vandrevala Foundation, NIMHANS helpline) is mandatory on all studies.</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div>
+        <div class="card">
+          <div class="ch"><div class="ct">WhatsApp Message</div><div class="cs">Auto-generated · Leads with participant rights</div></div>
+          <div class="cb">
+            <div style="background:var(--surface);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--ink-mid);line-height:1.7;border:1px solid var(--bd)"><strong>📣 Research Study — stimulx.sc (Non-profit)</strong><br><br>आपकी भागीदारी पूरी तरह स्वैच्छिक है। आप किसी भी समय बिना कारण बताए हट सकते हैं।<br><br>🔒 आपका डेटा भारत में सुरक्षित रहेगा। आपकी contact details किसी के साथ share नहीं होंगी।<br><br>💰 Compensation: ₹100 Amazon voucher<br>⏱ Time: ~8 minutes<br>📱 Online — from anywhere<br><br>👇 stimulx.sc/s/stroop-2025</div>
+            <div style="display:flex;gap:7px;margin-top:10px"><button class="btn btn-sm btn-s" onclick="toast('WhatsApp message copied')">Copy</button><button class="btn btn-sm" onclick="toast('Translated to Tamil')">TA</button><button class="btn btn-sm" onclick="toast('Translated to Telugu')">TE</button><button class="btn btn-sm" onclick="toast('Translated to Kannada')">KN</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Compensation & Debrief</div></div>
+          <div class="cb">
+            <div class="fg"><label class="fl">Incentive type</label><select class="fs"><option>₹100 Amazon voucher (auto-sent on completion)</option><option>Course credit — SONA auto-awarded</option><option>₹50 UPI transfer</option><option>Altruistic — no compensation</option><option>Lucky draw (₹500 × 5 winners)</option></select></div>
+            <div class="trow"><div><div class="tl">Debrief screen mandatory</div><div class="tsub">Study purpose · Researcher contact · Support lines</div></div><div class="tog on"></div></div>
+            <div class="trow"><div><div class="tl">iCall helpline number on debrief</div><div class="tsub">9152987821 — free, confidential</div></div><div class="tog on"></div></div>
+            <div class="trow"><div><div class="tl">Results summary sent to participants</div><div class="tsub">Plain-language summary post-publication</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="ch"><div class="ct">Awareness Campaign</div><div class="cs">Recruit INTO the pool — separate from study invites</div></div>
+          <div class="cb">
+            <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:9px;padding:12px 13px;margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:var(--pt);margin-bottom:4px">Pool membership ≠ study invitation</div><div style="font-size:11px;color:var(--pt);line-height:1.6">Signing up to the stimulx.sc participant pool means you're open to being invited to future studies — nothing more. Your data isn't shared. You won't be contacted outside of study windows. You can leave the pool anytime.</div></div>
+            <div style="background:var(--ink);border-radius:9px;padding:14px;margin-bottom:10px">
+              <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Instagram awareness post</div>
+              <div style="font-size:14px;font-weight:600;color:#fff;line-height:1.4;margin-bottom:6px">Be part of Indian psychology research.</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">Join the stimulx.sc participant pool. Contribute to studies on language, memory, and mental health. You're in control — participate only when you want to, in your own language, from home.</div>
+              <div style="font-size:11px;color:var(--saffron-l);margin-top:8px;font-weight:600">🔒 Your data stays in India. Always.</div>
+            </div>
+            <div style="display:flex;gap:7px"><button class="btn btn-sm btn-s" onclick="toast('Instagram post downloaded as PNG')">Download PNG</button><button class="btn btn-sm" onclick="toast('Service user version generated')">Service user version</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Service User Specific Campaign</div><div class="cs">For people with lived experience of mental health conditions</div></div>
+          <div class="cb">
+            <div style="background:var(--tbg);border:1px solid rgba(13,148,136,.2);border-radius:9px;padding:12px 13px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--tt);margin-bottom:4px">Respectful, empowering language</div><div style="font-size:11px;color:var(--tt);line-height:1.6">Your experience matters. Stimulx.sc works with people who have lived experience of mental health challenges — as equal contributors to research, not just as subjects. You set the boundaries.</div></div>
+            <div class="fg"><label class="fl">Campaign language</label><select class="fs"><option>Tamil — Chennai / SCARF partnerships</option><option>Hindi — NIMHANS partnerships</option><option>All languages</option></select></div>
+            <div class="trow"><div><div class="tl">Peer researcher involvement</div><div class="tsub">Service users trained as co-researchers</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BUILDER ═══ -->
+<div class="screen" id="builder">
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 4 — Experiment Builder</div><div class="pg-title">Clone, Adapt & Simulate</div><div class="pg-sub">Start from published papers · Flag cultural sensitivity issues · Simulate before running participants</div></div>
+    <div class="card"><div class="ch"><div class="ct">Clone from Published Research</div></div><div class="cb">
+      <input class="fi" placeholder="Search by task, DOI, author, construct…" style="margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px 14px;cursor:pointer" onclick="toast('Stroop 1935 cloned into your experiment builder')">
+          <div style="display:flex;justify-content:space-between;align-items:start"><div style="font-size:12px;font-weight:600;color:var(--ink)">Stroop (1935) — Colour-word interference</div><span class="b bg">Ready for India</span></div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">700+ replications · Hindi + Devanagari stimuli available · RT validated</div>
+          <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#fef3e8;color:var(--saffron);border:1px solid rgba(232,133,43,.2)">Hindi stimuli ✓</span><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#fef3e8;color:var(--saffron);border:1px solid rgba(232,133,43,.2)">Tamil stimuli ✓</span><button class="btn btn-sm btn-s" onclick="toast('Cloned!')">Clone</button></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--bd);border-radius:9px;padding:12px 14px;cursor:pointer" onclick="toast('IAT cloned — India-specific categories available')">
+          <div style="display:flex;justify-content:space-between;align-items:start"><div style="font-size:12px;font-weight:600;color:var(--ink)">IAT — Greenwald et al. (1998)</div><span class="b ba">Adapt for India</span></div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Implicit associations · Caste, gender-career, urban-rural bias — India-specific stimuli included</div>
+          <div style="display:flex;gap:5px;margin-top:7px"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#fef3e8;color:var(--saffron);border:1px solid rgba(232,133,43,.2)">Cultural guide included</span><button class="btn btn-sm" onclick="toast('IAT cloned with India adaptation guide')">Clone + Guide</button></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="card"><div class="ch"><div class="ct">Simulate Experiment</div><div class="cs">Run a full participant-view simulation before recruiting</div><button class="btn btn-sm btn-p" onclick="toast('Simulation launched in participant view')">▶ Simulate now</button></div><div class="cb">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px">📱</div><div style="font-size:11px;font-weight:600;color:var(--gt);margin-top:4px">Mobile</div></div>
+        <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px">💻</div><div style="font-size:11px;font-weight:600;color:var(--bt);margin-top:4px">Desktop</div></div>
+        <div style="background:var(--abg);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px">📊</div><div style="font-size:11px;font-weight:600;color:var(--at);margin-top:4px">Estimated ~8 min</div></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ POOL ═══ -->
+<div class="screen" id="pool">
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 5 — Participant Pool</div><div class="pg-title">Indian Participant Pool</div><div class="pg-sub">Community opt-in · Researchers contact participants only during active study windows · Data never shared externally</div></div>
+    <div class="stat-g">
+      <div class="stat-c"><div class="sv">4,820</div><div class="sk">Registered</div></div>
+      <div class="stat-c"><div class="sv" style="color:var(--gt)">187</div><div class="sk">In this study</div></div>
+      <div class="stat-c"><div class="sv">22</div><div class="sk">States</div></div>
+      <div class="stat-c"><div class="sv">18</div><div class="sk">Languages</div></div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Pool Members — Matching your criteria</div><div class="cs">247 match Hindi-English bilingual, 18–45 · Contact only via platform during study window</div><button class="ca" onclick="toast('Invitations sent via stimulx.sc — no contact details shared')">Invite matching (247)</button></div><div class="cb" style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="border-bottom:1px solid var(--bd)"><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Participant</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Age</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">State</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Languages</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Studies done</th><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)">Status</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--bd);cursor:pointer" onclick="toast('Contact can only be made via platform during study window')"><td style="padding:9px 10px;font-size:12px"><div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">PS</div>Priya S.</div></td><td style="padding:9px 10px;font-size:12px;color:var(--ink-soft)">24</td><td style="padding:9px 10px;font-size:12px;color:var(--ink-soft)">Maharashtra</td><td style="padding:9px 10px;font-size:12px">HI · EN · MR</td><td style="padding:9px 10px;font-size:12px;font-family:'DM Mono',monospace">3</td><td style="padding:9px 10px"><span class="b bg">Available</span></td></tr>
+          <tr style="border-bottom:1px solid var(--bd);cursor:pointer" onclick="toast('Invite sent via platform')"><td style="padding:9px 10px;font-size:12px"><div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">AK</div>Arjun K.</div></td><td style="padding:9px 10px;font-size:12px;color:var(--ink-soft)">31</td><td style="padding:9px 10px;font-size:12px;color:var(--ink-soft)">Delhi</td><td style="padding:9px 10px;font-size:12px">HI · EN · PA</td><td style="padding:9px 10px;font-size:12px;font-family:'DM Mono',monospace">7</td><td style="padding:9px 10px"><span class="b bg">Available</span></td></tr>
+          <tr style="cursor:pointer" onclick="toast('In this study already')"><td style="padding:9px 10px;font-size:12px"><div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--saffron);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">RV</div>Rahul V.</div></td><td style="padding:9px 10px;font-size:12px;color:var(--ink-soft)">22</td><td style="padding:9px 10px;font-size:12px;color:var(--ink-soft)">UP</td><td style="padding:9px 10px;font-size:12px">HI · EN</td><td style="padding:9px 10px;font-size:12px;font-family:'DM Mono',monospace">1</td><td style="padding:9px 10px"><span class="b ba">In study</span></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ ANALYSIS ═══ -->
+<div class="screen" id="analysis">
+  <div class="content">
+    <div class="pg-hdr"><div class="stag">Stage 6 — Analysis</div><div class="pg-title">Analysis Studio</div><div class="pg-sub">Descriptives auto-generated · Export to R, SPSS, jamovi · Indian normative comparisons</div></div>
+    <div class="stat-g">
+      <div class="stat-c"><div class="sv" style="color:var(--gt)">499ms</div><div class="sk">Mean RT</div></div>
+      <div class="stat-c"><div class="sv">91%</div><div class="sk">Accuracy</div></div>
+      <div class="stat-c"><div class="sv">178</div><div class="sk">Clean N</div></div>
+      <div class="stat-c"><div class="sv">4.8%</div><div class="sk">Excluded</div></div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Stroop Effect — Hindi vs English</div></div><div class="cb">
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;color:var(--ink-soft)">Hindi — Congruent</span><span style="font-size:12px;font-weight:600;font-family:'DM Mono',monospace">451ms</span></div><div class="pbar-w"><div class="pbar" style="width:55%;background:#6366f1"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;color:var(--ink-soft)">Hindi — Incongruent</span><span style="font-size:12px;font-weight:600;font-family:'DM Mono',monospace">523ms</span></div><div class="pbar-w"><div class="pbar" style="width:64%;background:#6366f1;opacity:.6"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;color:var(--ink-soft)">English — Congruent</span><span style="font-size:12px;font-weight:600;font-family:'DM Mono',monospace">478ms</span></div><div class="pbar-w"><div class="pbar" style="width:58%;background:var(--saffron)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;color:var(--ink-soft)">English — Incongruent</span><span style="font-size:12px;font-weight:600;font-family:'DM Mono',monospace">549ms</span></div><div class="pbar-w"><div class="pbar" style="width:67%;background:var(--saffron);opacity:.6"></div></div></div>
+      </div>
+      <div style="margin-top:12px;padding:10px 12px;background:var(--gbg);border-radius:7px;border:1px solid rgba(34,197,94,.2)"><div style="font-size:12px;font-weight:600;color:var(--gt)">Stroop effect significant in both languages</div><div style="font-size:11px;color:var(--gt);margin-top:2px">Hindi: 72ms · English: 71ms · F(1,177)=84.3, p&lt;.001, η²=.32</div></div>
+    </div></div>
+    <div class="card"><div class="ch"><div class="ct">Export</div></div><div class="cb" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="toast('R script + data downloaded')">R script + data</button><button class="btn" onclick="toast('SPSS .sav downloaded')">SPSS (.sav)</button><button class="btn" onclick="toast('jamovi downloaded')">jamovi</button><button class="btn" onclick="toast('APA table copied')">APA table</button></div></div>
+  </div>
+</div>
+
+<!-- ═══ WRITING ═══ -->
+<div class="screen" id="writing" style="flex-direction:column;overflow:hidden">
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div style="flex:1;overflow-y:auto;padding:28px 36px;max-width:680px;margin:0 auto">
+      <div class="stag" style="margin-bottom:6px">Stage 7 — Write & Community Review</div>
+      <div style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:4px" contenteditable="true">Multilingual Stroop interference in Hindi and English</div>
+      <div style="font-size:12px;color:var(--ink-soft);margin-bottom:18px">3 reviewers · Community review open</div>
+      <div style="font-size:14px;font-weight:600;color:var(--ink);border-bottom:1.5px solid var(--bdm);padding-bottom:8px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">Abstract <button class="btn btn-sm" onclick="toast('AI draft generated')">AI draft</button></div>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.8;margin-bottom:10px" contenteditable="true">The Stroop colour-word interference task has been extensively studied in Western populations, yet normative data for Hindi-speaking Indian adults remains scarce. This study administered a computerised Stroop task in Hindi and English to 178 bilingual adults. Participants showed robust Stroop interference in both languages (Hindi: 72ms, English: 71ms), with no significant difference between conditions.</p>
+      <div style="background:var(--surface);border-radius:9px;padding:11px 13px;margin-bottom:16px;border-left:3px solid var(--saffron)">
+        <div style="font-size:12px;font-weight:600;color:var(--ink)">Dr Sunita Rao <span style="font-size:10px;color:var(--ink-faint);font-weight:400">· NIMHANS</span></div>
+        <div style="font-size:12px;color:var(--ink-mid);margin-top:4px;line-height:1.6">Good abstract. Suggest adding mean RTs directly. Were participants screened for Hindi reading proficiency or just self-reported?</div>
+        <div style="font-size:10px;color:var(--ink-faint);margin-top:6px;display:flex;gap:10px"><span>2h ago</span><span style="color:var(--saffron);cursor:pointer" onclick="toast('Reply thread opened')">Reply</span><span style="color:var(--ink-faint);cursor:pointer" onclick="toast('Comment resolved')">Resolve</span></div>
+      </div>
+      <div style="font-size:14px;font-weight:600;color:var(--ink);border-bottom:1.5px solid var(--bdm);padding-bottom:8px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">Methods <button class="btn btn-sm" onclick="toast('Methods auto-filled from experiment settings')">Auto-fill</button></div>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.8" contenteditable="true">Participants (N=178) were recruited via stimulx.sc and WhatsApp outreach. Ethics approval was obtained from the IEC, NIMHANS (Ref: IEC/NIMHANS/2025/041). All participants provided informed consent via stimulx.sc's multilingual consent system...</p>
+    </div>
+    <div class="rp"><div style="padding:13px 15px;border-bottom:1px solid var(--bd)"><div class="ct">Community Reviewers</div></div><div style="padding:13px 15px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)"><div style="width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">SR</div><div><div style="font-size:12px;font-weight:600">Dr Sunita Rao</div><div style="font-size:10px;color:var(--ink-faint)">NIMHANS · 2 comments</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)"><div style="width:30px;height:30px;border-radius:50%;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">AK</div><div><div style="font-size:12px;font-weight:600">Prof Arjun Krishnan</div><div style="font-size:10px;color:var(--ink-faint)">Delhi Univ · 1 comment</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0"><div style="width:30px;height:30px;border-radius:50%;background:#22c55e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">PM</div><div><div style="font-size:12px;font-weight:600">Priya Menon (PhD)</div><div style="font-size:10px;color:var(--ink-faint)">TISS · reviewing…</div></div></div>
+      </div>
+      <button class="btn btn-w" style="margin-top:10px" onclick="toast('Invite sent to more reviewers')">+ Invite reviewer</button>
+      <hr class="divider">
+      <div class="trow"><div><div class="tl">Open to all verified researchers</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="trow"><div><div class="tl">Student comments enabled</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="trow"><div><div class="tl">Service user perspectives</div><div class="tsub">Lived experience reviewers welcome</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ PUBLISH ═══ -->
+<div class="screen" id="publish">
+  <div class="content" style="max-width:700px">
+    <div class="pg-hdr"><div class="stag">Stage 8 — Publish</div><div class="pg-title">Submit to Journal</div><div class="pg-sub">Journal matcher · APA auto-format · Open-access · ₹0 APC for Indian authors where possible</div></div>
+    <div class="card"><div class="ch"><div class="ct">Recommended Journals</div></div><div class="cb" style="display:flex;flex-direction:column;gap:9px">
+      <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd)"><div style="display:flex;justify-content:space-between"><div style="font-size:12px;font-weight:600;color:var(--ink)">Indian Journal of Psychological Medicine</div><span class="b bg">Open Access · ₹0 for Indian authors</span></div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">SAGE · ICMR endorsed · IF: 2.1</div><button class="btn btn-sm btn-s" style="margin-top:8px" onclick="toast('Submission guide for IJPM opened')">Prepare submission →</button></div>
+      <div style="background:var(--surface);border-radius:9px;padding:12px 14px;border:1px solid var(--bd)"><div style="display:flex;justify-content:space-between"><div style="font-size:12px;font-weight:600;color:var(--ink)">Psychological Studies</div><span class="b bb">Springer · IF: 1.4</span></div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">National Academy of Psychology India · Indian psychology focus</div><button class="btn btn-sm" style="margin-top:8px" onclick="toast('Submission guide opened')">Prepare →</button></div>
+    </div></div>
+    <div class="card"><div class="ch"><div class="ct">Export Manuscript</div></div><div class="cb" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="toast('APA 7th .docx downloaded')">APA 7th (.docx)</button><button class="btn" onclick="toast('LaTeX downloaded')">LaTeX</button><button class="btn" onclick="toast('PDF downloaded')">PDF</button></div></div>
+  </div>
+</div>
+
+<!-- ═══ COMMUNITY ═══ -->
+<div class="screen" id="community">
+  <div class="sb-left">
+    <div class="ss">Community</div>
+    <div class="si active" id="c-learn" onclick="cTab('learn')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="12" height="10" rx="2"/><path d="M4 6h6M4 9h3"/></svg>Learn</div>
+    <div class="si" id="c-share" onclick="cTab('share')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 2l3 3-3 3M12 5H5a3 3 0 0 0-3 3v1"/></svg>Share & Discuss</div>
+    <div class="si" id="c-build" onclick="cTab('build')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 12l3-3m0 0l5-5m-5 5l2-2M7 4l3-3 3 3-3 3"/></svg>Build Together</div>
+    <div class="si" id="c-service" onclick="cTab('service')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="5" r="3"/><path d="M2 13c0-2.5 2-4 5-4s5 1.5 5 4"/></svg>Service Users</div>
+    <div class="ss">Your Profile</div>
+    <div class="si" onclick="toast('Profile settings opened')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="5" r="3"/><path d="M2 13c0-2.5 2-4 5-4s5 1.5 5 4"/></svg>My Profile</div>
+    <div class="si" onclick="toast('My contributions opened')"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 2v10M2 7h10"/></svg>My Contributions</div>
+  </div>
+  <div class="content">
+
+    <!-- LEARN TAB -->
+    <div id="c-learn-c">
+      <div class="pg-hdr"><div class="stag">Community — Learn</div><div class="pg-title">Learning Hub</div><div class="pg-sub">Tutorials, guides, workshops and open courses in Indian languages — free, forever.</div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:11px;padding:16px;cursor:pointer" onclick="toast('Research Methods course opened')">
+          <div style="font-size:20px;margin-bottom:8px">🎓</div>
+          <div style="font-size:13px;font-weight:600;color:var(--pt)">Research Methods 101</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.5">For students and first-time researchers. From hypothesis to data collection.</div>
+          <div style="display:flex;gap:5px;margin-top:8px"><span class="b bp">Hindi</span><span class="b bp">Tamil</span><span class="b bp">English</span></div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:6px">312 enrolled · 6 modules</div>
+        </div>
+        <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:11px;padding:16px;cursor:pointer" onclick="toast('Ethics course opened')">
+          <div style="font-size:20px;margin-bottom:8px">🛡️</div>
+          <div style="font-size:13px;font-weight:600;color:var(--bt)">Ethics in Indian Research</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.5">ICMR guidelines · IEC applications · DPDP 2023 · Consent frameworks.</div>
+          <div style="display:flex;gap:5px;margin-top:8px"><span class="b bb">All languages</span></div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:6px">188 enrolled · 4 modules</div>
+        </div>
+        <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:11px;padding:16px;cursor:pointer" onclick="toast('Statistics course opened')">
+          <div style="font-size:20px;margin-bottom:8px">📊</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gt)">Statistics for Psychology</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.5">ANOVA, t-tests, regression, effect sizes — with Indian example datasets.</div>
+          <div style="display:flex;gap:5px;margin-top:8px"><span class="b bg">Hindi</span><span class="b bg">English</span></div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:6px">241 enrolled · 8 modules</div>
+        </div>
+        <div style="background:var(--tbg);border:1px solid rgba(13,148,136,.2);border-radius:11px;padding:16px;cursor:pointer" onclick="toast('Qualitative methods course opened')">
+          <div style="font-size:20px;margin-bottom:8px">💬</div>
+          <div style="font-size:13px;font-weight:600;color:var(--tt)">Qualitative Methods</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.5">Thematic analysis, IPA, grounded theory — with South Indian case studies.</div>
+          <div style="display:flex;gap:5px;margin-top:8px"><span class="b bt2">Tamil</span><span class="b bt2">English</span></div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:6px">97 enrolled · 5 modules</div>
+        </div>
+        <div style="background:var(--abg);border:1px solid rgba(245,158,11,.2);border-radius:11px;padding:16px;cursor:pointer" onclick="toast('Scale translation workshop opened')">
+          <div style="font-size:20px;margin-bottom:8px">🌐</div>
+          <div style="font-size:13px;font-weight:600;color:var(--at)">Scale Translation Workshop</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.5">How to translate and validate psychological scales. Contribute to the gaps marked * in our library.</div>
+          <div style="display:flex;gap:5px;margin-top:8px"><span class="b ba">Community</span></div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:6px">54 enrolled · Open contribution</div>
+        </div>
+        <div style="background:var(--surface);border:1.5px dashed var(--bdm);border-radius:11px;padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center" onclick="toast('Propose a new course')">
+          <div style="text-align:center;color:var(--ink-faint)"><div style="font-size:24px;margin-bottom:5px">+</div><div style="font-size:12px;font-weight:500">Propose a course</div><div style="font-size:10px;margin-top:3px">Any researcher can contribute</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARE TAB -->
+    <div id="c-share-c" style="display:none">
+      <div class="pg-hdr"><div class="stag">Community — Share & Discuss</div><div class="pg-title">Forum & Discussions</div><div class="pg-sub">Students, researchers, professors — all sharing, asking, helping. In any language.</div></div>
+      <div class="card">
+        <div class="ch"><div class="ct">Recent Discussions</div><button class="btn btn-sm btn-s" onclick="toast('New post composed')">+ New post</button></div>
+        <div class="cb" style="display:flex;flex-direction:column;gap:10px">
+          <div style="background:var(--surface);border-radius:9px;padding:12px 14px;cursor:pointer;border:1px solid var(--bd)" onclick="toast('Thread opened')">
+            <div style="display:flex;justify-content:space-between;align-items:start"><div style="font-size:13px;font-weight:600;color:var(--ink)">How do I choose between within-subjects and between-subjects for my Stroop study?</div><span class="b bb">Methods</span></div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Posted by Meena S. (MSc student, Madras University) · 4h ago · 7 replies</div>
+          </div>
+          <div style="background:var(--surface);border-radius:9px;padding:12px 14px;cursor:pointer;border:1px solid var(--bd)" onclick="toast('Thread opened')">
+            <div style="display:flex;justify-content:space-between;align-items:start"><div style="font-size:13px;font-weight:600;color:var(--ink)">GAD-7 Tamil validation — does anyone have the reference for SCARF's version?</div><span class="b bs">Scales</span></div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Posted by Dr Priya M. (TISS) · 1d ago · 12 replies</div>
+          </div>
+          <div style="background:var(--surface);border-radius:9px;padding:12px 14px;cursor:pointer;border:1px solid var(--bd)" onclick="toast('Thread opened')">
+            <div style="display:flex;justify-content:space-between;align-items:start"><div style="font-size:13px;font-weight:600;color:var(--ink)">Looking for collaborators — implicit bias study in Karnataka (Kannada)</div><span class="b bg">Collaboration</span></div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Posted by Ananya R. (PhD, Mysore) · 2d ago · 3 replies</div>
+          </div>
+          <div style="background:var(--pbg);border-radius:9px;padding:12px 14px;cursor:pointer;border:1px solid rgba(139,92,246,.2)" onclick="toast('Lived experience thread opened')">
+            <div style="display:flex;justify-content:space-between;align-items:start"><div style="font-size:13px;font-weight:600;color:var(--pt)">What it felt like to be a participant — and why I joined the pool</div><span class="b bp">Lived Experience</span></div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Posted by Ravi K. (Service user, Chennai) · 3d ago · 18 replies</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUILD TAB -->
+    <div id="c-build-c" style="display:none">
+      <div class="pg-hdr"><div class="stag">Community — Build Together</div><div class="pg-title">Open Contributions</div><div class="pg-sub">Researchers, students and service users building Stimulx together. Contribute code, scales, translations, datasets.</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="card"><div class="ch"><div class="ct">Open Tasks</div><div class="cs">Pick one and contribute</div></div><div class="cb" style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--pbg);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Translation task opened')"><div style="font-size:12px;font-weight:600;color:var(--pt)">Translate GAD-7 to Kannada</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">Needs: Kannada fluency + psychology background</div><span class="b bp" style="margin-top:5px;display:inline-flex">Open</span></div>
+          <div style="background:var(--gbg);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Validation task opened')"><div style="font-size:12px;font-weight:600;color:var(--gt)">Validate PHQ-9 Malayalam norms</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">Data already collected — needs psychometric analysis</div><span class="b bg" style="margin-top:5px;display:inline-flex">Open</span></div>
+          <div style="background:var(--bbg);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:10px 12px;cursor:pointer" onclick="toast('Word norms task opened')"><div style="font-size:12px;font-weight:600;color:var(--bt)">Build Tamil word frequency norms</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">Stimulus database for cognitive tasks · 500 words needed</div><span class="b bb" style="margin-top:5px;display:inline-flex">In progress</span></div>
+        </div></div>
+        <div class="card"><div class="ch"><div class="ct">Recent Contributions</div></div><div class="cb" style="display:flex;flex-direction:column;gap:7px">
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)"><div style="width:26px;height:26px;border-radius:50%;background:#22c55e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">AV</div><div><div style="font-size:12px;font-weight:500;color:var(--ink)">Aryan V. added Telugu DASS-21 translation</div><div style="font-size:10px;color:var(--ink-faint)">2h ago · Under review</div></div></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)"><div style="width:26px;height:26px;border-radius:50%;background:#8b5cf6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">SN</div><div><div style="font-size:12px;font-weight:500;color:var(--ink)">Sita N. validated Stroop Hindi norms (N=80)</div><div style="font-size:10px;color:var(--ink-faint)">Yesterday · ✓ Accepted</div></div></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 0"><div style="width:26px;height:26px;border-radius:50%;background:var(--saffron);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">RK</div><div><div style="font-size:12px;font-weight:500;color:var(--ink)">Ravi K. (service user) reviewed consent form language</div><div style="font-size:10px;color:var(--ink-faint)">3 days ago · ✓ Implemented</div></div></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- SERVICE USERS TAB -->
+    <div id="c-service-c" style="display:none">
+      <div class="pg-hdr"><div class="stag">Community — Service Users</div><div class="pg-title">Lived Experience in Research</div><div class="pg-sub">People with lived experience of mental health conditions are not just research subjects on stimulx.sc — they are contributors, reviewers, and co-researchers.</div></div>
+      <div style="background:var(--ink);border-radius:12px;padding:20px 22px;margin-bottom:14px">
+        <div style="font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:#fff;margin-bottom:10px;line-height:1.5">"Your experience of living with mental illness is knowledge. Stimulx.sc is a place where that knowledge shapes research — not just as data, but as insight."</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4)">Stimulx.sc founding principle</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="card"><div class="ch"><div class="ct">For Service Users</div></div><div class="cb" style="display:flex;flex-direction:column;gap:9px">
+          <div style="background:var(--tbg);border-radius:8px;padding:10px 12px;cursor:pointer;border:1px solid rgba(13,148,136,.2)" onclick="toast('Participant pool signup opened')"><div style="font-size:12px;font-weight:600;color:var(--tt)">Join the participant pool</div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Be invited to studies on your terms. You choose when. You choose which ones. You can leave any time.</div></div>
+          <div style="background:var(--pbg);border-radius:8px;padding:10px 12px;cursor:pointer;border:1px solid rgba(139,92,246,.2)" onclick="toast('Peer researcher training opened')"><div style="font-size:12px;font-weight:600;color:var(--pt)">Peer Researcher Training</div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Free training to become a co-researcher. Help design studies, review consent forms, analyse lived experience data.</div></div>
+          <div style="background:var(--gbg);border-radius:8px;padding:10px 12px;cursor:pointer;border:1px solid rgba(34,197,94,.2)" onclick="toast('Consent language review opened')"><div style="font-size:12px;font-weight:600;color:var(--gt)">Review consent form language</div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">Is our language clear and respectful? Your feedback directly changes how forms are written.</div></div>
+        </div></div>
+        <div class="card"><div class="ch"><div class="ct">Your Rights on stimulx.sc</div></div><div class="cb">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>Your contact details are never shared with researchers.</div>
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>You will only be contacted about studies you match and during active study windows.</div>
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>Every study tells you exactly what it involves before you agree to participate.</div>
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>You can withdraw from any study at any point, without explanation.</div>
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>All studies include a debrief with support resources in your language.</div>
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--ink-mid);align-items:start"><span style="color:var(--saffron);flex-shrink:0;font-weight:700">✦</span>Your data is stored in India and never sold.</div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="rp">
+    <div style="padding:13px 15px;border-bottom:1px solid var(--bd)"><div class="ct">Community Stats</div></div>
+    <div style="padding:13px 15px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--pbg);border-radius:8px;padding:10px 12px"><div style="font-size:22px;font-weight:600;color:var(--pt);font-family:'DM Mono',monospace">842</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-top:3px">Registered researchers</div></div>
+        <div style="background:var(--gbg);border-radius:8px;padding:10px 12px"><div style="font-size:22px;font-weight:600;color:var(--gt);font-family:'DM Mono',monospace">4,820</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-top:3px">Pool participants</div></div>
+        <div style="background:var(--bbg);border-radius:8px;padding:10px 12px"><div style="font-size:22px;font-weight:600;color:var(--bt);font-family:'DM Mono',monospace">38</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-top:3px">Active studies</div></div>
+        <div style="background:var(--tbg);border-radius:8px;padding:10px 12px"><div style="font-size:22px;font-weight:600;color:var(--tt);font-family:'DM Mono',monospace">214</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-top:3px">Service user contributors</div></div>
+      </div>
+      <hr class="divider">
+      <div class="ct" style="margin-bottom:8px">Institutions</div>
+      <div style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--ink-soft)">
+        <div style="display:flex;justify-content:space-between"><span>NIMHANS</span><span style="font-family:'DM Mono',monospace;font-size:11px">128 researchers</span></div>
+        <div style="display:flex;justify-content:space-between"><span>TISS Mumbai</span><span style="font-family:'DM Mono',monospace;font-size:11px">94</span></div>
+        <div style="display:flex;justify-content:space-between"><span>SCARF Chennai</span><span style="font-family:'DM Mono',monospace;font-size:11px">67</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Delhi University</span><span style="font-family:'DM Mono',monospace;font-size:11px">58</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Other 180+ institutions</span><span style="font-family:'DM Mono',monospace;font-size:11px">495</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+<div id="toast"></div>
+
+<script>
+const stages=['home','brainstorm','ethics','design','recruit','builder','pool','analysis','writing','publish'];
+const navMap={brainstorm:'n-brainstorm',ethics:'n-ethics',design:'n-design',recruit:'n-recruit',builder:'n-builder',pool:'n-pool',analysis:'n-analysis',writing:'n-writing',publish:'n-publish',community:'n-community'};
+let cur='ethics';
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.sb').forEach(b=>b.classList.remove('active'));
+  if(navMap[id]) document.getElementById(navMap[id]).classList.add('active');
+  cur=id;
+}
+
+function advanceStage(){
+  const idx=stages.indexOf(cur);
+  if(idx>0&&navMap[cur]){
+    const b=document.getElementById(navMap[cur]);
+    if(b){b.classList.add('done');const n=b.querySelector('.sn');if(n)n.textContent='✓';}
+  }
+  if(idx<stages.length-1){goTo(stages[idx+1]);toast('Stage complete → '+stages[idx+1]);}
+  else toast('🎉 Full lifecycle complete!');
+}
+
+// Brainstorm tabs
+function bsTab(t){
+  ['ideas','journals','gaps','feasibility'].forEach(x=>{
+    const c=document.getElementById('bs-'+x+'-c');
+    const s=document.getElementById('bs-'+x);
+    if(c)c.style.display=x===t?'':'none';
+    if(s)s.classList.toggle('active',x===t);
+  });
+}
+// Ethics tabs
+function eTab(t){
+  ['si','pr','cf','dp','pid'].forEach(x=>{
+    const c=document.getElementById('e-'+x+'-c');
+    const s=document.getElementById('e-'+x);
+    if(c)c.style.display=x===t?'':'none';
+    if(s)s.classList.toggle('active',x===t);
+  });
+}
+// Community tabs
+function cTab(t){
+  ['learn','share','build','service'].forEach(x=>{
+    const c=document.getElementById('c-'+x+'-c');
+    const s=document.getElementById('c-'+x);
+    if(c)c.style.display=x===t?'':'none';
+    if(s)s.classList.toggle('active',x===t);
+  });
+}
+// Design method selection
+function selectMethod(m){
+  ['mq','mql','mmx'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.style.background='var(--surface)';el.style.border='1px solid var(--bd)';}
+  });
+  const map={quant:'mq',qual:'mql',mixed:'mmx'};
+  const sel=document.getElementById(map[m]);
+  if(sel){sel.style.background=m==='quant'?'var(--bbg)':m==='qual'?'var(--tbg)':'var(--pbg)';sel.style.border=m==='quant'?'2px solid var(--blue)':m==='qual'?'2px solid var(--teal)':'2px solid var(--purple)';}
+  document.getElementById('design-quant').style.display=m==='quant'?'':'none';
+  document.getElementById('design-qual').style.display=m==='qual'?'':'none';
+  document.getElementById('design-mixed').style.display=m==='mixed'?'':'none';
+  toast('Method set to '+m.charAt(0).toUpperCase()+m.slice(1));
+}
+function updateGroups(val){toast('Group structure updated');}
+function addIdea(){toast('New idea added to board');}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(0);background:var(--ink);color:rgba(255,255,255,.88);font-size:13px;padding:9px 18px;border-radius:9px;box-shadow:0 4px 20px rgba(0,0,0,.2);opacity:1;z-index:9999;pointer-events:none;white-space:nowrap;transition:all .25s;';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';},2500);
+}
+// Init
+goTo('brainstorm');
+</script>
+</body>
+</html>
