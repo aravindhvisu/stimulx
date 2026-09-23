@@ -14,7 +14,8 @@ import {
   Send,
   Coins,
 } from "lucide-react";
-import { CollaborationMatch } from "@/types";
+import { useStimulxStore } from "@/lib/store";
+import { CollaborationMatch, CollaborationPost } from "@/types";
 
 interface CommunityStageProps {
   onToast: (msg: string) => void;
@@ -54,9 +55,40 @@ const COLLAB_MATCHES: CollaborationMatch[] = [
 ];
 
 export function CommunityStage({ onToast }: CommunityStageProps) {
+  const { collaborationPosts, addCollaborationPost, activeProject } = useStimulxStore();
   const [activeTab, setActiveTab] = useState<"collab" | "learn" | "share" | "build" | "service">("collab");
   const [searchQuery, setSearchQuery] = useState("");
   const [bountyPledged, setBountyPledged] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [postTitle, setPostTitle] = useState("");
+  const [postInstitution, setPostInstitution] = useState("NIMHANS / IIT");
+  const [postDomain, setPostDomain] = useState("Cognitive Psychology");
+  const [postSkills, setPostSkills] = useState("Stroop Task, R / Python, Bilingual Hindi-English");
+  const [postAgency, setPostAgency] = useState("DST-SERB CRG");
+  const [postDesc, setPostDesc] = useState("");
+
+  const handleCreatePost = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!postTitle.trim()) return;
+
+    addCollaborationPost({
+      author: activeProject.grantProposal?.principalInvestigator || "Dr. Researcher",
+      institution: postInstitution,
+      title: postTitle,
+      domain: postDomain,
+      description: postDesc || "Multi-centric collaboration for national behavioural science grant.",
+      requiredSkills: postSkills.split(",").map((s) => s.trim()),
+      grantAgency: postAgency,
+      city: "Bengaluru",
+      state: "Karnataka",
+      contactEmail: "researcher@stimulx.in",
+    });
+
+    setShowPostModal(false);
+    setPostTitle("");
+    setPostDesc("");
+    onToast("Collaboration call published to CollabRadar network! ✓");
+  };
 
   const filteredCollabs = COLLAB_MATCHES.filter(
     (c) =>
@@ -171,12 +203,105 @@ export function CommunityStage({ onToast }: CommunityStageProps) {
 
               <button
                 type="button"
-                onClick={() => onToast("Your research profile posted to Co-PI bulletin ✓")}
+                onClick={() => setShowPostModal(true)}
                 className="h-[34px] px-4 bg-[#e8852b] hover:bg-[#f9a94e] text-white text-[11px] font-semibold rounded-lg shrink-0 shadow-sm"
               >
                 + Post Co-PI Request
               </button>
             </div>
+
+            {/* Modal for creating a new collaboration call */}
+            {showPostModal && (
+              <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-[#1a1633]/15">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#1a1633]/10">
+                    <h3 className="text-sm font-bold text-[#1a1633]">Post a National Co-PI Call</h3>
+                    <button
+                      onClick={() => setShowPostModal(false)}
+                      className="text-neutral-400 hover:text-neutral-800 text-sm font-bold"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreatePost} className="space-y-3 text-xs">
+                    <div>
+                      <label className="block font-semibold text-[#1a1633] mb-1">Project / Call Title</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Co-PI needed for ICSSR study in North-East / Hindi belt"
+                        value={postTitle}
+                        onChange={(e) => setPostTitle(e.target.value)}
+                        className="w-full p-2 border border-[#1a1633]/20 rounded-lg outline-none focus:border-[#e8852b]"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block font-semibold text-[#1a1633] mb-1">Host Institution</label>
+                        <input
+                          type="text"
+                          value={postInstitution}
+                          onChange={(e) => setPostInstitution(e.target.value)}
+                          className="w-full p-2 border border-[#1a1633]/20 rounded-lg outline-none focus:border-[#e8852b]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-semibold text-[#1a1633] mb-1">Grant Agency</label>
+                        <select
+                          value={postAgency}
+                          onChange={(e) => setPostAgency(e.target.value)}
+                          className="w-full p-2 border border-[#1a1633]/20 rounded-lg outline-none focus:border-[#e8852b]"
+                        >
+                          <option value="DST-SERB CRG">DST-SERB CRG</option>
+                          <option value="ICSSR Major Grant">ICSSR Major Grant</option>
+                          <option value="ICMR Ad-hoc">ICMR Ad-hoc</option>
+                          <option value="DBT India Alliance">DBT India Alliance</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-[#1a1633] mb-1">Required Skills / Expertise (comma-separated)</label>
+                      <input
+                        type="text"
+                        value={postSkills}
+                        onChange={(e) => setPostSkills(e.target.value)}
+                        className="w-full p-2 border border-[#1a1633]/20 rounded-lg outline-none focus:border-[#e8852b]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-[#1a1633] mb-1">Brief Description</label>
+                      <textarea
+                        rows={3}
+                        placeholder="Describe the research aims, target participant population, and expectations from the collaborator..."
+                        value={postDesc}
+                        onChange={(e) => setPostDesc(e.target.value)}
+                        className="w-full p-2 border border-[#1a1633]/20 rounded-lg outline-none focus:border-[#e8852b]"
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowPostModal(false)}
+                        className="px-3 py-1.5 rounded-lg border border-[#1a1633]/20 text-neutral-600 hover:bg-neutral-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-1.5 rounded-lg bg-[#e8852b] hover:bg-[#d0731f] text-white font-semibold shadow-sm"
+                      >
+                        Publish Call
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {/* Filter Bar */}
             <div className="bg-white border border-[#1a1633]/10 p-3 rounded-xl flex items-center gap-2">
@@ -189,6 +314,64 @@ export function CommunityStage({ onToast }: CommunityStageProps) {
                 className="w-full bg-transparent text-[12px] outline-none"
               />
             </div>
+
+            {/* User Submitted Community Posts */}
+            {collaborationPosts.length > 0 && (
+              <div className="space-y-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-purple-800 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#e8852b]" />
+                  <span>Live Community Collaboration Calls ({collaborationPosts.length})</span>
+                </div>
+                {collaborationPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="bg-white border-2 border-purple-200 hover:border-purple-400 rounded-xl p-4 transition-all space-y-2.5 shadow-sm"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-[13px] font-bold text-[#1a1633]">{post.title}</h4>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                            Open Call
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-[#6b6890] mt-0.5">
+                          {post.author} · <strong>{post.institution}</strong> ({post.city}, {post.state})
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const emailText = `Subject: Collaboration Interest: ${post.title}\n\nDear ${post.author},\n\nI saw your collaboration call on Stimulx.in regarding "${post.title}" for ${post.grantAgency}. I am writing from ${activeProject.grantProposal?.institution || "my institution"} with relevant expertise in ${post.requiredSkills.join(", ")}.\n\nI would be glad to discuss contributing as a Co-Investigator.\n\nBest regards,\n${activeProject.grantProposal?.principalInvestigator || "Collaborator"}`;
+                          navigator.clipboard?.writeText(emailText);
+                          onToast(`Drafted collaboration email copied to clipboard! ✓`);
+                        }}
+                        className="h-[28px] px-3 bg-[#e8852b] hover:bg-[#d0731f] text-white text-[11px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+                      >
+                        <Send className="w-3 h-3" />
+                        <span>Send Proposal</span>
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-[#2e2a50] leading-relaxed">{post.description}</p>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[#1a1633]/5">
+                      <div className="flex flex-wrap gap-1.5">
+                        {post.requiredSkills.map((s) => (
+                          <span key={s} className="text-[9px] font-medium bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-200">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="text-[10px] text-[#a09ec0] font-mono">
+                        Target: {post.grantAgency}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Match Cards */}
             <div className="space-y-3">

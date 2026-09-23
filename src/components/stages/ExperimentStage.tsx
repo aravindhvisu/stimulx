@@ -13,6 +13,15 @@ import {
   Flame,
 } from "lucide-react";
 
+import { useStimulxStore } from "@/lib/store";
+import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
+import {
+  Share2,
+  ExternalLink,
+  Settings,
+  Sparkles,
+} from "lucide-react";
+
 interface ExperimentStageProps {
   onAdvance: () => void;
   onToast: (msg: string) => void;
@@ -36,6 +45,8 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 ];
 
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
+  const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
+  const [showParticipantRunner, setShowParticipantRunner] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [trialIndex, setTrialIndex] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
@@ -44,6 +55,15 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   >([]);
   const [testComplete, setTestComplete] = useState(false);
   const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
+
+  const studyUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/?run=${activeProject.id}`
+    : `https://stimulx.in/?run=${activeProject.id}`;
+
+  const copyStudyLink = () => {
+    navigator.clipboard?.writeText(studyUrl);
+    onToast("Copied participant study URL to clipboard! Share across India ✓");
+  };
 
   const currentTrial = SAMPLE_TRIALS[trialIndex];
 
@@ -113,11 +133,62 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
 
   return (
     <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#f5f3ef] space-y-5">
+      {/* Live Participant Runner Modal */}
+      {showParticipantRunner && (
+        <ParticipantRunner
+          project={activeProject}
+          onComplete={(newSession) => {
+            addParticipantSession(newSession);
+            onToast("New participant session recorded into live dataset! 🎉");
+          }}
+          onClose={() => setShowParticipantRunner(false)}
+        />
+      )}
+
+      {/* Shareable Study Link Banner */}
+      <div className="bg-gradient-to-r from-[#1a1633] to-[#2b2457] rounded-2xl p-5 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/10">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-ping" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#4ade80]">
+              Active Participant Link Ready
+            </span>
+          </div>
+          <h3 className="text-base font-bold text-white">Distribute Study to Participants Across India</h3>
+          <p className="text-xs text-white/70 mt-0.5">
+            Share this link via WhatsApp, Email, or Institutional Slack. Collects zero-PII millisecond reaction times.
+          </p>
+          <div className="mt-3 flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl px-3 py-1.5 max-w-lg">
+            <span className="text-xs font-mono text-[#e8852b] truncate select-all">{studyUrl}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={copyStudyLink}
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all shadow-sm"
+          >
+            <Share2 className="w-4 h-4 text-[#e8852b]" />
+            <span>Copy Link</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowParticipantRunner(true)}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#e8852b] hover:bg-[#d0731f] text-white text-xs font-bold transition-all shadow-lg shadow-[#e8852b]/20"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span>Launch Participant View</span>
+          </button>
+        </div>
+      </div>
+
       <header>
         <div className="text-[10px] font-bold uppercase tracking-widest text-[#e8852b] mb-1">
-          Stage 4 — Experiment Runner
+          Stage 6 — Experiment Engine & Simulator
         </div>
-        <h2 className="text-xl font-bold text-[#1a1633]">Cognitive Task Simulator (jsPsych Powered)</h2>
+        <h2 className="text-xl font-bold text-[#1a1633]">Cognitive Task Simulator & In-Browser Runner</h2>
         <p className="text-[13px] text-[#6b6890] mt-1">
           Sub-millisecond reaction-time accuracy · Multilingual stimuli · Cross-platform responsive runtime
         </p>

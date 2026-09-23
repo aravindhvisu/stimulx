@@ -1,39 +1,53 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { StageId } from "@/types";
-import { Topbar } from "@/components/Topbar";
-import { HomeStage } from "@/components/stages/HomeStage";
-import { BrainstormStage } from "@/components/stages/BrainstormStage";
-import { GrantStage } from "@/components/stages/GrantStage";
-import { EthicsStage } from "@/components/stages/EthicsStage";
-import { DesignStage } from "@/components/stages/DesignStage";
-import { RecruitmentStage } from "@/components/stages/RecruitmentStage";
-import { ExperimentStage } from "@/components/stages/ExperimentStage";
-import { ParticipantPoolStage } from "@/components/stages/ParticipantPoolStage";
-import { AnalysisStage } from "@/components/stages/AnalysisStage";
-import { WritingStage } from "@/components/stages/WritingStage";
-import { PublishStage } from "@/components/stages/PublishStage";
-import { CommunityStage } from "@/components/stages/CommunityStage";
+import React, { useState, useEffect } from 'react';
+import { StageId } from '@/types';
+import { Topbar } from '@/components/Topbar';
+import { HomeStage } from '@/components/stages/HomeStage';
+import { BrainstormStage } from '@/components/stages/BrainstormStage';
+import { GrantStage } from '@/components/stages/GrantStage';
+import { EthicsStage } from '@/components/stages/EthicsStage';
+import { DesignStage } from '@/components/stages/DesignStage';
+import { RecruitmentStage } from '@/components/stages/RecruitmentStage';
+import { ExperimentStage } from '@/components/stages/ExperimentStage';
+import { ParticipantPoolStage } from '@/components/stages/ParticipantPoolStage';
+import { AnalysisStage } from '@/components/stages/AnalysisStage';
+import { WritingStage } from '@/components/stages/WritingStage';
+import { PublishStage } from '@/components/stages/PublishStage';
+import { CommunityStage } from '@/components/stages/CommunityStage';
+import { ParticipantRunner } from '@/components/runner/ParticipantRunner';
+import { useStimulxStore } from '@/lib/store';
 
 const STAGE_FLOW: StageId[] = [
-  "home",
-  "brainstorm",
-  "grants",
-  "ethics",
-  "design",
-  "recruit",
-  "builder",
-  "pool",
-  "analysis",
-  "writing",
-  "publish",
+  'home',
+  'brainstorm',
+  'grants',
+  'ethics',
+  'design',
+  'recruit',
+  'builder',
+  'pool',
+  'analysis',
+  'writing',
+  'publish',
 ];
 
 export default function StimulxApp() {
-  const [currentStage, setCurrentStage] = useState<StageId>("home");
-  const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(["grants", "ethics"]));
+  const { activeProject, addParticipantSession } = useStimulxStore();
+  const [currentStage, setCurrentStage] = useState<StageId>('home');
+  const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(['grants', 'ethics']));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showGlobalRunner, setShowGlobalRunner] = useState(false);
+
+  // Detect participant mode via URL query (e.g. ?run=proj-001)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('run') || params.has('study')) {
+        setShowGlobalRunner(true);
+      }
+    }
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -55,16 +69,37 @@ export default function StimulxApp() {
       setCurrentStage(nextStage);
       showToast(`Advancing to ${nextStage.charAt(0).toUpperCase() + nextStage.slice(1)} →`);
     } else {
-      showToast("🎉 Full Research Lifecycle Complete!");
+      showToast('🎉 Full Research Lifecycle Complete!');
     }
   };
 
   const handleSave = () => {
-    showToast("Project state securely saved in India (Mumbai) vault ✓");
+    showToast('Project state securely saved in India (Mumbai) vault ✓');
   };
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#f5f3ef] text-[#1a1633] select-none font-sans">
+      {/* Participant Runner Overlay (Triggered by Link or Button) */}
+      {showGlobalRunner && (
+        <ParticipantRunner
+          project={activeProject}
+          onComplete={(newSession) => {
+            addParticipantSession(newSession);
+            showToast('Participant session recorded into live dataset! 🎉');
+          }}
+          onClose={() => {
+            setShowGlobalRunner(false);
+            // Clean URL query if present
+            if (typeof window !== 'undefined' && window.history.replaceState) {
+              const url = new URL(window.location.href);
+              url.searchParams.delete('run');
+              url.searchParams.delete('study');
+              window.history.replaceState({}, '', url.pathname);
+            }
+          }}
+        />
+      )}
+
       {/* Universal Top Navigation */}
       <Topbar
         currentStage={currentStage}
@@ -72,42 +107,43 @@ export default function StimulxApp() {
         onNavigate={handleNavigate}
         onAdvance={handleAdvance}
         onSave={handleSave}
+        onOpenRunner={() => setShowGlobalRunner(true)}
       />
 
       {/* Dynamic Lifecycle Screen Content */}
       <div className="flex-1 flex overflow-hidden">
-        {currentStage === "home" && <HomeStage onNavigate={handleNavigate} />}
-        {currentStage === "brainstorm" && (
+        {currentStage === 'home' && <HomeStage onNavigate={handleNavigate} />}
+        {currentStage === 'brainstorm' && (
           <BrainstormStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "grants" && (
+        {currentStage === 'grants' && (
           <GrantStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "ethics" && (
+        {currentStage === 'ethics' && (
           <EthicsStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "design" && (
+        {currentStage === 'design' && (
           <DesignStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "recruit" && (
+        {currentStage === 'recruit' && (
           <RecruitmentStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "builder" && (
+        {currentStage === 'builder' && (
           <ExperimentStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "pool" && (
+        {currentStage === 'pool' && (
           <ParticipantPoolStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "analysis" && (
+        {currentStage === 'analysis' && (
           <AnalysisStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "writing" && (
+        {currentStage === 'writing' && (
           <WritingStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "publish" && (
+        {currentStage === 'publish' && (
           <PublishStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === "community" && <CommunityStage onToast={showToast} />}
+        {currentStage === 'community' && <CommunityStage onToast={showToast} />}
       </div>
 
       {/* Floating System Toast */}

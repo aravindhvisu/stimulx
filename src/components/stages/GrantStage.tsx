@@ -14,43 +14,90 @@ import {
   ScrollText,
 } from "lucide-react";
 
+import { useStimulxStore } from "@/lib/store";
+import { generateGrantDocument, downloadFile } from "@/lib/exportUtils";
+import { GrantProposal } from "@/types";
+
 interface GrantStageProps {
   onAdvance: () => void;
   onToast: (msg: string) => void;
 }
 
 export function GrantStage({ onAdvance, onToast }: GrantStageProps) {
-  const [selectedAgency, setSelectedAgency] = useState<"ICSSR" | "DST_SERB" | "ICMR" | "INDIA_ALLIANCE">("ICSSR");
+  const { activeProject, updateActiveProject } = useStimulxStore();
+  const [selectedAgency, setSelectedAgency] = useState<"ICSSR" | "DST_SERB" | "ICMR" | "INDIA_ALLIANCE">("DST_SERB");
   const [activeTab, setActiveTab] = useState<"proposal" | "budget" | "agencies" | "compliance">("proposal");
 
   // Budget Calculator state (based on official Government of India DST OM norms)
-  const [jrfCount, setJrfCount] = useState<number>(1);
-  const [durationMonths, setDurationMonths] = useState<number>(24);
-  const [fieldTravel, setFieldTravel] = useState<number>(250000); // 2.5 Lakhs
-  const [participantHonorarium, setParticipantHonorarium] = useState<number>(150000); // 1.5 Lakhs
-  const [equipment, setEquipment] = useState<number>(200000); // 2 Lakhs
-  const [contingency, setContingency] = useState<number>(100000); // 1 Lakh
+  const [jrfCount, setJrfCount] = useState<number>(activeProject.grantProposal?.budget?.jrfMonths ? Math.round(activeProject.grantProposal.budget.jrfMonths / 24) || 1 : 1);
+  const [durationMonths, setDurationMonths] = useState<number>(activeProject.grantProposal?.durationMonths || 36);
+  const [fieldTravel, setFieldTravel] = useState<number>(activeProject.grantProposal?.budget?.fieldWorkTravel || 450000);
+  const [participantHonorarium, setParticipantHonorarium] = useState<number>(activeProject.grantProposal?.budget?.participantHonorarium || 350000);
+  const [equipment, setEquipment] = useState<number>(activeProject.grantProposal?.budget?.equipment || 850000);
+  const [contingency, setContingency] = useState<number>(activeProject.grantProposal?.budget?.contingency || 250000);
 
-  // DST JRF stipend: ₹37,000/month + 27% HRA (Metro e.g. Bengaluru/Mumbai) = ~₹46,990/month
-  const jrfMonthlyCost = 37000 * 1.27;
+  // DST JRF stipend: ₹37,000/month + 24% HRA = ~₹45,880/month
+  const jrfMonthlyCost = 37000 * 1.24;
   const totalStaffCost = Math.round(jrfCount * jrfMonthlyCost * durationMonths);
   const subtotalNonStaff = fieldTravel + participantHonorarium + equipment + contingency;
-  const institutionalOverhead = Math.round((totalStaffCost + subtotalNonStaff) * 0.08); // 8% standard overhead
+  const institutionalOverhead = Math.round((totalStaffCost + subtotalNonStaff) * 0.10); // 10% standard overhead
   const grandTotalINR = totalStaffCost + subtotalNonStaff + institutionalOverhead;
   const grandTotalLakhs = (grandTotalINR / 100000).toFixed(2);
 
   const [proposalTitle, setProposalTitle] = useState(
-    "Cross-Linguistic Cognitive Control and Normative Executive Profiles in Multilingual Indian Adults"
+    activeProject.grantProposal?.title || "Cross-Linguistic Cognitive Control and Normative Executive Profiles in Multilingual Indian Adults"
   );
   const [specificAims, setSpecificAims] = useState(
+    activeProject.grantProposal?.specificAims?.join("\n") ||
     "1. Establish baseline normative Stroop and Flanker cognitive reaction-time distributions across Hindi and Dravidian language speakers (N = 600).\n2. Evaluate whether cross-linguistic interference patterns differ between early simultaneous vs late sequential bilinguals.\n3. Develop open, standardized, culturally-adapted psychometric stimuli accessible to academic institutions across India via Stimulx.in."
   );
   const [indianSignificance, setIndianSignificance] = useState(
+    activeProject.grantProposal?.significanceIndianContext ||
     "India contains over 1.4 billion individuals speaking 22 official languages, yet cognitive assessment norms relied upon in clinical neuropsychology (NIMHANS, SCARF) continue to predominantly utilize Western monolingual metrics. This research addresses a vital scientific sovereignty gap, providing culturally and linguistically calibrated normative datasets."
   );
 
   const handleExportProposal = () => {
-    onToast(`Exported ${selectedAgency} Grant Application Proposal (.docx) ✓`);
+    const proposalData: GrantProposal = {
+      id: `grant-${Date.now()}`,
+      agencyCode: selectedAgency === "INDIA_ALLIANCE" ? "DBT_INDIA_ALLIANCE" : selectedAgency,
+      title: proposalTitle,
+      principalInvestigator: activeProject.grantProposal?.principalInvestigator || "Dr. Aravindh V., Principal Investigator",
+      institution: activeProject.grantProposal?.institution || "Centre for Behavioural & Cognitive Sciences (CBCS) / NIMHANS",
+      durationMonths,
+      totalBudgetINR: grandTotalINR,
+      specificAims: specificAims.split("\n").filter(line => line.trim().length > 0),
+      significanceIndianContext: indianSignificance,
+      methodologyOverview: activeProject.grantProposal?.methodologyOverview || "Computerized millisecond reaction-time assays (Stroop) and clinical screening (PHQ-9/GAD-7).",
+      expectedOutcomes: activeProject.grantProposal?.expectedOutcomes || "Normative Indian dataset, Q1 open-access publications, and open research instruments.",
+      budget: {
+        jrfStipend: 37000,
+        jrfMonths: jrfCount * durationMonths,
+        srfStipend: 42000,
+        srfMonths: 0,
+        hraPct: 24,
+        equipment,
+        fieldWorkTravel: fieldTravel,
+        participantHonorarium,
+        contingency,
+        overhead: institutionalOverhead,
+      },
+    };
+
+    // Update in store
+    updateActiveProject(prev => ({
+      ...prev,
+      grantProposal: proposalData,
+      updatedAt: new Date().toISOString(),
+    }));
+
+    // Trigger real file download
+    const docContent = generateGrantDocument(proposalData);
+    downloadFile(
+      `${selectedAgency}_Grant_Proposal_${Date.now().toString().slice(-4)}.doc`,
+      docContent,
+      "application/msword;charset=utf-8"
+    );
+    onToast(`Downloaded official ${selectedAgency} Grant Proposal Document (.doc) ✓`);
   };
 
   return (

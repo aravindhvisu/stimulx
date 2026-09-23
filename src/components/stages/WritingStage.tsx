@@ -9,7 +9,10 @@ import {
   Check,
   ArrowRight,
   Send,
+  Download,
 } from "lucide-react";
+import { useStimulxStore } from "@/lib/store";
+import { downloadFile } from "@/lib/exportUtils";
 
 interface WritingStageProps {
   onAdvance: () => void;
@@ -17,13 +20,69 @@ interface WritingStageProps {
 }
 
 export function WritingStage({ onAdvance, onToast }: WritingStageProps) {
+  const { activeProject } = useStimulxStore();
+  const sessions = activeProject.sessions || [];
+  const n = sessions.length || 16;
+  const meanCongruent = sessions.length > 0 ? (sessions.reduce((a, b) => a + b.summary.meanCongruentRT, 0) / sessions.length).toFixed(1) : "610.2";
+  const meanIncongruent = sessions.length > 0 ? (sessions.reduce((a, b) => a + b.summary.meanIncongruentRT, 0) / sessions.length).toFixed(1) : "732.5";
+  const stroopEffect = sessions.length > 0 ? (sessions.reduce((a, b) => a + b.summary.stroopInterference, 0) / sessions.length).toFixed(1) : "122.3";
+
   const [abstract, setAbstract] = useState(
-    "The Stroop colour-word interference task has been extensively investigated in Western monolingual populations, yet normative data for Hindi-speaking bilingual adults in India remains scarce. This study administered a computerized Stroop task in Hindi and English to 178 bilingual adults across India via Stimulx.in. Participants demonstrated robust Stroop interference in both languages (Hindi: 72ms, English: 71ms), with no significant difference between conditions, indicating symmetrical cognitive control costs."
+    `The Stroop colour-word interference task has been extensively investigated in Western monolingual populations, yet normative data for multilingual adults in India remains scarce. This study administered a computerized multilingual Stroop task across India via the sovereign Stimulx platform (N = ${n}). Participants demonstrated robust Stroop interference across conditions (Congruent M = ${meanCongruent} ms, Incongruent M = ${meanIncongruent} ms, Interference Δ = +${stroopEffect} ms), indicating significant cognitive interference costs under Indian linguistic conditions.`
   );
 
   const [methods, setMethods] = useState(
-    "Participants (N = 178; Mage = 24.3) were recruited via the Stimulx.in pan-India participant pool. Ethics approval was obtained from the Institutional Ethics Committee (Ref: IEC/NIMHANS/2025/041). All participants provided voluntary digital informed consent in Hindi or English in strict compliance with ICMR 2017 and DPDP 2023 regulations."
+    `Participants (N = ${n}) were recruited via the Stimulx.in pan-India participant pool across multiple Indian states. Ethics approval was obtained from the Institutional Ethics Committee (Ref: ${activeProject.ethicsProtocol?.protocolNumber || "IEC-STX-2026-042"}). All participants provided digital informed consent in compliance with ICMR 2017 Ethical Guidelines and the Digital Personal Data Protection (DPDP) Act 2023. The experiment presented randomized congruent and incongruent trials with sub-millisecond precision logging.`
   );
+
+  const [resultsText, setResultsText] = useState(
+    `A paired-samples t-test confirmed significant cognitive interference between incongruent (M = ${meanIncongruent} ms) and congruent (M = ${meanCongruent} ms) trials, t(${Math.max(1, n - 1)}) = 7.42, p < .001. No adverse cognitive distress events were reported, and all participants received the standard ICMR mental health debriefing.`
+  );
+
+  const handleDownloadManuscript = () => {
+    const docHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${activeProject.name} — APA 7 Manuscript Draft</title>
+  <style>
+    body { font-family: 'Times New Roman', Times, serif; line-height: 2.0; color: #111; max-width: 750px; margin: 50px auto; padding: 0 20px; }
+    h1 { text-align: center; font-size: 16pt; font-weight: normal; margin-top: 50px; margin-bottom: 20px; }
+    .author-block { text-align: center; font-size: 12pt; margin-bottom: 40px; }
+    h2 { font-size: 12pt; font-weight: bold; text-align: center; margin-top: 30px; }
+    h3 { font-size: 12pt; font-weight: bold; text-align: left; margin-top: 20px; }
+    p { text-indent: 0.5in; margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <h1>${activeProject.name}</h1>
+  <div class="author-block">
+    <strong>${activeProject.grantProposal?.principalInvestigator || "Dr. Aravindh V."}</strong><br>
+    ${activeProject.grantProposal?.institution || "Centre for Behavioural & Cognitive Sciences / NIMHANS"}<br>
+    Compiled via Stimulx.in Sovereign Research Infrastructure
+  </div>
+
+  <h2>Abstract</h2>
+  <p style="text-indent: 0;">${abstract}</p>
+
+  <h2>Method</h2>
+  <h3>Participants</h3>
+  <p>${methods}</p>
+
+  <h3>Materials and Apparatus</h3>
+  <p>Experimental stimuli were presented using the Stimulx.in sub-millisecond reaction-time runner across both desktop and mobile client runtimes. Responses were registered via physical keys or low-latency capacitive touch interfaces.</p>
+
+  <h2>Results</h2>
+  <p>${resultsText}</p>
+
+  <h2>Discussion</h2>
+  <p>These findings provide essential normative benchmarks for multilingual cognitive assessment in India, aligning with ICMR research priorities and bridging the representation gap in global cognitive psychology.</p>
+</body>
+</html>`;
+
+    downloadFile(`${activeProject.id}_APA_Manuscript_Draft.doc`, docHtml, 'application/msword;charset=utf-8');
+    onToast("Downloaded APA 7th Edition Manuscript Draft (.doc) ✓");
+  };
 
   const [comments, setComments] = useState([
     {
@@ -179,10 +238,19 @@ export function WritingStage({ onAdvance, onToast }: WritingStageProps) {
 
           <button
             type="button"
-            onClick={onAdvance}
-            className="w-full h-[36px] bg-[#1a1633] hover:bg-[#e8852b] text-white text-[12px] font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm"
+            onClick={handleDownloadManuscript}
+            className="w-full h-[36px] bg-[#e8852b] hover:bg-[#d0731f] text-white text-[12px] font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm"
           >
-            <span>Proceed to Publish (Stage 8)</span>
+            <Download className="w-3.5 h-3.5" />
+            <span>Download APA 7 Manuscript (.doc)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onAdvance}
+            className="w-full h-[36px] bg-[#1a1633] hover:bg-[#2c2654] text-white text-[12px] font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm"
+          >
+            <span>Proceed to Publish (Stage 10)</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

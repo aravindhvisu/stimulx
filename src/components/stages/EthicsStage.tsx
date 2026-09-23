@@ -12,20 +12,31 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+import { useStimulxStore } from "@/lib/store";
+import { generateEthicsProtocolDocument, downloadFile } from "@/lib/exportUtils";
+import { EthicsProtocolData } from "@/types";
+
 interface EthicsStageProps {
   onAdvance: () => void;
   onToast: (msg: string) => void;
 }
 
 export function EthicsStage({ onAdvance, onToast }: EthicsStageProps) {
+  const { activeProject, updateActiveProject } = useStimulxStore();
   const [activeTab, setActiveTab] = useState<"info" | "rights" | "consent" | "privacy" | "pi">("info");
 
   const [title, setTitle] = useState(
-    "Multilingual Stroop interference in Hindi and English: A cross-linguistic comparison in Indian adults"
+    activeProject.ethicsProtocol?.studyTitle || "Multilingual Stroop interference in Hindi and English: A cross-linguistic comparison in Indian adults"
   );
-  const [institution, setInstitution] = useState("NIMHANS, Bengaluru");
-  const [targetN, setTargetN] = useState("150");
-  const [compensation, setCompensation] = useState("₹100 Amazon voucher");
+  const [institution, setInstitution] = useState(
+    activeProject.ethicsProtocol?.institution || "NIMHANS, Bengaluru"
+  );
+  const [targetN, setTargetN] = useState(
+    activeProject.targetSampleSize?.toString() || "150"
+  );
+  const [compensation, setCompensation] = useState(
+    `₹${activeProject.ethicsProtocol?.participantCompensationINR || 200} direct UPI/bank transfer`
+  );
 
   const [withdrawalAllowed, setWithdrawalAllowed] = useState(true);
   const [anonymousAllowed, setAnonymousAllowed] = useState(true);
@@ -33,7 +44,35 @@ export function EthicsStage({ onAdvance, onToast }: EthicsStageProps) {
   const [helplineMandatory, setHelplineMandatory] = useState(true);
 
   const handleExportPDF = () => {
-    onToast("IEC PDF generated — formatted for NIMHANS/ICMR committee ✓");
+    const protocolData: EthicsProtocolData = {
+      protocolNumber: activeProject.ethicsProtocol?.protocolNumber || `IEC-STX-${Date.now().toString().slice(-4)}`,
+      piName: activeProject.grantProposal?.principalInvestigator || "Dr. Aravindh V., PI",
+      institution,
+      studyTitle: title,
+      studyType: "Cognitive Task (Minimal Risk)",
+      riskLevel: "Minimal Risk",
+      vulnerablePopulations: ["University students aged 18-25"],
+      dpdpConsentVerified: true,
+      icmrGuidelinesYear: "2017",
+      dataStorageLocation: "Encrypted Sovereign Cloud (Mumbai Data Center) — DPDP 2023 Compliant",
+      retentionYears: 5,
+      participantCompensationINR: parseInt(compensation.replace(/\D/g, "")) || 200,
+    };
+
+    updateActiveProject(prev => ({
+      ...prev,
+      ethicsProtocol: protocolData,
+      targetSampleSize: parseInt(targetN) || 100,
+      updatedAt: new Date().toISOString(),
+    }));
+
+    const docContent = generateEthicsProtocolDocument(protocolData);
+    downloadFile(
+      `ICMR_IEC_Ethics_Package_${protocolData.protocolNumber}.doc`,
+      docContent,
+      "application/msword;charset=utf-8"
+    );
+    onToast("Downloaded official ICMR IEC Form B & DPDP Consent Document (.doc) ✓");
   };
 
   return (
