@@ -446,13 +446,29 @@ export function useStimulxStore() {
   });
   const [hydrated, setHydrated] = useState(false);
 
-  const normalizeProject = (p: StudyProject): StudyProject => ({
-    ...p,
-    tree: p.tree && p.tree.nodes && p.tree.nodes.length > 0 ? p.tree : DEFAULT_EXPERIMENT_TREE,
-    tasks: p.tasks && p.tasks.length > 0 ? p.tasks : DEFAULT_TASKS,
-    questionnaires: p.questionnaires && p.questionnaires.length > 0 ? p.questionnaires : DEFAULT_QUESTIONNAIRES,
-    liveSessions: p.liveSessions || [],
-  });
+  const normalizeProject = (p: StudyProject): StudyProject => {
+    // Merge missing default tasks so new library paradigms are available
+    const existingTaskIds = new Set((p.tasks || []).map((t) => t.id));
+    const mergedTasks = [
+      ...(p.tasks || []),
+      ...DEFAULT_TASKS.filter((t) => !existingTaskIds.has(t.id)),
+    ];
+
+    // Merge missing default questionnaires
+    const existingQIds = new Set((p.questionnaires || []).map((q) => q.id));
+    const mergedQuestionnaires = [
+      ...(p.questionnaires || []),
+      ...DEFAULT_QUESTIONNAIRES.filter((q) => !existingQIds.has(q.id)),
+    ];
+
+    return {
+      ...p,
+      tree: p.tree && p.tree.nodes && p.tree.nodes.length > 0 ? p.tree : DEFAULT_EXPERIMENT_TREE,
+      tasks: mergedTasks.length > 0 ? mergedTasks : DEFAULT_TASKS,
+      questionnaires: mergedQuestionnaires.length > 0 ? mergedQuestionnaires : DEFAULT_QUESTIONNAIRES,
+      liveSessions: p.liveSessions || [],
+    };
+  };
 
   useEffect(() => {
     try {

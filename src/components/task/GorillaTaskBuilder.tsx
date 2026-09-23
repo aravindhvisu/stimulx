@@ -26,6 +26,7 @@ import {
   Sparkles,
   HelpCircle,
   FileSpreadsheet,
+  X,
 } from 'lucide-react';
 import {
   TaskDefinition,
@@ -66,6 +67,7 @@ export function GorillaTaskBuilder({
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
   const [previewRowIndex, setPreviewRowIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<'design' | 'preview'>('design');
+  const [showLibraryModal, setShowLibraryModal] = useState<boolean>(false);
 
   const selectedDisplay: TaskDisplay | undefined = activeTask?.displays?.[selectedDisplayIndex];
   const selectedZone: TaskZone | undefined = selectedDisplay?.zones?.find(
@@ -404,6 +406,14 @@ export function GorillaTaskBuilder({
                   </option>
                 ))}
               </select>
+              <button
+                onClick={() => setShowLibraryModal(true)}
+                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-purple-300 hover:bg-purple-500/10 rounded border border-purple-500/30 transition-colors"
+                title="Browse Landmark Cognitive Paradigms"
+              >
+                <Sparkles className="w-3 h-3 text-purple-400" />
+                Paradigm Library
+              </button>
               <button
                 onClick={handleCreateNewTask}
                 className="flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-amber-300 hover:bg-amber-500/10 rounded border border-amber-500/30 transition-colors"
@@ -1079,6 +1089,106 @@ export function GorillaTaskBuilder({
               <label htmlFor="rnd_toggle" className="text-xs text-slate-300 font-medium cursor-pointer">
                 Randomize trial presentation order for each participant
               </label>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Paradigm Library Modal */}
+      {showLibraryModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0f172a] border border-slate-700 rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-[#090d16]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Classic Paradigm Library</h3>
+                  <p className="text-xs text-slate-400">
+                    Pre-configured cognitive assays with verified displays, zones, and trial spreadsheets
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowLibraryModal(false)}
+                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: Cards */}
+            <div className="p-6 overflow-y-auto space-y-4">
+              {DEFAULT_TASKS.map((template) => {
+                const isCurrent = activeTask.id === template.id;
+                return (
+                  <div
+                    key={template.id}
+                    className="p-4 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold text-white text-sm">{template.name}</h4>
+                        <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-purple-950/70 border border-purple-800/80 text-purple-300">
+                          {template.domain}
+                        </span>
+                        {isCurrent && (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-800/80 text-emerald-300 font-medium">
+                            Active in Builder
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-400 mb-2">{template.description}</p>
+                      <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono">
+                        <span>{template.displays.length} Displays</span>
+                        <span>•</span>
+                        <span>{template.spreadsheet.length} Spreadsheet Trials</span>
+                        <span>•</span>
+                        <span>ITI: {template.interTrialIntervalMs || 300}ms</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => {
+                          const exists = tasks.some((t) => t.id === template.id);
+                          if (!exists) {
+                            saveTask(template);
+                          }
+                          setSelectedTaskId(template.id);
+                          setSelectedDisplayIndex(0);
+                          setSelectedZoneId(null);
+                          setShowLibraryModal(false);
+                          onToast(`Loaded ${template.name} ✓`);
+                        }}
+                        className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                      >
+                        Load Paradigm
+                      </button>
+                      <button
+                        onClick={() => {
+                          const cloned: TaskDefinition = {
+                            ...template,
+                            id: `task_${Date.now()}`,
+                            name: `${template.name} (Custom Clone)`,
+                          };
+                          saveTask(cloned);
+                          setSelectedTaskId(cloned.id);
+                          setSelectedDisplayIndex(0);
+                          setSelectedZoneId(null);
+                          setShowLibraryModal(false);
+                          onToast(`Cloned ${template.name} into custom task ✓`);
+                        }}
+                        className="px-3 py-1.5 rounded text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+                      >
+                        Clone Task
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

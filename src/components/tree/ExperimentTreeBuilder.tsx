@@ -36,7 +36,7 @@ import {
   StudyProject,
 } from '@/types';
 import { useStimulxStore } from '@/lib/store';
-import { DEFAULT_EXPERIMENT_TREE } from '@/lib/gorillaTemplates';
+import { DEFAULT_EXPERIMENT_TREE, PRESET_EXPERIMENT_TREES } from '@/lib/gorillaTemplates';
 
 interface ExperimentTreeBuilderProps {
   onOpenTaskBuilder?: (taskId?: string) => void;
@@ -63,6 +63,7 @@ export function ExperimentTreeBuilder({
   const [connectingFromId, setConnectingFromId] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showPresetModal, setShowPresetModal] = useState(false);
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -527,6 +528,15 @@ export function ExperimentTreeBuilder({
               </div>
             )}
           </div>
+
+          <button
+            onClick={() => setShowPresetModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-purple-950/70 hover:bg-purple-900/80 text-purple-300 transition-colors border border-purple-800/80 shadow-sm"
+            title="Load Pre-Built Experiment Tree Protocols"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+            Preset Protocols
+          </button>
 
           <button
             onClick={handleAutoLayout}
@@ -1085,6 +1095,85 @@ export function ExperimentTreeBuilder({
           </div>
         )}
       </div>
+
+      {/* Preset Protocols Modal */}
+      {showPresetModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0f172a] border border-slate-700 rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-[#090d16]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Preset Experiment Tree Protocols</h3>
+                  <p className="text-xs text-slate-400">
+                    Validated end-to-end behavioural science pipelines with consent, screeners, randomizers, and tasks
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPresetModal(false)}
+                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: Cards */}
+            <div className="p-6 overflow-y-auto space-y-4">
+              {PRESET_EXPERIMENT_TREES.map((preset) => {
+                const nodeCount = preset.tree.nodes.length;
+                const edgeCount = preset.tree.edges.length;
+                const taskNodes = preset.tree.nodes.filter((n) => n.type === 'task').length;
+                const surveyNodes = preset.tree.nodes.filter((n) => n.type === 'questionnaire').length;
+                const hasRandomizer = preset.tree.nodes.some((n) => n.type === 'randomiser');
+
+                return (
+                  <div
+                    key={preset.id}
+                    className="p-5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h4 className="font-semibold text-white text-sm">{preset.name}</h4>
+                        <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-purple-950/70 border border-purple-800/80 text-purple-300">
+                          {preset.category}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mb-2.5 leading-relaxed">{preset.description}</p>
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400 font-mono">
+                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{nodeCount} Nodes</span>
+                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">{edgeCount} Connectors</span>
+                        <span className="px-2 py-0.5 rounded bg-indigo-950/70 text-indigo-300">{surveyNodes} Questionnaires</span>
+                        <span className="px-2 py-0.5 rounded bg-amber-950/70 text-amber-300">{taskNodes} Cognitive Tasks</span>
+                        {hasRandomizer && (
+                          <span className="px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300">Between-Subject Randomizer</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0">
+                      <button
+                        onClick={() => {
+                          updateExperimentTree(preset.tree);
+                          setShowPresetModal(false);
+                          onToast(`Loaded protocol: ${preset.name} ✓`);
+                        }}
+                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-md shadow-purple-950 flex items-center gap-1.5"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Load Protocol
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
