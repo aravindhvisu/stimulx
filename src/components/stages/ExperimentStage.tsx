@@ -17,6 +17,7 @@ import {
   Sparkles,
   Layers,
   GitBranch,
+  FileText,
 } from "lucide-react";
 
 import { useStimulxStore } from "@/lib/store";
@@ -24,6 +25,7 @@ import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
 import { MultiDomainExperimentBuilder } from "@/components/builder/MultiDomainExperimentBuilder";
 import { ExperimentTreeBuilder } from "@/components/tree/ExperimentTreeBuilder";
 import { GorillaTaskBuilder } from "@/components/task/GorillaTaskBuilder";
+import { GorillaQuestionnaireBuilder } from "@/components/questionnaire/GorillaQuestionnaireBuilder";
 
 interface ExperimentStageProps {
   onAdvance: () => void;
@@ -49,8 +51,9 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
-  const [subView, setSubView] = useState<"tree" | "builder" | "simulator">("tree");
+  const [subView, setSubView] = useState<"tree" | "builder" | "questionnaires" | "simulator">("tree");
   const [targetTaskId, setTargetTaskId] = useState<string | undefined>();
+  const [targetQuestionnaireId, setTargetQuestionnaireId] = useState<string | undefined>();
   const [showParticipantRunner, setShowParticipantRunner] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [trialIndex, setTrialIndex] = useState(0);
@@ -174,7 +177,19 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>Cognitive Paradigms</span>
+            <span>Task Displays & Spreadsheet</span>
+          </button>
+
+          <button
+            onClick={() => setSubView("questionnaires")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              subView === "questionnaires"
+                ? "bg-[#1a1633] text-white shadow-sm"
+                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Questionnaires & Scales</span>
           </button>
 
           <button
@@ -205,6 +220,10 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
             setTargetTaskId(taskId);
             setSubView("builder");
           }}
+          onOpenQuestionnaireBuilder={(qId) => {
+            setTargetQuestionnaireId(qId);
+            setSubView("questionnaires");
+          }}
           onLaunchParticipantPreview={() => setShowParticipantRunner(true)}
           onToast={onToast}
         />
@@ -213,6 +232,11 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
           initialTaskId={targetTaskId}
           onToast={onToast}
           onLaunchRunner={() => setShowParticipantRunner(true)}
+        />
+      ) : subView === "questionnaires" ? (
+        <GorillaQuestionnaireBuilder
+          initialQuestionnaireId={targetQuestionnaireId}
+          onToast={onToast}
         />
       ) : (
         <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-5">
