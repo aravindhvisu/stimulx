@@ -18,6 +18,7 @@ import {
   Layers,
   GitBranch,
   FileText,
+  Users,
 } from "lucide-react";
 
 import { useStimulxStore } from "@/lib/store";
@@ -26,6 +27,7 @@ import { MultiDomainExperimentBuilder } from "@/components/builder/MultiDomainEx
 import { ExperimentTreeBuilder } from "@/components/tree/ExperimentTreeBuilder";
 import { GorillaTaskBuilder } from "@/components/task/GorillaTaskBuilder";
 import { GorillaQuestionnaireBuilder } from "@/components/questionnaire/GorillaQuestionnaireBuilder";
+import { GorillaDataHub } from "@/components/data/GorillaDataHub";
 
 interface ExperimentStageProps {
   onAdvance: () => void;
@@ -51,7 +53,7 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
-  const [subView, setSubView] = useState<"tree" | "builder" | "questionnaires" | "simulator">("tree");
+  const [subView, setSubView] = useState<"tree" | "builder" | "questionnaires" | "data" | "simulator">("tree");
   const [targetTaskId, setTargetTaskId] = useState<string | undefined>();
   const [targetQuestionnaireId, setTargetQuestionnaireId] = useState<string | undefined>();
   const [showParticipantRunner, setShowParticipantRunner] = useState(false);
@@ -193,6 +195,18 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
           </button>
 
           <button
+            onClick={() => setSubView("data")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              subView === "data"
+                ? "bg-[#1a1633] text-white shadow-sm"
+                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+            }`}
+          >
+            <Users className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Data & Deployment</span>
+          </button>
+
+          <button
             onClick={() => setSubView("simulator")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               subView === "simulator"
@@ -237,6 +251,11 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
         <GorillaQuestionnaireBuilder
           initialQuestionnaireId={targetQuestionnaireId}
           onToast={onToast}
+        />
+      ) : subView === "data" ? (
+        <GorillaDataHub
+          onToast={onToast}
+          onLaunchRunner={() => setShowParticipantRunner(true)}
         />
       ) : (
         <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-5">

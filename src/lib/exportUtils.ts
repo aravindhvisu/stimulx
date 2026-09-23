@@ -1,4 +1,10 @@
-import { ParticipantSession, StudyProject, GrantProposal, EthicsProtocolData } from '@/types';
+import {
+  ParticipantSession,
+  StudyProject,
+  GrantProposal,
+  EthicsProtocolData,
+  LiveParticipantSession,
+} from '@/types';
 
 /**
  * Universal file trigger for in-browser downloads
@@ -404,3 +410,230 @@ export function generateEthicsProtocolDocument(protocol: EthicsProtocolData): st
 </body>
 </html>`;
 }
+
+/**
+ * Generates official Gorilla.sc standard Long Format Raw Trial CSV
+ * Every row corresponds to a single trial / event with all dynamic spreadsheet attributes
+ */
+export function generateGorillaLongFormatCSV(
+  liveSessions: LiveParticipantSession[] = [],
+  legacySessions: ParticipantSession[] = []
+): string {
+  const hasRawLogs = liveSessions.some((s) => s.rawTrialLogs && s.rawTrialLogs.length > 0);
+
+  if (hasRawLogs) {
+    const spreadsheetKeys = new Set<string>();
+    liveSessions.forEach((s) => {
+      s.rawTrialLogs.forEach((trial) => {
+        if (trial.spreadsheetRow) {
+          Object.keys(trial.spreadsheetRow).forEach((k) => spreadsheetKeys.add(k));
+        }
+      });
+    });
+    const customCols = Array.from(spreadsheetKeys);
+
+    const baseHeaders = [
+      'participant_token',
+      'session_id',
+      'utc_timestamp',
+      'tree_node_id',
+      'tree_node_title',
+      'task_id',
+      'trial_number',
+      'display_name',
+      'zone_type',
+      'response',
+      'correct',
+      'reaction_time_ms',
+      'timed_out',
+      'participant_state',
+      'participant_device',
+      'participant_age',
+      'participant_language',
+    ];
+
+    const allHeaders = [...baseHeaders, ...customCols];
+    const rows: string[] = [allHeaders.join(',')];
+
+    liveSessions.forEach((s) => {
+      s.rawTrialLogs.forEach((trial) => {
+        const baseValues = [
+          JSON.stringify(trial.participantToken),
+          JSON.stringify(trial.sessionId),
+          JSON.stringify(trial.timestampIso),
+          JSON.stringify(trial.nodeId),
+          JSON.stringify(trial.nodeTitle),
+          JSON.stringify(trial.taskId),
+          trial.trialIndex,
+          JSON.stringify(trial.displayName),
+          JSON.stringify(trial.zoneType || 'stimulus_zone'),
+          JSON.stringify(trial.response || 'none'),
+          trial.correct ? 1 : 0,
+          trial.rtMs.toFixed(1),
+          trial.timedOut ? 1 : 0,
+          JSON.stringify(s.demographics?.state || 'Unknown'),
+          JSON.stringify(s.demographics?.device || 'desktop'),
+          JSON.stringify(s.demographics?.age || '18-24'),
+          JSON.stringify(s.demographics?.primaryLanguage || 'English'),
+        ];
+
+        const customValues = customCols.map((col) => {
+          const val = trial.spreadsheetRow ? trial.spreadsheetRow[col] : '';
+          return JSON.stringify(val ?? '');
+        });
+
+        rows.push([...baseValues, ...customValues].join(','));
+      });
+    });
+
+    return rows.join('\n');
+  }
+
+  // Fallback to legacy sessions
+  const headers = [
+    'participant_token',
+    'session_id',
+    'utc_timestamp',
+    'tree_node_id',
+    'tree_node_title',
+    'task_id',
+    'trial_number',
+    'display_name',
+    'response',
+    'correct',
+    'reaction_time_ms',
+    'participant_state',
+    'participant_device',
+    'participant_age',
+    'word',
+    'color',
+    'congruency',
+  ];
+  const rows: string[] = [headers.join(',')];
+
+  legacySessions.forEach((s) => {
+    s.trials.forEach((t) => {
+      rows.push([
+        JSON.stringify(s.id),
+        JSON.stringify(s.id),
+        JSON.stringify(s.completedAt),
+        JSON.stringify('node_task_stroop'),
+        JSON.stringify('Stroop Task'),
+        JSON.stringify('task_stroop'),
+        t.trialIndex,
+        JSON.stringify('Stimulus Display'),
+        JSON.stringify(t.response),
+        t.correct ? 1 : 0,
+        t.rtMs.toFixed(1),
+        JSON.stringify(s.demographics.state),
+        JSON.stringify(s.demographics.device),
+        JSON.stringify(s.demographics.ageGroup),
+        JSON.stringify(t.word),
+        JSON.stringify(t.colorName),
+        JSON.stringify(t.congruent ? 'congruent' : 'incongruent'),
+      ].join(','));
+    });
+  });
+
+  return rows.join('\n');
+}
+
+/**
+ * Generates questionnaire response dataset (one row per answered item)
+ */
+export function generateQuestionnaireResponsesCSV(liveSessions: LiveParticipantSession[] = []): string {
+  const headers = [
+    'participant_token',
+    'session_id',
+    'utc_timestamp',
+    'questionnaire_id',
+    'question_id',
+    'question_title',
+    'response_value',
+    'score_points',
+  ];
+  const rows: string[] = [headers.join(',')];
+
+  liveSessions.forEach((s) => {
+    (s.questionnaireLogs || []).forEach((q) => {
+      rows.push([
+        JSON.stringify(s.participantToken),
+        JSON.stringify(s.id),
+        JSON.stringify(q.answeredAtIso),
+        JSON.stringify(q.questionnaireId),
+        JSON.stringify(q.questionId),
+        JSON.stringify(q.questionTitle),
+        JSON.stringify(q.answer),
+        q.score !== undefined ? q.score : 'NA',
+      ].join(','));
+    });
+  });
+
+  return rows.join('\n');
+}
+
+/**
+ * Generates aggregated participant summary table
+ */
+export function generateParticipantSummaryCSV(
+  liveSessions: LiveParticipantSession[] = [],
+  legacySessions: ParticipantSession[] = []
+): string {
+  const headers = [
+    'participant_token',
+    'session_status',
+    'started_at',
+    'completed_at',
+    'state',
+    'device',
+    'age_group',
+    'primary_language',
+    'total_trials',
+    'accuracy_pct',
+    'mean_rt_ms',
+    'composite_scores',
+  ];
+  const rows: string[] = [headers.join(',')];
+
+  legacySessions.forEach((s) => {
+    rows.push([
+      JSON.stringify(s.id),
+      JSON.stringify('completed'),
+      JSON.stringify(s.startedAt),
+      JSON.stringify(s.completedAt),
+      JSON.stringify(s.demographics.state),
+      JSON.stringify(s.demographics.device),
+      JSON.stringify(s.demographics.ageGroup),
+      JSON.stringify(s.demographics.primaryLanguage),
+      s.summary.totalTrials,
+      s.summary.accuracyPct.toFixed(1),
+      s.summary.meanCongruentRT.toFixed(1),
+      JSON.stringify(s.clinicalScores ? `PHQ-9=${s.clinicalScores.phq9}` : 'NA'),
+    ].join(','));
+  });
+
+  liveSessions.forEach((s) => {
+    const trials = s.rawTrialLogs || [];
+    const correctCount = trials.filter((t) => t.correct).length;
+    const accuracy = trials.length > 0 ? (correctCount / trials.length) * 100 : 0;
+    const meanRt = trials.length > 0 ? trials.reduce((a, b) => a + b.rtMs, 0) / trials.length : 0;
+
+    rows.push([
+      JSON.stringify(s.participantToken),
+      JSON.stringify(s.status),
+      JSON.stringify(s.startedAt),
+      JSON.stringify(s.completedAt || 'In Progress'),
+      JSON.stringify(s.demographics?.state || 'Unknown'),
+      JSON.stringify(s.demographics?.device || 'desktop'),
+      JSON.stringify(s.demographics?.age || '18-24'),
+      JSON.stringify(s.demographics?.primaryLanguage || 'English'),
+      trials.length,
+      accuracy.toFixed(1),
+      meanRt.toFixed(1),
+      JSON.stringify(JSON.stringify(s.overallScores || {})),
+    ].join(','));
+  });
+
+  return rows.join('\n');
+}
+

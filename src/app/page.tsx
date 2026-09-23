@@ -21,6 +21,7 @@ import { PreRegistrationStudio } from '@/components/prereg/PreRegistrationStudio
 import { ScaleMarketplaceModal } from '@/components/scales/ScaleMarketplaceModal';
 import { ApiPlaygroundModal } from '@/components/api/ApiPlaygroundModal';
 import { ParticipantRunner } from '@/components/runner/ParticipantRunner';
+import { GorillaDataHub } from '@/components/data/GorillaDataHub';
 import { useStimulxStore } from '@/lib/store';
 
 const STAGE_FLOW: StageId[] = [
@@ -155,7 +156,10 @@ export default function StimulxApp() {
           <RecruitmentStage onAdvance={handleAdvance} onToast={showToast} />
         )}
         {currentStage === 'pool' && (
-          <ParticipantPoolStage onAdvance={handleAdvance} onToast={showToast} />
+          <GorillaDataHub
+            onToast={showToast}
+            onLaunchRunner={() => setShowGlobalRunner(true)}
+          />
         )}
         {currentStage === 'analysis' && (
           <AnalysisStage onAdvance={handleAdvance} onToast={showToast} />
