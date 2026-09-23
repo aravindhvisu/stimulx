@@ -9,7 +9,10 @@ import {
   Layers,
   ArrowRight,
   Check,
+  ShoppingBag,
+  Sparkles,
 } from "lucide-react";
+import { ScaleMarketplaceModal } from "@/components/scales/ScaleMarketplaceModal";
 
 interface DesignStageProps {
   onAdvance: () => void;
@@ -21,6 +24,7 @@ export function DesignStage({ onAdvance, onToast }: DesignStageProps) {
   const [designType, setDesignType] = useState("Within-subjects (repeated measures)");
   const [groupsCount, setGroupsCount] = useState("2");
   const [selectedScales, setSelectedScales] = useState<string[]>(["phq9"]);
+  const [showMarketplace, setShowMarketplace] = useState(false);
 
   const toggleScale = (id: string, name: string) => {
     if (selectedScales.includes(id)) {
@@ -34,6 +38,11 @@ export function DesignStage({ onAdvance, onToast }: DesignStageProps) {
 
   return (
     <div className="flex-1 flex overflow-hidden bg-[#f5f3ef]">
+      <ScaleMarketplaceModal
+        isOpen={showMarketplace}
+        onClose={() => setShowMarketplace(false)}
+        onToast={onToast}
+      />
       {/* Left Sidebar */}
       <aside className="w-[218px] shrink-0 bg-white border-r border-[#1a1633]/10 flex flex-col overflow-y-auto">
         <div className="px-3.5 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-[#a09ec0]">
@@ -50,7 +59,16 @@ export function DesignStage({ onAdvance, onToast }: DesignStageProps) {
 
         <button
           type="button"
-          onClick={() => onToast("Scale library filtered")}
+          onClick={() => setShowMarketplace(true)}
+          className="flex items-center gap-2.5 px-3.5 py-2 text-[12px] font-medium border-l-2 border-transparent text-[#e8852b] hover:bg-[#e8852b]/10"
+        >
+          <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
+          <span>Scale Marketplace</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setShowMarketplace(true)}
           className="flex items-center gap-2.5 px-3.5 py-2 text-[12px] font-medium border-l-2 border-transparent text-[#6b6890] hover:bg-[#f5f3ef]"
         >
           <BookMarked className="w-3.5 h-3.5 shrink-0" />

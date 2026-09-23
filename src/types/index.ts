@@ -1,3 +1,5 @@
+export type UserPersona = 'student' | 'phd' | 'postdoc' | 'scientist';
+
 export type StageId =
   | 'home'
   | 'brainstorm'
@@ -10,7 +12,82 @@ export type StageId =
   | 'analysis'
   | 'writing'
   | 'publish'
-  | 'community';
+  | 'community'
+  | 'replication'
+  | 'recruitment_board'
+  | 'prereg';
+
+export type CognitiveDomain = 'attention' | 'memory' | 'emotion' | 'executive' | 'decision';
+
+export interface ExperimentParadigm {
+  id: string;
+  name: string;
+  domain: CognitiveDomain;
+  shortDesc: string;
+  defaultTrials: number;
+  supportedLanguages: string[];
+  stimulusType: string;
+  dependentMeasures: string[];
+}
+
+export interface ScaleItemExtended {
+  id: string;
+  name: string;
+  fullName: string;
+  domain: string;
+  licenseType: 'open_access' | 'licensed_commercial';
+  publisher: string;
+  qualificationLevel: 'A' | 'B' | 'C';
+  costPerAdminINR: number;
+  languages: string[];
+  itemsCount: number;
+  description: string;
+  citation: string;
+}
+
+export interface ReplicationStudy {
+  id: string;
+  originalPaper: string;
+  landmarkEffect: string;
+  year: number;
+  originalSample: string;
+  originalCulture: 'W.E.I.R.D. (North America/Europe)';
+  replicationStatus: 'replicated' | 'attenuated' | 'failed' | 'in_progress';
+  indianSites: string[];
+  targetN: number;
+  currentN: number;
+  keyFinding: string;
+  cloneableStudyId: string;
+}
+
+export interface PreRegistrationRecord {
+  id: string;
+  studyId: string;
+  studyTitle: string;
+  hypotheses: string;
+  samplingPlan: string;
+  dependentVars: string;
+  independentVars: string;
+  outlierCriteria: string;
+  analysisPlan: string;
+  timestampHash: string;
+  dateRegistered: string;
+  badgeAwarded: boolean;
+}
+
+export interface RecruitmentListing {
+  id: string;
+  studyId: string;
+  title: string;
+  leadInstitution: string;
+  targetDemographics: string;
+  compensationINR: number;
+  durationMinutes: number;
+  openSlots: number;
+  enrolledCount: number;
+  status: 'active' | 'completed' | 'paused';
+  stateScope: string;
+}
 
 export interface IdeaItem {
   id: string;
@@ -79,11 +156,12 @@ export interface EthicsProtocolData {
 
 export interface ExperimentConfigData {
   taskName: string;
+  paradigmId?: string;
   trialCount: number;
   fixationDurationMs: number;
   stimulusDurationMs: number;
   feedbackDurationMs: number;
-  languages: ('English' | 'Hindi' | 'Tamil')[];
+  languages: ('English' | 'Hindi' | 'Tamil' | 'Telugu' | 'Kannada' | 'Bengali')[];
   includePhq9: boolean;
   includeGad7: boolean;
 }

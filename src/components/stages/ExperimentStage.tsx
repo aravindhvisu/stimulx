@@ -11,16 +11,16 @@ import {
   Copy,
   ArrowRight,
   Flame,
-} from "lucide-react";
-
-import { useStimulxStore } from "@/lib/store";
-import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
-import {
   Share2,
   ExternalLink,
   Settings,
   Sparkles,
+  Layers,
 } from "lucide-react";
+
+import { useStimulxStore } from "@/lib/store";
+import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
+import { MultiDomainExperimentBuilder } from "@/components/builder/MultiDomainExperimentBuilder";
 
 interface ExperimentStageProps {
   onAdvance: () => void;
@@ -46,6 +46,7 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
+  const [subView, setSubView] = useState<"builder" | "simulator">("builder");
   const [showParticipantRunner, setShowParticipantRunner] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [trialIndex, setTrialIndex] = useState(0);
@@ -132,7 +133,7 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const stroopCost = meanIncongruentRT - meanCongruentRT;
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#f5f3ef] space-y-5">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#f5f3ef]">
       {/* Live Participant Runner Modal */}
       {showParticipantRunner && (
         <ParticipantRunner
@@ -145,44 +146,88 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
         />
       )}
 
-      {/* Shareable Study Link Banner */}
-      <div className="bg-gradient-to-r from-[#1a1633] to-[#2b2457] rounded-2xl p-5 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/10">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-ping" />
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#4ade80]">
-              Active Participant Link Ready
-            </span>
-          </div>
-          <h3 className="text-base font-bold text-white">Distribute Study to Participants Across India</h3>
-          <p className="text-xs text-white/70 mt-0.5">
-            Share this link via WhatsApp, Email, or Institutional Slack. Collects zero-PII millisecond reaction times.
-          </p>
-          <div className="mt-3 flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl px-3 py-1.5 max-w-lg">
-            <span className="text-xs font-mono text-[#e8852b] truncate select-all">{studyUrl}</span>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2.5">
+      {/* Sub-view Switcher Header */}
+      <div className="h-10 px-6 bg-white border-b border-[#e2ded6] flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
           <button
-            type="button"
-            onClick={copyStudyLink}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all shadow-sm"
+            onClick={() => setSubView("builder")}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+              subView === "builder"
+                ? "bg-[#1a1633] text-white"
+                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+            }`}
           >
-            <Share2 className="w-4 h-4 text-[#e8852b]" />
-            <span>Copy Link</span>
+            <Layers className="w-3.5 h-3.5" />
+            <span>Multi-Domain Paradigm Builder (Memory, Attention, Emotion)</span>
           </button>
 
           <button
-            type="button"
-            onClick={() => setShowParticipantRunner(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#e8852b] hover:bg-[#d0731f] text-white text-xs font-bold transition-all shadow-lg shadow-[#e8852b]/20"
+            onClick={() => setSubView("simulator")}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+              subView === "simulator"
+                ? "bg-[#1a1633] text-white"
+                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+            }`}
           >
-            <ExternalLink className="w-4 h-4" />
-            <span>Launch Participant View</span>
+            <Play className="w-3.5 h-3.5" />
+            <span>Stroop Task Interactive Simulator</span>
           </button>
         </div>
+
+        <button
+          onClick={copyStudyLink}
+          className="text-xs text-[#e8852b] hover:underline font-semibold flex items-center gap-1"
+        >
+          <Share2 className="w-3 h-3" />
+          <span>Copy Study Link</span>
+        </button>
       </div>
+
+      {subView === "builder" ? (
+        <MultiDomainExperimentBuilder
+          onToast={onToast}
+          onLaunchRunner={() => setShowParticipantRunner(true)}
+        />
+      ) : (
+        <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-5">
+          {/* Shareable Study Link Banner */}
+          <div className="bg-gradient-to-r from-[#1a1633] to-[#2b2457] rounded-2xl p-5 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/10">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-ping" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#4ade80]">
+                  Active Participant Link Ready
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white">Distribute Study to Participants Across India</h3>
+              <p className="text-xs text-white/70 mt-0.5">
+                Share this link via WhatsApp, Email, or Institutional Slack. Collects zero-PII millisecond reaction times.
+              </p>
+              <div className="mt-3 flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl px-3 py-1.5 max-w-lg">
+                <span className="text-xs font-mono text-[#e8852b] truncate select-all">{studyUrl}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                type="button"
+                onClick={copyStudyLink}
+                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all shadow-sm"
+              >
+                <Share2 className="w-4 h-4 text-[#e8852b]" />
+                <span>Copy Link</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowParticipantRunner(true)}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#e8852b] hover:bg-[#d0731f] text-white text-xs font-bold transition-all shadow-lg shadow-[#e8852b]/20"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Launch Participant View</span>
+              </button>
+            </div>
+          </div>
 
       <header>
         <div className="text-[10px] font-bold uppercase tracking-widest text-[#e8852b] mb-1">
@@ -392,6 +437,8 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
           </div>
         </div>
       </div>
+    </div>
+      )}
     </div>
   );
 }

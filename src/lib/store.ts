@@ -5,104 +5,330 @@ import {
   StudyProject,
   ParticipantSession,
   CollaborationPost,
-  GrantProposal,
-  EthicsProtocolData,
-  ExperimentConfigData,
+  UserPersona,
+  ExperimentParadigm,
+  ScaleItemExtended,
+  ReplicationStudy,
+  PreRegistrationRecord,
+  RecruitmentListing,
 } from '@/types';
 
-const STORAGE_KEY = 'stimulx_vault_v1';
+const STORAGE_KEY = 'stimulx_vault_v2';
 
-// Seed initial realistic participants across India
-const INITIAL_SESSIONS: ParticipantSession[] = [
+export const COGNITIVE_PARADIGMS: ExperimentParadigm[] = [
   {
-    id: 'STX-KA-001',
-    studyId: 'proj-001',
-    startedAt: '2026-09-21T10:14:22.000Z',
-    completedAt: '2026-09-21T10:21:05.000Z',
-    demographics: { ageGroup: '18-24', state: 'Karnataka (NIMHANS cohort)', primaryLanguage: 'Kannada / English', device: 'desktop' },
-    consentGiven: true,
-    clinicalScores: { phq9: 4, phq9Severity: 'Minimal', gad7: 3, gad7Severity: 'Minimal' },
-    summary: { meanCongruentRT: 592.4, meanIncongruentRT: 714.2, stroopInterference: 121.8, accuracyPct: 95.8, totalTrials: 24 },
-    trials: [
-      { trialIndex: 1, word: 'RED', color: '#dc2626', colorName: 'red', congruent: true, response: 'red', correct: true, rtMs: 580.1 },
-      { trialIndex: 2, word: 'BLUE', color: '#16a34a', colorName: 'green', congruent: false, response: 'green', correct: true, rtMs: 730.4 },
-      { trialIndex: 3, word: 'GREEN', color: '#16a34a', colorName: 'green', congruent: true, response: 'green', correct: true, rtMs: 605.2 },
-      { trialIndex: 4, word: 'YELLOW', color: '#dc2626', colorName: 'red', congruent: false, response: 'red', correct: true, rtMs: 698.0 },
-    ],
+    id: 'stroop',
+    name: 'Stroop Color-Word Interference',
+    domain: 'attention',
+    shortDesc: 'Measures cognitive control, selective attention, and automated reading interference across scripts.',
+    defaultTrials: 24,
+    supportedLanguages: ['English', 'Hindi', 'Tamil', 'Kannada', 'Bengali'],
+    stimulusType: 'Colored text words with congruent/incongruent mappings',
+    dependentMeasures: ['Mean Congruent RT', 'Mean Incongruent RT', 'Stroop Interference (ΔRT ms)', 'Error Rate %'],
   },
   {
-    id: 'STX-DL-002',
-    studyId: 'proj-001',
-    startedAt: '2026-09-21T11:02:10.000Z',
-    completedAt: '2026-09-21T11:09:44.000Z',
-    demographics: { ageGroup: '25-34', state: 'Delhi (IIT-D cohort)', primaryLanguage: 'Hindi / English', device: 'desktop' },
-    consentGiven: true,
-    clinicalScores: { phq9: 7, phq9Severity: 'Mild', gad7: 6, gad7Severity: 'Mild' },
-    summary: { meanCongruentRT: 624.1, meanIncongruentRT: 758.3, stroopInterference: 134.2, accuracyPct: 91.7, totalTrials: 24 },
-    trials: [
-      { trialIndex: 1, word: 'लाल', color: '#dc2626', colorName: 'red', congruent: true, response: 'red', correct: true, rtMs: 610.5 },
-      { trialIndex: 2, word: 'हरा', color: '#2563eb', colorName: 'blue', congruent: false, response: 'blue', correct: true, rtMs: 780.2 },
-      { trialIndex: 3, word: 'नीला', color: '#2563eb', colorName: 'blue', congruent: true, response: 'blue', correct: true, rtMs: 638.0 },
-      { trialIndex: 4, word: 'पीला', color: '#16a34a', colorName: 'green', congruent: false, response: 'green', correct: true, rtMs: 736.4 },
-    ],
+    id: 'flanker',
+    name: 'Eriksen Flanker Task',
+    domain: 'attention',
+    shortDesc: 'Tests response inhibition and selective visual attention in the presence of distracting peripheral stimuli.',
+    defaultTrials: 32,
+    supportedLanguages: ['English', 'Hindi'],
+    stimulusType: 'Central arrow or letter flanked by matching (>>>>>) or conflicting (>><>>) distractors',
+    dependentMeasures: ['Flanker Congruence Effect (ms)', 'Post-Error Slowing', 'Accuracy %'],
   },
   {
-    id: 'STX-TN-003',
-    studyId: 'proj-001',
-    startedAt: '2026-09-21T14:30:00.000Z',
-    completedAt: '2026-09-21T14:37:18.000Z',
-    demographics: { ageGroup: '18-24', state: 'Tamil Nadu (IIT-M cohort)', primaryLanguage: 'Tamil / English', device: 'mobile' },
-    consentGiven: true,
-    clinicalScores: { phq9: 2, phq9Severity: 'Minimal', gad7: 2, gad7Severity: 'Minimal' },
-    summary: { meanCongruentRT: 608.0, meanIncongruentRT: 726.5, stroopInterference: 118.5, accuracyPct: 100.0, totalTrials: 24 },
-    trials: [
-      { trialIndex: 1, word: 'சிவப்பு', color: '#dc2626', colorName: 'red', congruent: true, response: 'red', correct: true, rtMs: 595.0 },
-      { trialIndex: 2, word: 'பச்சை', color: '#dc2626', colorName: 'red', congruent: false, response: 'red', correct: true, rtMs: 718.0 },
-      { trialIndex: 3, word: 'நீலம்', color: '#2563eb', colorName: 'blue', congruent: true, response: 'blue', correct: true, rtMs: 621.0 },
-      { trialIndex: 4, word: 'மஞ்சள்', color: '#ca8a04', colorName: 'yellow', congruent: true, response: 'yellow', correct: true, rtMs: 608.0 },
-    ],
+    id: 'nback',
+    name: 'N-Back Working Memory Task (2-Back)',
+    domain: 'memory',
+    shortDesc: 'Gold standard for working memory capacity, updating, and continuous item monitoring.',
+    defaultTrials: 30,
+    supportedLanguages: ['English', 'Hindi'],
+    stimulusType: 'Sequential visual letter stream with target match 2 steps prior',
+    dependentMeasures: ['Hit Rate', 'False Alarm Rate', 'd-prime (d\') Sensitivity', 'Mean RT'],
   },
   {
-    id: 'STX-MH-004',
-    studyId: 'proj-001',
-    startedAt: '2026-09-22T09:12:15.000Z',
-    completedAt: '2026-09-22T09:19:02.000Z',
-    demographics: { ageGroup: '25-34', state: 'Maharashtra (TISS Mumbai)', primaryLanguage: 'Marathi / English', device: 'desktop' },
-    consentGiven: true,
-    clinicalScores: { phq9: 5, phq9Severity: 'Mild', gad7: 4, gad7Severity: 'Minimal' },
-    summary: { meanCongruentRT: 631.5, meanIncongruentRT: 742.0, stroopInterference: 110.5, accuracyPct: 95.8, totalTrials: 24 },
-    trials: [
-      { trialIndex: 1, word: 'BLUE', color: '#2563eb', colorName: 'blue', congruent: true, response: 'blue', correct: true, rtMs: 620.0 },
-      { trialIndex: 2, word: 'RED', color: '#ca8a04', colorName: 'yellow', congruent: false, response: 'yellow', correct: true, rtMs: 755.0 },
-    ],
+    id: 'digitspan',
+    name: 'Digit Span (Forward & Backward)',
+    domain: 'memory',
+    shortDesc: 'Evaluates verbal working memory span and mental manipulation capacity.',
+    defaultTrials: 14,
+    supportedLanguages: ['English', 'Hindi', 'Tamil'],
+    stimulusType: 'Auditory/visual sequence of Indian digits (2 to 9 span length)',
+    dependentMeasures: ['Forward Span Maximum', 'Backward Span Maximum', 'Total Memory Score'],
   },
   {
-    id: 'STX-KL-005',
-    studyId: 'proj-001',
-    startedAt: '2026-09-22T11:45:20.000Z',
-    completedAt: '2026-09-22T11:52:11.000Z',
-    demographics: { ageGroup: '18-24', state: 'Kerala (Calicut Univ)', primaryLanguage: 'Malayalam / English', device: 'mobile' },
-    consentGiven: true,
-    clinicalScores: { phq9: 8, phq9Severity: 'Mild', gad7: 5, gad7Severity: 'Mild' },
-    summary: { meanCongruentRT: 585.2, meanIncongruentRT: 699.4, stroopInterference: 114.2, accuracyPct: 95.8, totalTrials: 24 },
-    trials: [
-      { trialIndex: 1, word: 'GREEN', color: '#16a34a', colorName: 'green', congruent: true, response: 'green', correct: true, rtMs: 575.0 },
-      { trialIndex: 2, word: 'YELLOW', color: '#dc2626', colorName: 'red', congruent: false, response: 'red', correct: true, rtMs: 710.0 },
-    ],
+    id: 'affective_priming',
+    name: 'Affective Priming & Facial Emotion (FER)',
+    domain: 'emotion',
+    shortDesc: 'Examines automatic emotional evaluation, valence processing, and emotion recognition.',
+    defaultTrials: 28,
+    supportedLanguages: ['English', 'Hindi'],
+    stimulusType: 'Indian emotion faces (Happy, Fear, Sad, Neutral) with valenced word probes',
+    dependentMeasures: ['Emotion Recognition Accuracy %', 'Valence Priming RT (ms)', 'Threat Bias Index'],
   },
   {
-    id: 'STX-WB-006',
+    id: 'wcst',
+    name: 'Wisconsin Card Sorting (Rule Switching)',
+    domain: 'executive',
+    shortDesc: 'Measures cognitive flexibility, perseveration, and the ability to shift strategies under shifting feedback.',
+    defaultTrials: 40,
+    supportedLanguages: ['English', 'Hindi'],
+    stimulusType: 'Dimensional cards matching by color, shape, or number with unannounced rule shifts',
+    dependentMeasures: ['Perseverative Errors', 'Categories Completed', 'Trials to First Category'],
+  },
+  {
+    id: 'delay_discounting',
+    name: 'Intertemporal Choice & Delay Discounting',
+    domain: 'decision',
+    shortDesc: 'Quantifies impulsivity and monetary subjective valuation (Now vs. Future Rupee payouts).',
+    defaultTrials: 20,
+    supportedLanguages: ['English', 'Hindi', 'Tamil'],
+    stimulusType: 'Choice pairs: e.g. ₹500 today vs. ₹1,000 in 3 months',
+    dependentMeasures: ['Hyperbolic Discount Parameter (k)', 'Indifference Points (INR)', 'Choice Consistency'],
+  },
+];
+
+export const SCALE_CATALOG: ScaleItemExtended[] = [
+  {
+    id: 'phq9',
+    name: 'PHQ-9',
+    fullName: 'Patient Health Questionnaire - 9',
+    domain: 'Depression & Affect',
+    licenseType: 'open_access',
+    publisher: 'Pfizer / Public Domain (Free CC-BY)',
+    qualificationLevel: 'A',
+    costPerAdminINR: 0,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada', 'Telugu', 'Bengali', 'Marathi', 'Malayalam'],
+    itemsCount: 9,
+    description: 'Gold standard 9-item depression severity screening aligned with DSM-5 criteria.',
+    citation: 'Kroenke, K., et al. (2001). J Gen Intern Med, 16(9), 606-613.',
+  },
+  {
+    id: 'gad7',
+    name: 'GAD-7',
+    fullName: 'Generalized Anxiety Disorder - 7',
+    domain: 'Anxiety & Worry',
+    licenseType: 'open_access',
+    publisher: 'Pfizer / Public Domain (Free CC-BY)',
+    qualificationLevel: 'A',
+    costPerAdminINR: 0,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada', 'Bengali', 'Telugu'],
+    itemsCount: 7,
+    description: 'Rapid 7-item dimensional measure of generalized anxiety disorder severity.',
+    citation: 'Spitzer, R. L., et al. (2006). Arch Intern Med, 166(10), 1092-1097.',
+  },
+  {
+    id: 'dass21',
+    name: 'DASS-21',
+    fullName: 'Depression Anxiety Stress Scale - 21',
+    domain: 'Tri-Partite Emotional States',
+    licenseType: 'open_access',
+    publisher: 'Univ of New South Wales (Free Academic Use)',
+    qualificationLevel: 'A',
+    costPerAdminINR: 0,
+    languages: ['English', 'Hindi', 'Tamil', 'Marathi'],
+    itemsCount: 21,
+    description: 'Measures negative emotional states across three discrete subscales: depression, anxiety, and tension/stress.',
+    citation: 'Lovibond, S.H. & Lovibond, P.F. (1995). Behav Res Ther, 33(3), 335-343.',
+  },
+  {
+    id: 'pss10',
+    name: 'PSS-10',
+    fullName: 'Perceived Stress Scale - 10',
+    domain: 'Stress Appraisal',
+    licenseType: 'open_access',
+    publisher: 'Sheldon Cohen / Public Domain',
+    qualificationLevel: 'A',
+    costPerAdminINR: 0,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada'],
+    itemsCount: 10,
+    description: 'Most widely used psychological instrument for measuring the perception of stress and uncontrollability.',
+    citation: 'Cohen, S., et al. (1983). J Health Soc Behav, 24(4), 385-396.',
+  },
+  {
+    id: 'whodas2',
+    name: 'WHODAS 2.0',
+    fullName: 'WHO Disability Assessment Schedule 2.0',
+    domain: 'Functional Health & Disability',
+    licenseType: 'open_access',
+    publisher: 'World Health Organization (WHO)',
+    qualificationLevel: 'A',
+    costPerAdminINR: 0,
+    languages: ['English', 'Hindi', 'Tamil', 'Bengali'],
+    itemsCount: 12,
+    description: 'Generic assessment instrument for health and disability across 6 functional life domains.',
+    citation: 'Üstün, T.B., et al. (2010). Epidemiol Psichiatr Soc, 19(2), 160-170.',
+  },
+  {
+    id: 'panas',
+    name: 'PANAS',
+    fullName: 'Positive and Negative Affect Schedule',
+    domain: 'Mood & Affective Disposition',
+    licenseType: 'open_access',
+    publisher: 'Watson & Clark (Free for Research)',
+    qualificationLevel: 'A',
+    costPerAdminINR: 0,
+    languages: ['English', 'Hindi', 'Tamil'],
+    itemsCount: 20,
+    description: 'Brief 20-item scale assessing both positive affect (PA) and negative affect (NA).',
+    citation: 'Watson, D., et al. (1988). J Pers Soc Psychol, 54(6), 1063-1070.',
+  },
+  {
+    id: 'wais4',
+    name: 'WAIS-IV India',
+    fullName: 'Wechsler Adult Intelligence Scale (Indian Edition)',
+    domain: 'Cognitive & Intellectual Ability',
+    licenseType: 'licensed_commercial',
+    publisher: 'Pearson Clinical Assessment India',
+    qualificationLevel: 'C',
+    costPerAdminINR: 350,
+    languages: ['English', 'Hindi adaptation'],
+    itemsCount: 15,
+    description: 'Comprehensive clinical instrument for assessing cognitive capability in adults aged 16-90 with Indian norms.',
+    citation: 'Pearson Clinical Assessment (2014). Indian Normative Standardization.',
+  },
+  {
+    id: 'bdi2',
+    name: 'BDI-II',
+    fullName: 'Beck Depression Inventory - Second Edition',
+    domain: 'Clinical Depression',
+    licenseType: 'licensed_commercial',
+    publisher: 'Pearson Clinical Assessment',
+    qualificationLevel: 'B',
+    costPerAdminINR: 120,
+    languages: ['English', 'Hindi adaptation'],
+    itemsCount: 21,
+    description: 'Standard 21-item self-report rating inventory measuring characteristic attitudes and symptoms of depression.',
+    citation: 'Beck, A. T., et al. (1996). Psychol Assess, 8(4), 387.',
+  },
+  {
+    id: 'mmpi3',
+    name: 'MMPI-3',
+    fullName: 'Minnesota Multiphasic Personality Inventory - 3',
+    domain: 'Personality & Psychopathology',
+    licenseType: 'licensed_commercial',
+    publisher: 'Univ of Minnesota Press / Pearson',
+    qualificationLevel: 'C',
+    costPerAdminINR: 480,
+    languages: ['English'],
+    itemsCount: 335,
+    description: 'Comprehensive psychological assessment tool for evaluating personality traits and psychopathology.',
+    citation: 'Ben-Porath, Y.S., & Tellegen, A. (2020). Pearson.',
+  },
+];
+
+export const REPLICATION_STUDIES: ReplicationStudy[] = [
+  {
+    id: 'rep-001',
+    originalPaper: 'Stroop, J. R. (1935). Studies of interference in serial verbal reactions.',
+    landmarkEffect: 'Stroop Color-Word Interference Effect',
+    year: 1935,
+    originalSample: 'US College Undergraduates (N = 70)',
+    originalCulture: 'W.E.I.R.D. (North America/Europe)',
+    replicationStatus: 'replicated',
+    indianSites: ['NIMHANS Bengaluru', 'IIT Delhi', 'Presidency Univ Kolkata', 'Univ of Hyderabad'],
+    targetN: 500,
+    currentN: 412,
+    keyFinding: 'Robust interference confirmed in bilingual Indians across Devanagari and Latin scripts, with asymmetric interference favoring dominant mother tongue.',
+    cloneableStudyId: 'proj-001',
+  },
+  {
+    id: 'rep-002',
+    originalPaper: 'Mischel, W., et al. (1989). Delay of gratification in children.',
+    landmarkEffect: 'Marshmallow Task / Delayed Gratification',
+    year: 1989,
+    originalSample: 'Stanford Bing Nursery Children (High SES, California)',
+    originalCulture: 'W.E.I.R.D. (North America/Europe)',
+    replicationStatus: 'attenuated',
+    indianSites: ['TISS Mumbai', 'IIT Madras', 'Ashoka Univ'],
+    targetN: 350,
+    currentN: 290,
+    keyFinding: 'Waiting time is sharply moderated by institutional trust and resource scarcity rather than intrinsic willpower alone; rural children show rational immediate consumption.',
+    cloneableStudyId: 'proj-002',
+  },
+  {
+    id: 'rep-003',
+    originalPaper: 'Asch, S. E. (1951). Effects of group pressure upon the modification and distortion of judgments.',
+    landmarkEffect: 'Asch Line Length Conformity Effect',
+    year: 1951,
+    originalSample: 'Swarthmore College Male Students (USA)',
+    originalCulture: 'W.E.I.R.D. (North America/Europe)',
+    replicationStatus: 'replicated',
+    indianSites: ['Delhi University', 'SCARF Chennai', 'Gauhati Univ'],
+    targetN: 300,
+    currentN: 265,
+    keyFinding: 'Significantly higher normative conformity in rural joint-family cohorts compared to urban individualistic youth, demonstrating cultural mediation of group consensus.',
+    cloneableStudyId: 'proj-003',
+  },
+  {
+    id: 'rep-004',
+    originalPaper: 'Tversky, A., & Kahneman, D. (1981). The framing of decisions and the psychology of choice.',
+    landmarkEffect: 'Asian Disease Problem & Loss Aversion',
+    year: 1981,
+    originalSample: 'Stanford & UBC Undergraduates',
+    originalCulture: 'W.E.I.R.D. (North America/Europe)',
+    replicationStatus: 'replicated',
+    indianSites: ['IISc Bengaluru', 'IIT Bombay', 'IIM Ahmedabad'],
+    targetN: 450,
+    currentN: 450,
+    keyFinding: 'Loss aversion ratio is approximately 1.7x in Indian gig workers (vs. 2.1x in Western cohorts), modulated by everyday exposure to income volatility.',
+    cloneableStudyId: 'proj-004',
+  },
+  {
+    id: 'rep-005',
+    originalPaper: 'Baumeister, R. F., et al. (1998). Ego depletion: Is the active self a limited resource?',
+    landmarkEffect: 'Ego Depletion & Glucose/Self-Control Exhaustion',
+    year: 1998,
+    originalSample: 'Case Western Reserve Univ Undergraduates (N = 67)',
+    originalCulture: 'W.E.I.R.D. (North America/Europe)',
+    replicationStatus: 'failed',
+    indianSites: ['NIMHANS', 'IIT Kanpur', 'Calicut Univ', 'JNU New Delhi'],
+    targetN: 600,
+    currentN: 580,
+    keyFinding: 'Multi-lab consortium registered report observed no statistically significant depletion effect (d = 0.04, p = .42), replicating the global PSA null finding.',
+    cloneableStudyId: 'proj-005',
+  },
+];
+
+export const INITIAL_RECRUITMENT_LISTINGS: RecruitmentListing[] = [
+  {
+    id: 'rec-001',
     studyId: 'proj-001',
-    startedAt: '2026-09-22T13:20:10.000Z',
-    completedAt: '2026-09-22T13:27:00.000Z',
-    demographics: { ageGroup: '35-44', state: 'West Bengal (Presidency Univ)', primaryLanguage: 'Bengali / English', device: 'desktop' },
-    consentGiven: true,
-    clinicalScores: { phq9: 3, phq9Severity: 'Minimal', gad7: 2, gad7Severity: 'Minimal' },
-    summary: { meanCongruentRT: 642.0, meanIncongruentRT: 775.5, stroopInterference: 133.5, accuracyPct: 91.7, totalTrials: 24 },
-    trials: [
-      { trialIndex: 1, word: 'RED', color: '#dc2626', colorName: 'red', congruent: true, response: 'red', correct: true, rtMs: 635.0 },
-      { trialIndex: 2, word: 'BLUE', color: '#16a34a', colorName: 'green', congruent: false, response: 'green', correct: true, rtMs: 790.0 },
-    ],
+    title: 'Multilingual Cognitive Interference in Bilingual Indian Youth',
+    leadInstitution: 'NIMHANS Bengaluru',
+    targetDemographics: 'Bilingual adults aged 18–35 (Hindi, Tamil, or Kannada speakers)',
+    compensationINR: 200,
+    durationMinutes: 12,
+    openSlots: 100,
+    enrolledCount: 68,
+    status: 'active',
+    stateScope: 'Pan-India (Remote Smartphone / PC)',
+  },
+  {
+    id: 'rec-002',
+    studyId: 'proj-002',
+    title: 'Decision Fatigue and Financial Risk Perception in Gig Economy Workers',
+    leadInstitution: 'IIT Delhi & TISS Mumbai',
+    targetDemographics: 'Full-time gig/delivery platform workers in Delhi NCR & Mumbai',
+    compensationINR: 400,
+    durationMinutes: 20,
+    openSlots: 200,
+    enrolledCount: 142,
+    status: 'active',
+    stateScope: 'Delhi NCR, Maharashtra',
+  },
+  {
+    id: 'rec-003',
+    studyId: 'proj-003',
+    title: 'Screening Executive Function in Early Mild Cognitive Impairment',
+    leadInstitution: 'SCARF Chennai',
+    targetDemographics: 'Adults aged 55+ with self-reported memory complaints (Tamil speakers)',
+    compensationINR: 350,
+    durationMinutes: 25,
+    openSlots: 80,
+    enrolledCount: 45,
+    status: 'active',
+    stateScope: 'Tamil Nadu, Puducherry',
   },
 ];
 
@@ -158,6 +384,7 @@ const INITIAL_PROJECT: StudyProject = {
   },
   experimentConfig: {
     taskName: 'Multilingual Stroop Cognitive Interference Task',
+    paradigmId: 'stroop',
     trialCount: 24,
     fixationDurationMs: 500,
     stimulusDurationMs: 2000,
@@ -166,69 +393,44 @@ const INITIAL_PROJECT: StudyProject = {
     includePhq9: true,
     includeGad7: true,
   },
-  sessions: INITIAL_SESSIONS,
+  sessions: [],
 };
-
-const INITIAL_COLLAB_POSTS: CollaborationPost[] = [
-  {
-    id: 'collab-001',
-    author: 'Dr. Priya Sundaram',
-    institution: 'NIMHANS, Bengaluru',
-    title: 'Seeking Co-PI for Multicentric Digital Cognitive Assessment in Rural Karnataka',
-    domain: 'Neuropsychiatry & Public Health',
-    description: 'We are applying for an ICSSR Major Research Grant to validate smartphone-based cognitive screening for early MCI in primary health centers. Looking for a collaborator with psychometrics & Kannada translation expertise.',
-    requiredSkills: ['Psychometrics', 'Kannada Validation', 'Field Logistics'],
-    grantAgency: 'ICSSR Major Grant (₹30 Lakhs)',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    contactEmail: 'priya.s@nimhans.ac.in',
-    createdAt: '2026-09-21T06:00:00.000Z',
-  },
-  {
-    id: 'collab-002',
-    author: 'Prof. Rajesh K. Verma',
-    institution: 'IIT Delhi (Dept of Humanities & Social Sciences)',
-    title: 'Co-Investigator Needed: Affective Priming & Behavioral Economics Experiment',
-    domain: 'Behavioral Economics',
-    description: 'DST-SERB CRG submission on decision fatigue among informal sector gig workers. We need a behavioral scientist to lead the experimental Stroop/IAT task design and reaction time modeling.',
-    requiredSkills: ['jsPsych / PsychoPy', 'Linear Mixed Models', 'Experimental Design'],
-    grantAgency: 'DST-SERB CRG (₹45 Lakhs)',
-    city: 'New Delhi',
-    state: 'Delhi',
-    contactEmail: 'rverma@hss.iitd.ac.in',
-    createdAt: '2026-09-22T08:30:00.000Z',
-  },
-  {
-    id: 'collab-003',
-    author: 'Dr. Ananya Sen',
-    institution: 'TISS Mumbai',
-    title: 'Community Mental Health Screening in Slum Communities (DPDP & ICMR compliant)',
-    domain: 'Clinical Psychology',
-    description: 'Looking for a quantitative co-author to analyze PHQ-9 & GAD-7 normative distribution across 800 community respondents. Open to joint ICMR Ad-hoc proposal submission.',
-    requiredSkills: ['SPSS / R', 'Epidemiological Survey', 'ICMR Ethics'],
-    grantAgency: 'ICMR Ad-hoc (₹25 Lakhs)',
-    city: 'Mumbai',
-    state: 'Maharashtra',
-    contactEmail: 'ananya.sen@tiss.edu',
-    createdAt: '2026-09-22T14:15:00.000Z',
-  },
-];
 
 interface VaultData {
   projects: StudyProject[];
   activeProjectId: string;
+  activePersona: UserPersona;
   collaborationPosts: CollaborationPost[];
+  recruitmentListings: RecruitmentListing[];
+  preRegistrations: PreRegistrationRecord[];
 }
 
 export function useStimulxStore() {
   const [vault, setVault] = useState<VaultData>({
     projects: [INITIAL_PROJECT],
     activeProjectId: INITIAL_PROJECT.id,
-    collaborationPosts: INITIAL_COLLAB_POSTS,
+    activePersona: 'phd',
+    collaborationPosts: [],
+    recruitmentListings: INITIAL_RECRUITMENT_LISTINGS,
+    preRegistrations: [
+      {
+        id: 'prereg-001',
+        studyId: 'proj-001',
+        studyTitle: 'Multilingual Cognitive Interference & Linguistic Stroop in Indian Youth',
+        hypotheses: '1. Incongruent Stroop trials will produce significantly higher RT than congruent trials. 2. Interference will be significantly smaller in L1 Hindi/Tamil than L2 English.',
+        samplingPlan: 'Stopping rule: Data collection will terminate exactly upon reaching N = 100 valid participant runs.',
+        dependentVars: 'Reaction time (milliseconds) on correct trials; Error rate (%)',
+        independentVars: 'Stimulus congruency (Congruent vs. Incongruent), Language family (Hindi vs. English)',
+        outlierCriteria: 'Trials with RT < 200ms or > 2500ms will be excluded prior to statistical aggregation.',
+        analysisPlan: 'Paired-samples t-test and Linear Mixed-Effects Model with random participant intercepts.',
+        timestampHash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        dateRegistered: '2026-09-20T12:00:00.000Z',
+        badgeAwarded: true,
+      },
+    ],
   });
   const [hydrated, setHydrated] = useState(false);
 
-  // Load from LocalStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -244,7 +446,6 @@ export function useStimulxStore() {
     setHydrated(true);
   }, []);
 
-  // Save to LocalStorage on mutation
   const persistVault = (newVault: VaultData) => {
     setVault(newVault);
     try {
@@ -257,11 +458,15 @@ export function useStimulxStore() {
   const activeProject =
     vault.projects.find((p) => p.id === vault.activeProjectId) || vault.projects[0];
 
+  const setActivePersona = (persona: UserPersona) => {
+    persistVault({ ...vault, activePersona: persona });
+  };
+
   const setActiveProject = (projectId: string) => {
     persistVault({ ...vault, activeProjectId: projectId });
   };
 
-  const createProject = (name: string, hypothesis: string) => {
+  const createProject = (name: string, hypothesis: string, paradigmId: string = 'stroop') => {
     const newProj: StudyProject = {
       ...INITIAL_PROJECT,
       id: `proj-${Date.now()}`,
@@ -269,6 +474,10 @@ export function useStimulxStore() {
       hypothesis,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      experimentConfig: {
+        ...INITIAL_PROJECT.experimentConfig,
+        paradigmId,
+      },
       sessions: [],
     };
     persistVault({
@@ -325,9 +534,8 @@ export function useStimulxStore() {
       const lang = languages[Math.floor(Math.random() * languages.length)];
       const device: 'desktop' | 'mobile' = Math.random() > 0.4 ? 'desktop' : 'mobile';
 
-      // Realistic Gaussian-like RT generation
       const baseCongruent = 560 + Math.random() * 80;
-      const interference = 95 + Math.random() * 50; // ~95-145ms Stroop effect
+      const interference = 95 + Math.random() * 50;
       const baseIncongruent = baseCongruent + interference;
 
       const phq = Math.floor(Math.random() * 12);
@@ -387,19 +595,74 @@ export function useStimulxStore() {
     });
   };
 
-  const resetToDefaults = () => {
+  const addRecruitmentListing = (listing: Omit<RecruitmentListing, 'id' | 'enrolledCount' | 'status'>) => {
+    const newRec: RecruitmentListing = {
+      ...listing,
+      id: `rec-${Date.now()}`,
+      enrolledCount: 0,
+      status: 'active',
+    };
     persistVault({
-      projects: [INITIAL_PROJECT],
-      activeProjectId: INITIAL_PROJECT.id,
-      collaborationPosts: INITIAL_COLLAB_POSTS,
+      ...vault,
+      recruitmentListings: [newRec, ...vault.recruitmentListings],
     });
+  };
+
+  const addPreRegistration = (record: Omit<PreRegistrationRecord, 'id' | 'dateRegistered' | 'badgeAwarded'>) => {
+    const newPrereg: PreRegistrationRecord = {
+      ...record,
+      id: `prereg-${Date.now()}`,
+      dateRegistered: new Date().toISOString(),
+      badgeAwarded: true,
+    };
+    persistVault({
+      ...vault,
+      preRegistrations: [newPrereg, ...vault.preRegistrations],
+    });
+    return newPrereg;
+  };
+
+  const cloneReplicationStudy = (replicationId: string) => {
+    const rep = REPLICATION_STUDIES.find((r) => r.id === replicationId);
+    if (!rep) return null;
+
+    const clonedProj: StudyProject = {
+      ...INITIAL_PROJECT,
+      id: `proj-rep-${Date.now()}`,
+      name: `Replication: ${rep.landmarkEffect} (Indian Cohort)`,
+      hypothesis: `Testing the cross-cultural validity of ${rep.landmarkEffect} (${rep.originalPaper}) across Indian demographic cohorts.`,
+      targetSampleSize: rep.targetN,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ethicsProtocol: {
+        ...INITIAL_PROJECT.ethicsProtocol,
+        protocolNumber: `IEC-REP-${Date.now().toString().slice(-4)}`,
+        studyTitle: `Multi-Site Replication of ${rep.landmarkEffect} under ICMR Guidelines`,
+      },
+      sessions: [],
+    };
+
+    persistVault({
+      ...vault,
+      projects: [...vault.projects, clonedProj],
+      activeProjectId: clonedProj.id,
+    });
+
+    return clonedProj;
   };
 
   return {
     hydrated,
     projects: vault.projects,
     activeProject,
+    activePersona: vault.activePersona,
     collaborationPosts: vault.collaborationPosts,
+    recruitmentListings: vault.recruitmentListings,
+    preRegistrations: vault.preRegistrations,
+    paradigms: COGNITIVE_PARADIGMS,
+    scales: SCALE_CATALOG,
+    replicationStudies: REPLICATION_STUDIES,
+    setActivePersona,
     setActiveProject,
     createProject,
     updateActiveProject,
@@ -407,6 +670,8 @@ export function useStimulxStore() {
     deleteParticipantSession,
     simulateParticipants,
     addCollaborationPost,
-    resetToDefaults,
+    addRecruitmentListing,
+    addPreRegistration,
+    cloneReplicationStudy,
   };
 }

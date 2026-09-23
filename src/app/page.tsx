@@ -15,6 +15,11 @@ import { AnalysisStage } from '@/components/stages/AnalysisStage';
 import { WritingStage } from '@/components/stages/WritingStage';
 import { PublishStage } from '@/components/stages/PublishStage';
 import { CommunityStage } from '@/components/stages/CommunityStage';
+import { ReplicationStage } from '@/components/stages/ReplicationStage';
+import { ParticipantBoard } from '@/components/recruitment/ParticipantBoard';
+import { PreRegistrationStudio } from '@/components/prereg/PreRegistrationStudio';
+import { ScaleMarketplaceModal } from '@/components/scales/ScaleMarketplaceModal';
+import { ApiPlaygroundModal } from '@/components/api/ApiPlaygroundModal';
 import { ParticipantRunner } from '@/components/runner/ParticipantRunner';
 import { useStimulxStore } from '@/lib/store';
 
@@ -24,8 +29,8 @@ const STAGE_FLOW: StageId[] = [
   'grants',
   'ethics',
   'design',
-  'recruit',
   'builder',
+  'recruit',
   'pool',
   'analysis',
   'writing',
@@ -38,6 +43,8 @@ export default function StimulxApp() {
   const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(['grants', 'ethics']));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showGlobalRunner, setShowGlobalRunner] = useState(false);
+  const [showScaleModal, setShowScaleModal] = useState(false);
+  const [showApiModal, setShowApiModal] = useState(false);
 
   // Detect participant mode via URL query (e.g. ?run=proj-001)
   useEffect(() => {
@@ -89,16 +96,30 @@ export default function StimulxApp() {
           }}
           onClose={() => {
             setShowGlobalRunner(false);
-            // Clean URL query if present
             if (typeof window !== 'undefined' && window.history.replaceState) {
               const url = new URL(window.location.href);
               url.searchParams.delete('run');
               url.searchParams.delete('study');
+              url.searchParams.delete('task');
               window.history.replaceState({}, '', url.pathname);
             }
           }}
         />
       )}
+
+      {/* Scale Marketplace Modal */}
+      <ScaleMarketplaceModal
+        isOpen={showScaleModal}
+        onClose={() => setShowScaleModal(false)}
+        onToast={showToast}
+      />
+
+      {/* API Explorer Modal */}
+      <ApiPlaygroundModal
+        isOpen={showApiModal}
+        onClose={() => setShowApiModal(false)}
+        onToast={showToast}
+      />
 
       {/* Universal Top Navigation */}
       <Topbar
@@ -108,6 +129,8 @@ export default function StimulxApp() {
         onAdvance={handleAdvance}
         onSave={handleSave}
         onOpenRunner={() => setShowGlobalRunner(true)}
+        onOpenScaleMarketplace={() => setShowScaleModal(true)}
+        onOpenApiPlayground={() => setShowApiModal(true)}
       />
 
       {/* Dynamic Lifecycle Screen Content */}
@@ -125,11 +148,11 @@ export default function StimulxApp() {
         {currentStage === 'design' && (
           <DesignStage onAdvance={handleAdvance} onToast={showToast} />
         )}
-        {currentStage === 'recruit' && (
-          <RecruitmentStage onAdvance={handleAdvance} onToast={showToast} />
-        )}
         {currentStage === 'builder' && (
           <ExperimentStage onAdvance={handleAdvance} onToast={showToast} />
+        )}
+        {currentStage === 'recruit' && (
+          <RecruitmentStage onAdvance={handleAdvance} onToast={showToast} />
         )}
         {currentStage === 'pool' && (
           <ParticipantPoolStage onAdvance={handleAdvance} onToast={showToast} />
@@ -144,6 +167,21 @@ export default function StimulxApp() {
           <PublishStage onAdvance={handleAdvance} onToast={showToast} />
         )}
         {currentStage === 'community' && <CommunityStage onToast={showToast} />}
+        {currentStage === 'replication' && (
+          <ReplicationStage
+            onToast={showToast}
+            onNavigateToAnalysis={() => setCurrentStage('analysis')}
+          />
+        )}
+        {currentStage === 'recruitment_board' && (
+          <ParticipantBoard
+            onToast={showToast}
+            onLaunchStudy={() => setShowGlobalRunner(true)}
+          />
+        )}
+        {currentStage === 'prereg' && (
+          <PreRegistrationStudio onToast={showToast} />
+        )}
       </div>
 
       {/* Floating System Toast */}
