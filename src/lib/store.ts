@@ -11,9 +11,20 @@ import {
   ReplicationStudy,
   PreRegistrationRecord,
   RecruitmentListing,
+  ExperimentTree,
+  TaskDefinition,
+  QuestionnaireDefinition,
+  GorillaRawTrialLog,
+  QuestionnaireResponseLog,
+  LiveParticipantSession,
 } from '@/types';
+import {
+  DEFAULT_EXPERIMENT_TREE,
+  DEFAULT_TASKS,
+  DEFAULT_QUESTIONNAIRES,
+} from '@/lib/gorillaTemplates';
 
-const STORAGE_KEY = 'stimulx_vault_v2';
+const STORAGE_KEY = 'stimulx_vault_v3';
 
 export const COGNITIVE_PARADIGMS: ExperimentParadigm[] = [
   {
@@ -394,6 +405,10 @@ const INITIAL_PROJECT: StudyProject = {
     includeGad7: true,
   },
   sessions: [],
+  tree: DEFAULT_EXPERIMENT_TREE,
+  tasks: DEFAULT_TASKS,
+  questionnaires: DEFAULT_QUESTIONNAIRES,
+  liveSessions: [],
 };
 
 interface VaultData {
@@ -431,13 +446,30 @@ export function useStimulxStore() {
   });
   const [hydrated, setHydrated] = useState(false);
 
+  const normalizeProject = (p: StudyProject): StudyProject => ({
+    ...p,
+    tree: p.tree && p.tree.nodes && p.tree.nodes.length > 0 ? p.tree : DEFAULT_EXPERIMENT_TREE,
+    tasks: p.tasks && p.tasks.length > 0 ? p.tasks : DEFAULT_TASKS,
+    questionnaires: p.questionnaires && p.questionnaires.length > 0 ? p.questionnaires : DEFAULT_QUESTIONNAIRES,
+    liveSessions: p.liveSessions || [],
+  });
+
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      let stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) {
+        // Fallback to previous versions for seamless user migration
+        stored = localStorage.getItem('stimulx_vault_v2') || localStorage.getItem('stimulx_vault_v1');
+      }
       if (stored) {
         const parsed = JSON.parse(stored) as VaultData;
         if (parsed.projects && parsed.projects.length > 0) {
-          setVault(parsed);
+          const migratedVault: VaultData = {
+            ...parsed,
+            projects: parsed.projects.map(normalizeProject),
+          };
+          setVault(migratedVault);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migratedVault));
         }
       }
     } catch (e) {
@@ -651,6 +683,151 @@ export function useStimulxStore() {
     return clonedProj;
   };
 
+  const updateExperimentTree = (tree: ExperimentTree) => {
+    updateActiveProject((prev) => ({
+      ...prev,
+      tree,
+      updatedAt: new Date().toISOString(),
+    }));
+  };
+
+  const saveTask = (task: TaskDefinition) => {
+    updateActiveProject((prev) => {
+      const existing = prev.tasks || [];
+      const index = existing.findIndex((t) => t.id === task.id);
+      const updated =
+        index >= 0
+          ? existing.map((t) => (t.id === task.id ? task : t))
+          : [...existing, task];
+      return {
+        ...prev,
+        tasks: updated,
+        updatedAt: new Date().toISOString(),
+      };
+    });
+  };
+
+  const deleteTask = (taskId: string) => {
+    updateActiveProject((prev) => ({
+      ...prev,
+      tasks: (prev.tasks || []).filter((t) => t.id !== taskId),
+      updatedAt: new Date().toISOString(),
+    }));
+  };
+
+  const saveQuestionnaire = (questionnaire: QuestionnaireDefinition) => {
+    updateActiveProject((prev) => {
+      const existing = prev.questionnaires || [];
+      const index = existing.findIndex((q) => q.id === questionnaire.id);
+      const updated =
+        index >= 0
+          ? existing.map((q) => (q.id === questionnaire.id ? questionnaire : q))
+          : [...existing, questionnaire];
+      return {
+        ...prev,
+        questionnaires: updated,
+        updatedAt: new Date().toISOString(),
+      };
+    });
+  };
+
+  const deleteQuestionnaire = (questionnaireId: string) => {
+    updateActiveProject((prev) => ({
+      ...prev,
+      questionnaires: (prev.questionnaires || []).filter((q) => q.id !== questionnaireId),
+      updatedAt: new Date().toISOString(),
+    }));
+  };
+
+  const createLiveSession = (
+    studyId: string,
+    demographics: {
+      age?: string;
+      gender?: string;
+      state?: string;
+      device?: 'desktop' | 'mobile';
+      primaryLanguage?: string;
+    } = {}
+  ): LiveParticipantSession => {
+    const startNode = activeProject.tree?.nodes.find((n) => n.type === 'start');
+    const firstNodeId = startNode?.next || activeProject.tree?.nodes[0]?.id || 'node_start';
+    const newSession: LiveParticipantSession = {
+      id: `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      studyId,
+      participantToken: `PT-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      status: 'in_progress',
+      startedAt: new Date().toISOString(),
+      currentNodeId: firstNodeId,
+      visitedNodeIds: [firstNodeId],
+      demographics,
+      rawTrialLogs: [],
+      questionnaireLogs: [],
+    };
+
+    updateActiveProject((prev) => ({
+      ...prev,
+      liveSessions: [newSession, ...(prev.liveSessions || [])],
+      updatedAt: new Date().toISOString(),
+    }));
+
+    return newSession;
+  };
+
+  const recordLiveTrialLog = (sessionId: string, log: GorillaRawTrialLog) => {
+    updateActiveProject((prev) => {
+      const sessions = (prev.liveSessions || []).map((s) => {
+        if (s.id !== sessionId) return s;
+        return {
+          ...s,
+          rawTrialLogs: [...s.rawTrialLogs, log],
+        };
+      });
+      return { ...prev, liveSessions: sessions };
+    });
+  };
+
+  const recordLiveQuestionnaireResponse = (
+    sessionId: string,
+    log: QuestionnaireResponseLog
+  ) => {
+    updateActiveProject((prev) => {
+      const sessions = (prev.liveSessions || []).map((s) => {
+        if (s.id !== sessionId) return s;
+        return {
+          ...s,
+          questionnaireLogs: [...s.questionnaireLogs, log],
+        };
+      });
+      return { ...prev, liveSessions: sessions };
+    });
+  };
+
+  const completeLiveSession = (
+    sessionId: string,
+    overallScores?: Record<string, number>
+  ) => {
+    updateActiveProject((prev) => {
+      const sessions = (prev.liveSessions || []).map((s) => {
+        if (s.id !== sessionId) return s;
+        return {
+          ...s,
+          status: 'completed' as const,
+          completedAt: new Date().toISOString(),
+          overallScores: overallScores || s.overallScores,
+        };
+      });
+      return { ...prev, liveSessions: sessions, updatedAt: new Date().toISOString() };
+    });
+  };
+
+  const deleteLiveSession = (sessionId: string) => {
+    updateActiveProject((prev) => ({
+      ...prev,
+      liveSessions: (prev.liveSessions || []).filter((s) => s.id !== sessionId),
+      updatedAt: new Date().toISOString(),
+    }));
+  };
+
   return {
     hydrated,
     projects: vault.projects,
@@ -673,5 +850,16 @@ export function useStimulxStore() {
     addRecruitmentListing,
     addPreRegistration,
     cloneReplicationStudy,
+    // Gorilla.sc Engine Methods
+    updateExperimentTree,
+    saveTask,
+    deleteTask,
+    saveQuestionnaire,
+    deleteQuestionnaire,
+    createLiveSession,
+    recordLiveTrialLog,
+    recordLiveQuestionnaireResponse,
+    completeLiveSession,
+    deleteLiveSession,
   };
 }
