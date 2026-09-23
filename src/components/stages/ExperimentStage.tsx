@@ -23,6 +23,7 @@ import { useStimulxStore } from "@/lib/store";
 import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
 import { MultiDomainExperimentBuilder } from "@/components/builder/MultiDomainExperimentBuilder";
 import { ExperimentTreeBuilder } from "@/components/tree/ExperimentTreeBuilder";
+import { GorillaTaskBuilder } from "@/components/task/GorillaTaskBuilder";
 
 interface ExperimentStageProps {
   onAdvance: () => void;
@@ -49,6 +50,7 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
   const [subView, setSubView] = useState<"tree" | "builder" | "simulator">("tree");
+  const [targetTaskId, setTargetTaskId] = useState<string | undefined>();
   const [showParticipantRunner, setShowParticipantRunner] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [trialIndex, setTrialIndex] = useState(0);
@@ -199,12 +201,16 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
 
       {subView === "tree" ? (
         <ExperimentTreeBuilder
-          onOpenTaskBuilder={() => setSubView("builder")}
+          onOpenTaskBuilder={(taskId) => {
+            setTargetTaskId(taskId);
+            setSubView("builder");
+          }}
           onLaunchParticipantPreview={() => setShowParticipantRunner(true)}
           onToast={onToast}
         />
       ) : subView === "builder" ? (
-        <MultiDomainExperimentBuilder
+        <GorillaTaskBuilder
+          initialTaskId={targetTaskId}
           onToast={onToast}
           onLaunchRunner={() => setShowParticipantRunner(true)}
         />
