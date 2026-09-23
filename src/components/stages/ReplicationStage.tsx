@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStimulxStore } from '@/lib/store';
-import { ReplicationStudy } from '@/types';
+import { StageId, ReplicationStudy } from '@/types';
 import {
   Globe2,
   GitFork,
@@ -17,14 +17,15 @@ import {
   ShieldCheck,
   Search,
   ExternalLink,
+  Layers,
 } from 'lucide-react';
 
 interface ReplicationStageProps {
   onToast: (msg: string) => void;
-  onNavigateToAnalysis: () => void;
+  onNavigateToStage: (stage: StageId) => void;
 }
 
-export function ReplicationStage({ onToast, onNavigateToAnalysis }: ReplicationStageProps) {
+export function ReplicationStage({ onToast, onNavigateToStage }: ReplicationStageProps) {
   const { replicationStudies, cloneReplicationStudy } = useStimulxStore();
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -41,8 +42,8 @@ export function ReplicationStage({ onToast, onNavigateToAnalysis }: ReplicationS
   const handleClone = (rep: ReplicationStudy) => {
     const cloned = cloneReplicationStudy(rep.id);
     if (cloned) {
-      onToast(`Cloned ${rep.landmarkEffect} into your workspace with ICMR protocol! ✓`);
-      onNavigateToAnalysis();
+      onToast(`Cloned ${rep.landmarkEffect} into Experiment Studio with ICMR protocol! ✓`);
+      onNavigateToStage('builder');
     }
   };
 

@@ -174,7 +174,7 @@ export default function StimulxApp() {
         {currentStage === 'replication' && (
           <ReplicationStage
             onToast={showToast}
-            onNavigateToAnalysis={() => setCurrentStage('analysis')}
+            onNavigateToStage={setCurrentStage}
           />
         )}
         {currentStage === 'recruitment_board' && (

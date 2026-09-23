@@ -333,9 +333,9 @@ export function DesignStage({ onAdvance, onToast }: DesignStageProps) {
         <button
           type="button"
           onClick={onAdvance}
-          className="w-full h-[36px] bg-[#e8852b] hover:bg-[#f9a94e] text-white text-[12px] font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm mt-6"
+          className="w-full h-[36px] bg-[#e8852b] hover:bg-[#d0731f] text-white text-[12px] font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm mt-6"
         >
-          <span>Proceed to Recruitment (Stage 3)</span>
+          <span>Proceed to Experiment Studio (Stage 4)</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </aside>
