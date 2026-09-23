@@ -1,5 +1,17 @@
 export type UserPersona = 'student' | 'phd' | 'postdoc' | 'scientist';
 
+export interface UserAccount {
+  id: string;
+  email: string;
+  name: string;
+  institution: string;
+  role: UserPersona;
+  isAuthenticated: boolean;
+  avatarUrl?: string;
+  createdAt: string;
+  lastLogin: string;
+}
+
 export type StageId =
   | 'home'
   | 'brainstorm'

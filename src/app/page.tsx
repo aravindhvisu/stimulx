@@ -22,6 +22,7 @@ import { ScaleMarketplaceModal } from '@/components/scales/ScaleMarketplaceModal
 import { ApiPlaygroundModal } from '@/components/api/ApiPlaygroundModal';
 import { ParticipantRunner } from '@/components/runner/ParticipantRunner';
 import { GorillaDataHub } from '@/components/data/GorillaDataHub';
+import { AuthPage } from '@/components/auth/AuthPage';
 import { useStimulxStore } from '@/lib/store';
 
 const STAGE_FLOW: StageId[] = [
@@ -39,7 +40,7 @@ const STAGE_FLOW: StageId[] = [
 ];
 
 export default function StimulxApp() {
-  const { activeProject, addParticipantSession } = useStimulxStore();
+  const { activeProject, addParticipantSession, currentUser, hydrated } = useStimulxStore();
   const [currentStage, setCurrentStage] = useState<StageId>('home');
   const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(['grants', 'ethics']));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -85,10 +86,24 @@ export default function StimulxApp() {
     showToast('Project state securely saved in India (Mumbai) vault ✓');
   };
 
-  return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#f5f3ef] text-[#1a1633] select-none font-sans">
-      {/* Participant Runner Overlay (Triggered by Link or Button) */}
-      {showGlobalRunner && (
+  // 1. Initial hydration guard
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col h-screen w-screen items-center justify-center bg-[#090d16] text-white">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-lg bg-[#e8852b] animate-spin flex items-center justify-center p-1 shadow-md">
+            <div className="w-2 h-2 bg-white rounded-full" />
+          </div>
+          <span className="text-xs font-semibold tracking-tight text-slate-400">Loading Stimulx OS...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Participant Runner Overlay (Takes priority when triggered by ?run= or direct preview)
+  if (showGlobalRunner) {
+    return (
+      <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#090d16] text-white">
         <ParticipantRunner
           project={activeProject}
           onComplete={(newSession) => {
@@ -106,7 +121,38 @@ export default function StimulxApp() {
             }
           }}
         />
-      )}
+        {toastMessage && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1633] text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-2 border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-[#e8852b]" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // 3. Researcher Authentication Guard (Prompt login when not authenticated)
+  if (!currentUser.isAuthenticated) {
+    return (
+      <div className="flex flex-col min-h-screen w-screen overflow-hidden bg-[#090d16]">
+        <AuthPage
+          onSuccess={(user) => {
+            showToast(`Welcome back, ${user.name}! Authenticated ✓`);
+          }}
+          onToast={showToast}
+        />
+        {toastMessage && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1633] text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-2 border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-[#e8852b]" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#f5f3ef] text-[#1a1633] select-none font-sans">
 
       {/* Scale Marketplace Modal */}
       <ScaleMarketplaceModal

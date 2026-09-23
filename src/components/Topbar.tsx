@@ -17,6 +17,8 @@ import {
   BookOpen,
   FileCheck2,
   GraduationCap,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { useStimulxStore } from '@/lib/store';
 
@@ -89,6 +91,8 @@ export function Topbar({
     projects,
     activeProject,
     activePersona,
+    currentUser,
+    logout,
     setActivePersona,
     setActiveProject,
     createProject,
@@ -96,6 +100,7 @@ export function Topbar({
 
   const [showProjectMenu, setShowProjectMenu] = useState(false);
   const [showPersonaMenu, setShowPersonaMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNewModal, setShowNewModal] = useState(false);
   const [newStudyName, setNewStudyName] = useState('');
   const [newStudyHypothesis, setNewStudyHypothesis] = useState('');
@@ -440,6 +445,63 @@ export function Topbar({
           <span>Next</span>
           <ArrowRight className="w-3 h-3" />
         </button>
+
+        {/* User Account / Profile Menu */}
+        <div className="relative border-l border-white/10 pl-2 ml-1">
+          <button
+            type="button"
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 text-white text-[11px] px-2.5 py-1 rounded-lg border border-white/15 transition-all"
+            title={currentUser.email ? `Logged in as ${currentUser.email}` : 'Researcher Profile'}
+          >
+            <div className="w-5 h-5 rounded-full bg-[#e8852b] text-[10px] font-bold flex items-center justify-center text-white shrink-0 shadow-sm">
+              {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+            </div>
+            <span className="truncate max-w-[90px] font-semibold hidden lg:inline">
+              {currentUser.name || 'Researcher'}
+            </span>
+          </button>
+
+          {showUserMenu && (
+            <div className="absolute right-0 top-10 w-64 bg-[#1b1738] border border-white/15 rounded-xl shadow-2xl p-3 z-50 text-xs text-white animate-in fade-in zoom-in-95 duration-100">
+              <div className="flex items-center gap-2.5 pb-2.5 border-b border-white/10">
+                <div className="w-9 h-9 rounded-full bg-[#e8852b] text-sm font-bold flex items-center justify-center text-white shrink-0">
+                  {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div className="overflow-hidden">
+                  <div className="font-bold truncate text-white">{currentUser.name || 'Researcher'}</div>
+                  <div className="text-[10px] text-white/60 truncate font-mono">{currentUser.email || 'No email attached'}</div>
+                  <div className="text-[9px] text-[#f9a94e] truncate mt-0.5">{currentUser.institution || 'Indian Academic Consortium'}</div>
+                </div>
+              </div>
+
+              <div className="pt-2.5 space-y-1">
+                <div className="flex items-center justify-between text-[10px] text-white/60 px-1 py-0.5">
+                  <span>Academic Tier:</span>
+                  <span className="uppercase font-mono text-emerald-400 font-bold">{currentUser.role}</span>
+                </div>
+                {currentUser.lastLogin && (
+                  <div className="flex items-center justify-between text-[10px] text-white/40 px-1 pb-1.5 font-mono">
+                    <span>Session:</span>
+                    <span>Active</span>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    logout();
+                  }}
+                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-800/80 text-xs font-semibold transition-colors mt-2"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Log Out Session</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -6,6 +6,7 @@ import {
   ParticipantSession,
   CollaborationPost,
   UserPersona,
+  UserAccount,
   ExperimentParadigm,
   ScaleItemExtended,
   ReplicationStudy,
@@ -25,6 +26,61 @@ import {
 } from '@/lib/gorillaTemplates';
 
 const STORAGE_KEY = 'stimulx_vault_v3';
+export const AUTH_STORAGE_KEY = 'stimulx_auth_user';
+
+export const ANONYMOUS_USER: UserAccount = {
+  id: 'guest',
+  email: '',
+  name: 'Guest Researcher',
+  institution: '',
+  role: 'phd',
+  isAuthenticated: false,
+  createdAt: '',
+  lastLogin: '',
+};
+
+export const DEMO_ACCOUNTS: UserAccount[] = [
+  {
+    id: 'user_aravindh',
+    email: 'aravindh.v@nimhans.ac.in',
+    name: 'Dr. Aravindh V.',
+    institution: 'Centre for Behavioural & Cognitive Sciences / NIMHANS',
+    role: 'scientist',
+    isAuthenticated: true,
+    createdAt: '2026-01-15T09:00:00.000Z',
+    lastLogin: '2026-09-23T12:00:00.000Z',
+  },
+  {
+    id: 'user_priya',
+    email: 'priya.sharma@iitd.ac.in',
+    name: 'Priya Sharma',
+    institution: 'Indian Institute of Technology (IIT) Delhi',
+    role: 'phd',
+    isAuthenticated: true,
+    createdAt: '2026-02-10T11:30:00.000Z',
+    lastLogin: '2026-09-23T12:00:00.000Z',
+  },
+  {
+    id: 'user_ananya',
+    email: 'ananya.sen@tiss.edu',
+    name: 'Dr. Ananya Sen',
+    institution: 'Tata Institute of Social Sciences (TISS) Mumbai',
+    role: 'postdoc',
+    isAuthenticated: true,
+    createdAt: '2026-03-01T14:20:00.000Z',
+    lastLogin: '2026-09-23T12:00:00.000Z',
+  },
+  {
+    id: 'user_rohan',
+    email: 'rohan.m@du.ac.in',
+    name: 'Rohan Mehta',
+    institution: 'Department of Psychology, University of Delhi',
+    role: 'student',
+    isAuthenticated: true,
+    createdAt: '2026-04-12T16:00:00.000Z',
+    lastLogin: '2026-09-23T12:00:00.000Z',
+  },
+];
 
 export const COGNITIVE_PARADIGMS: ExperimentParadigm[] = [
   {
@@ -444,6 +500,7 @@ export function useStimulxStore() {
       },
     ],
   });
+  const [currentUser, setCurrentUser] = useState<UserAccount>(ANONYMOUS_USER);
   const [hydrated, setHydrated] = useState(false);
 
   const normalizeProject = (p: StudyProject): StudyProject => {
@@ -472,6 +529,16 @@ export function useStimulxStore() {
 
   useEffect(() => {
     try {
+      // 1. Restore auth state
+      const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (storedAuth) {
+        const parsedAuth = JSON.parse(storedAuth) as UserAccount;
+        if (parsedAuth && parsedAuth.email) {
+          setCurrentUser(parsedAuth);
+        }
+      }
+
+      // 2. Restore study vault
       let stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) {
         // Fallback to previous versions for seamless user migration
@@ -489,10 +556,96 @@ export function useStimulxStore() {
         }
       }
     } catch (e) {
-      console.warn('Stimulx vault load warning:', e);
+      console.warn('Stimulx vault/auth load warning:', e);
     }
     setHydrated(true);
   }, []);
+
+  const persistAuthUser = (user: UserAccount) => {
+    setCurrentUser(user);
+    try {
+      if (user.isAuthenticated) {
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+      } else {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+      }
+    } catch (e) {
+      console.warn('Stimulx auth persist warning:', e);
+    }
+  };
+
+  const login = (
+    email: string,
+    name?: string,
+    institution?: string,
+    role?: UserPersona
+  ): UserAccount => {
+    const trimmedEmail = email.trim().toLowerCase();
+    const demoMatch = DEMO_ACCOUNTS.find(
+      (d) => d.email.toLowerCase() === trimmedEmail
+    );
+    const userRole: UserPersona = role || demoMatch?.role || 'phd';
+    const userName: string =
+      name ||
+      demoMatch?.name ||
+      trimmedEmail
+        .split('@')[0]
+        .replace(/[._-]/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+    const userInst: string =
+      institution || demoMatch?.institution || 'Indian Academic Consortium';
+
+    const user: UserAccount = {
+      id: demoMatch?.id || `user_${Date.now()}`,
+      email: trimmedEmail,
+      name: userName,
+      institution: userInst,
+      role: userRole,
+      isAuthenticated: true,
+      createdAt: demoMatch?.createdAt || new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+    };
+
+    persistAuthUser(user);
+    setActivePersona(userRole);
+    return user;
+  };
+
+  const loginAsDemo = (demoAccount: UserAccount): UserAccount => {
+    const user: UserAccount = {
+      ...demoAccount,
+      isAuthenticated: true,
+      lastLogin: new Date().toISOString(),
+    };
+    persistAuthUser(user);
+    setActivePersona(user.role);
+    return user;
+  };
+
+  const signup = (details: {
+    name: string;
+    email: string;
+    institution: string;
+    role: UserPersona;
+  }): UserAccount => {
+    const user: UserAccount = {
+      id: `user_${Date.now()}`,
+      email: details.email.trim().toLowerCase(),
+      name: details.name.trim(),
+      institution: details.institution.trim() || 'Independent Researcher',
+      role: details.role,
+      isAuthenticated: true,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+    };
+    persistAuthUser(user);
+    setActivePersona(user.role);
+    return user;
+  };
+
+  const logout = () => {
+    persistAuthUser(ANONYMOUS_USER);
+  };
 
   const persistVault = (newVault: VaultData) => {
     setVault(newVault);
@@ -866,6 +1019,13 @@ export function useStimulxStore() {
     addRecruitmentListing,
     addPreRegistration,
     cloneReplicationStudy,
+    // Auth State & Actions
+    currentUser,
+    demoAccounts: DEMO_ACCOUNTS,
+    login,
+    loginAsDemo,
+    signup,
+    logout,
     // Gorilla.sc Engine Methods
     updateExperimentTree,
     saveTask,
