@@ -16,11 +16,13 @@ import {
   Settings,
   Sparkles,
   Layers,
+  GitBranch,
 } from "lucide-react";
 
 import { useStimulxStore } from "@/lib/store";
 import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
 import { MultiDomainExperimentBuilder } from "@/components/builder/MultiDomainExperimentBuilder";
+import { ExperimentTreeBuilder } from "@/components/tree/ExperimentTreeBuilder";
 
 interface ExperimentStageProps {
   onAdvance: () => void;
@@ -46,7 +48,7 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
-  const [subView, setSubView] = useState<"builder" | "simulator">("builder");
+  const [subView, setSubView] = useState<"tree" | "builder" | "simulator">("tree");
   const [showParticipantRunner, setShowParticipantRunner] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [trialIndex, setTrialIndex] = useState(0);
@@ -147,30 +149,42 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
       )}
 
       {/* Sub-view Switcher Header */}
-      <div className="h-10 px-6 bg-white border-b border-[#e2ded6] flex items-center justify-between shrink-0">
+      <div className="h-11 px-6 bg-white border-b border-[#e2ded6] flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setSubView("tree")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              subView === "tree"
+                ? "bg-[#1a1633] text-white shadow-sm"
+                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+            }`}
+          >
+            <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Experiment Tree (Gorilla Flow)</span>
+          </button>
+
+          <button
             onClick={() => setSubView("builder")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               subView === "builder"
-                ? "bg-[#1a1633] text-white"
+                ? "bg-[#1a1633] text-white shadow-sm"
                 : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>Multi-Domain Paradigm Builder (Memory, Attention, Emotion)</span>
+            <span>Cognitive Paradigms</span>
           </button>
 
           <button
             onClick={() => setSubView("simulator")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               subView === "simulator"
-                ? "bg-[#1a1633] text-white"
+                ? "bg-[#1a1633] text-white shadow-sm"
                 : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
             }`}
           >
-            <Play className="w-3.5 h-3.5" />
-            <span>Stroop Task Interactive Simulator</span>
+            <Play className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Task Simulator</span>
           </button>
         </div>
 
@@ -183,7 +197,13 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
         </button>
       </div>
 
-      {subView === "builder" ? (
+      {subView === "tree" ? (
+        <ExperimentTreeBuilder
+          onOpenTaskBuilder={() => setSubView("builder")}
+          onLaunchParticipantPreview={() => setShowParticipantRunner(true)}
+          onToast={onToast}
+        />
+      ) : subView === "builder" ? (
         <MultiDomainExperimentBuilder
           onToast={onToast}
           onLaunchRunner={() => setShowParticipantRunner(true)}
