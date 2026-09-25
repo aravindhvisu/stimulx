@@ -14,8 +14,9 @@ import {
   Globe2,
   Brain,
   Stethoscope,
+  ChevronRight,
+  Sparkles,
   Layers,
-  FileCheck2,
 } from 'lucide-react';
 
 interface HomeStageProps {
@@ -28,96 +29,90 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
   const [selectedPersonaTab, setSelectedPersonaTab] = useState<UserPersona>('student');
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto bg-[#12111A] text-white font-sans selection:bg-[#D7263D]/30 selection:text-white">
+    <div className="flex-1 flex flex-col overflow-y-auto bg-white text-slate-900 font-sans selection:bg-purple-100 selection:text-purple-900">
       {/* ------------------------------------------------------------- */}
-      {/* 1. HERO SECTION: Scientific, Truth-Seeking, Taking India Forward */}
-      {/* Following StimulX Draft Brand Guidelines:                     */}
-      {/* Surface: #12111A (Ink)                                        */}
-      {/* Headings: Poppins SemiBold/Bold                               */}
-      {/* Accent: #D7263D (Stimulus Red)                                */}
+      {/* 1. HERO SECTION: Plain White, Minimal, Truth-Seeking          */}
+      {/* Typography: Poppins (Headings), Inter (Body)                 */}
+      {/* Accent: Rich Purple (#7C3AED / #6D28D9)                      */}
       {/* ------------------------------------------------------------- */}
-      <div className="relative border-b border-white/10 overflow-hidden bg-[#12111A]">
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-
-        <div className="max-w-5xl mx-auto px-6 pt-16 pb-14 relative z-10 text-center md:text-left">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#8B8A99] text-xs font-semibold uppercase tracking-wider mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D7263D]" />
-            <span>StimulX &bull; Behavioural Research Infrastructure for India</span>
+      <div className="border-b border-slate-100 bg-white py-16 md:py-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Eyebrow Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-xs font-semibold uppercase tracking-wider mb-6">
+            <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
+            <span>Open Behavioural & Cognitive Science Platform</span>
           </div>
 
-          {/* Main Wordmark & Headline */}
-          <h1 className="text-4xl md:text-6xl font-poppins font-bold text-white tracking-tight leading-[1.12] mb-5">
+          {/* Main Title */}
+          <h1 className="text-4xl md:text-6xl font-poppins font-bold text-slate-900 tracking-tight leading-[1.15] mb-6">
             Scientific. Truth-seeking.<br />
-            Taking Indian research forward.
+            <span className="text-[#7C3AED]">Taking Indian research forward.</span>
           </h1>
 
-          <p className="text-base md:text-lg text-[#B9B8C6] max-w-2xl leading-relaxed font-normal mb-8 font-sans">
-            A non-profit behavioural research platform built as infrastructure for the Indian psychology and neuroscience research community — covering the full research lifecycle from ideation through ethics review, data collection, analysis, and publication.
+          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal mb-8">
+            An open digital research infrastructure for behavioural scientists, psychologists, and cognitive researchers in India. From experimental design to ethics compliance, clinical trial modeling, and reproducible data analysis.
           </p>
 
-          {/* Primary Call to Actions */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3.5 pt-1">
+          {/* Clean Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3.5">
             <button
-              onClick={() => onNavigate('care_rct')}
-              className="flex items-center gap-2 px-6 py-3 rounded-lg bg-[#D7263D] hover:bg-[#A81C2E] text-white font-poppins font-semibold text-sm transition-all shadow-md active:scale-[0.98]"
+              onClick={() => onNavigate('builder')}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-poppins font-semibold text-sm transition-all shadow-sm active:scale-[0.98]"
             >
-              <Stethoscope className="w-4 h-4" />
-              <span>Models of Care & RCT Studio</span>
+              <Brain className="w-4 h-4" />
+              <span>Launch Experiment Studio</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </button>
 
             <button
-              onClick={() => onNavigate('builder')}
-              className="flex items-center gap-2 px-6 py-3 rounded-lg bg-[#1E1D29] hover:bg-white/10 border border-white/15 text-white font-poppins font-semibold text-sm transition-all"
+              onClick={() => onNavigate('care_rct')}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-poppins font-semibold text-sm transition-all"
             >
-              <Brain className="w-4 h-4 text-[#8B8A99]" />
-              <span>Task & Experiment Studio</span>
+              <Stethoscope className="w-4 h-4 text-purple-600" />
+              <span>Models of Care & RCT Studio</span>
             </button>
           </div>
 
-          {/* Sovereign Standards Strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-10 mt-10 border-t border-white/10 text-xs text-[#8B8A99]">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          {/* Trust & Compliance Badges */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 mt-12 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            <div className="flex items-center justify-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-purple-600" />
               <span>DPDP Act 2023 Compliant</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[#D7263D] shrink-0" />
-              <span>Sub-millisecond Precision</span>
+            <div className="flex items-center justify-center gap-2">
+              <Zap className="w-4 h-4 text-purple-600" />
+              <span>Sub-millisecond Timing Precision</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Globe2 className="w-4 h-4 text-cyan-400 shrink-0" />
+            <div className="flex items-center justify-center gap-2">
+              <Globe2 className="w-4 h-4 text-purple-600" />
               <span>22 Scheduled Indic Languages</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>$0 / Free for Indian Academia</span>
+            <div className="flex items-center justify-center gap-2">
+              <Award className="w-4 h-4 text-purple-600" />
+              <span>Non-Profit & Open Infrastructure</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 2. PERSONA IMPACT SHOWCASE: Real Problems & Concrete Solutions */}
-      {/* (No stage lists; concrete real-world vignettes)               */}
-      {/* Surface: #1E1D29 (Ink 2) Cards                                */}
+      {/* 2. ABSTRACT PROBLEM-SOLVING SHOWCASE (NO COMPETITOR NAMES)    */}
+      {/* Plain White Cards with Crisp Borders                          */}
       {/* ------------------------------------------------------------- */}
-      <div className="max-w-5xl mx-auto px-6 py-14 w-full">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="text-xs font-semibold uppercase tracking-widest text-[#D7263D] mb-2 font-poppins">
-            Academic Problem-Solving
+      <div className="max-w-5xl mx-auto px-6 py-16 w-full">
+        <div className="text-center max-w-xl mx-auto mb-10">
+          <div className="text-xs font-semibold uppercase tracking-widest text-purple-600 mb-2 font-poppins">
+            Empowering Every Career Stage
           </div>
-          <h2 className="text-2xl md:text-3xl font-poppins font-semibold text-white tracking-tight">
-            How StimulX Solves Real Research Bottlenecks
+          <h2 className="text-2xl md:text-3xl font-poppins font-bold text-slate-900 tracking-tight">
+            Designed to Solve Real Empirical Challenges
           </h2>
-          <p className="text-xs md:text-sm text-[#8B8A99] mt-2">
-            Select your academic role to see how the platform replaces fragmented tools with reproducible science.
+          <p className="text-xs md:text-sm text-slate-500 mt-2">
+            Explore how StimulX eliminates technical and administrative bottlenecks across academic roles.
           </p>
 
           {/* Persona Switcher Tabs */}
-          <div className="inline-flex items-center bg-[#1E1D29] p-1.5 rounded-xl border border-white/10 mt-6">
+          <div className="inline-flex items-center bg-slate-100 p-1.5 rounded-xl mt-6 border border-slate-200">
             <button
               onClick={() => {
                 setSelectedPersonaTab('student');
@@ -125,12 +120,12 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
               }}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold font-poppins transition-all ${
                 selectedPersonaTab === 'student'
-                  ? 'bg-white/15 text-white shadow-sm'
-                  : 'text-[#8B8A99] hover:text-white'
+                  ? 'bg-white text-purple-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <GraduationCap className="w-4 h-4 text-emerald-400" />
-              Student (UG / Master's)
+              <GraduationCap className="w-4 h-4 text-purple-600" />
+              <span>Student Researchers</span>
             </button>
 
             <button
@@ -140,12 +135,12 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
               }}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold font-poppins transition-all ${
                 selectedPersonaTab === 'postdoc'
-                  ? 'bg-white/15 text-white shadow-sm'
-                  : 'text-[#8B8A99] hover:text-white'
+                  ? 'bg-white text-purple-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <FlaskConical className="w-4 h-4 text-purple-400" />
-              Postdoc & Early-Career Fellow
+              <FlaskConical className="w-4 h-4 text-purple-600" />
+              <span>Postdoctoral Scholars</span>
             </button>
 
             <button
@@ -155,76 +150,76 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
               }}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold font-poppins transition-all ${
                 selectedPersonaTab === 'scientist'
-                  ? 'bg-white/15 text-white shadow-sm'
-                  : 'text-[#8B8A99] hover:text-white'
+                  ? 'bg-white text-purple-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Award className="w-4 h-4 text-[#D7263D]" />
-              Principal Investigator / Scientist
+              <Award className="w-4 h-4 text-purple-600" />
+              <span>Principal Investigators</span>
             </button>
           </div>
         </div>
 
         {/* --------------------------------------------------------- */}
-        {/* A. STUDENT SHOWCASE */}
+        {/* A. STUDENT SHOWCASE (Abstract, Competitor-Free)           */}
         {/* --------------------------------------------------------- */}
         {selectedPersonaTab === 'student' && (
-          <div className="bg-[#1E1D29] rounded-2xl border border-white/10 p-6 md:p-8 shadow-xl animate-in fade-in duration-200">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm animate-in fade-in duration-200">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-lg">
                 🎓
               </div>
               <div>
-                <h3 className="text-base font-poppins font-bold text-white">
-                  The Master's & Undergraduate Student Researcher
+                <h3 className="text-base font-poppins font-bold text-slate-900">
+                  Student & Postgraduate Researchers
                 </h3>
-                <p className="text-xs text-[#8B8A99]">
-                  Dissertation Submission &bull; No Software Budget &bull; Zero Coding Barrier
+                <p className="text-xs text-slate-500">
+                  Rigorous Study Design &bull; Rapid Execution &bull; Zero Technical Barrier
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Problem */}
-              <div className="p-5 rounded-xl bg-[#12111A] border border-white/5 space-y-3">
-                <div className="text-xs font-bold text-[#D7263D] uppercase tracking-wider font-poppins">
-                  The Reality Before StimulX
+              {/* Problem (Abstract) */}
+              <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/60 space-y-3">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider font-poppins">
+                  The Empirical Challenge
                 </div>
-                <blockquote className="text-xs text-[#B9B8C6] italic leading-relaxed">
-                  "I have 4 months to finish my MSc Psychology dissertation. My thesis guide instructed me to run a Stroop and Flanker cognitive task. But our department doesn't have a $2,500 Gorilla or Qualtrics subscription, and I don't know Python to code 500 lines of PsychoPy. I was stuck hand-calculating reaction times on paper."
-                </blockquote>
-                <div className="text-[11px] text-[#6B6A75] pt-2 border-t border-white/5">
-                  Result: Compromised thesis methodology, delayed viva exams, and high student frustration.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Postgraduate and undergraduate scholars often face demanding academic timelines with limited access to expensive institutional software licenses. Setting up reaction-time paradigms and standardized surveys traditionally required steep coding prerequisites, causing delays in empirical data collection and thesis submissions.
+                </p>
+                <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-200">
+                  Impact: Strained research timelines and barriers to publishing early-career empirical work.
                 </div>
               </div>
 
-              {/* Solution */}
-              <div className="p-5 rounded-xl bg-white/5 border border-white/10 space-y-3">
-                <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-poppins flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  How StimulX Solves It
+              {/* Solution (Abstract) */}
+              <div className="p-5 rounded-xl bg-purple-50/50 border border-purple-100 space-y-3">
+                <div className="text-xs font-bold text-purple-700 uppercase tracking-wider font-poppins flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-purple-600" />
+                  How StimulX Empowers You
                 </div>
-                <ul className="text-xs text-slate-200 space-y-2.5 leading-relaxed">
+                <ul className="text-xs text-slate-700 space-y-2.5 leading-relaxed">
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 font-bold">&bull;</span>
-                    <span><b>Visual Experiment Flow</b>: Drag and drop <i>Consent ➔ Questionnaire ➔ Task ➔ Debrief</i> with zero code.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Visual Experiment Flow</b>: Assemble complete protocols (participant consent, structured questionnaires, and visual tasks) via an intuitive visual canvas.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 font-bold">&bull;</span>
-                    <span><b>Pre-Built Paradigm Library</b>: Clone validated Stroop, Flanker, Posner Cueing, or 2-Back tasks with one click.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Pre-Validated Paradigm Suite</b>: Instant access to standard cognitive paradigms (Stroop, Flanker, Working Memory, Attentional Orienting).</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 font-bold">&bull;</span>
-                    <span><b>Instant Tidy Export</b>: Exports formatted Long-Format CSVs, R scripts, and SPSS <code>.sav</code> ready to paste into dissertation tables.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Automated Statistical Exports</b>: Export clean, standardized trial-level data and syntax scripts directly formatted for statistical packages.</span>
                   </li>
                 </ul>
 
                 <div className="pt-2">
                   <button
                     onClick={() => onNavigate('builder')}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-poppins font-semibold shadow-sm transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-poppins font-semibold shadow-sm transition-all"
                   >
-                    Open Student Task Studio
+                    Open Experiment Studio
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -234,65 +229,65 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
         )}
 
         {/* --------------------------------------------------------- */}
-        {/* B. POSTDOC SHOWCASE */}
+        {/* B. POSTDOC SHOWCASE (Abstract, Competitor-Free)           */}
         {/* --------------------------------------------------------- */}
         {selectedPersonaTab === 'postdoc' && (
-          <div className="bg-[#1E1D29] rounded-2xl border border-white/10 p-6 md:p-8 shadow-xl animate-in fade-in duration-200">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-lg">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm animate-in fade-in duration-200">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-lg">
                 🔬
               </div>
               <div>
-                <h3 className="text-base font-poppins font-bold text-white">
-                  The Postdoctoral & Early-Career Fellow
+                <h3 className="text-base font-poppins font-bold text-slate-900">
+                  Postdoctoral & Early-Career Fellows
                 </h3>
-                <p className="text-xs text-[#8B8A99]">
-                  Grant Writing (DST-SERB / ICSSR) &bull; Multi-State Ethics &bull; Cryptographic Pre-Registration
+                <p className="text-xs text-slate-500">
+                  Grant Preparation &bull; Statutory Ethics Clearance &bull; Open Science Standards
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Problem */}
-              <div className="p-5 rounded-xl bg-[#12111A] border border-white/5 space-y-3">
-                <div className="text-xs font-bold text-[#D7263D] uppercase tracking-wider font-poppins">
-                  The Reality Before StimulX
+              {/* Problem (Abstract) */}
+              <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/60 space-y-3">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider font-poppins">
+                  The Empirical Challenge
                 </div>
-                <blockquote className="text-xs text-[#B9B8C6] italic leading-relaxed">
-                  "I am preparing a DST-SERB Early Career Grant proposal. Top journals now reject studies without formal pre-registration, and our institutional ethics committee (IEC) requires multi-lingual consent compliant with the new DPDP Act 2023. Preparing all these regulatory protocols by hand takes 6 months of bureaucracy."
-                </blockquote>
-                <div className="text-[11px] text-[#6B6A75] pt-2 border-t border-white/5">
-                  Result: Slower publication velocity, grant submission deadlines missed, and replication vulnerabilities.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Navigating national grant applications and institutional ethics committee requirements across multilingual participant cohorts can involve months of bureaucratic friction. Modern international journals also increasingly require immutable pre-registration before recruitment begins to prevent publication bias and selective reporting.
+                </p>
+                <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-200">
+                  Impact: Prolonged protocol clearance windows and delayed independent grant submissions.
                 </div>
               </div>
 
-              {/* Solution */}
-              <div className="p-5 rounded-xl bg-white/5 border border-white/10 space-y-3">
-                <div className="text-xs font-bold text-purple-400 uppercase tracking-wider font-poppins flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-purple-400" />
-                  How StimulX Solves It
+              {/* Solution (Abstract) */}
+              <div className="p-5 rounded-xl bg-purple-50/50 border border-purple-100 space-y-3">
+                <div className="text-xs font-bold text-purple-700 uppercase tracking-wider font-poppins flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-purple-600" />
+                  How StimulX Empowers You
                 </div>
-                <ul className="text-xs text-slate-200 space-y-2.5 leading-relaxed">
+                <ul className="text-xs text-slate-700 space-y-2.5 leading-relaxed">
                   <li className="flex items-start gap-2">
-                    <span className="text-purple-400 font-bold">&bull;</span>
-                    <span><b>Cryptographic Pre-Registration</b>: Generates SHA-256 hashed, immutable pre-registration certificates (AsPredicted / OSF standard).</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Cryptographic Pre-Registration</b>: Generate SHA-256 hashed, immutable pre-registration certificates conforming to international open science standards.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-purple-400 font-bold">&bull;</span>
-                    <span><b>Automated Ethics & Consent</b>: Auto-generates ICMR 2017 application dossiers and DPDP 2023 micro-consent in 22 regional Indian languages.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Multilingual Statutory Consent</b>: Auto-format ethical review applications aligned with national bioethics guidelines and digital personal data protection in 22 languages.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-purple-400 font-bold">&bull;</span>
-                    <span><b>Grant Budget Calculator</b>: Built-in SERB / ICSSR manpower and equipment costing models aligned with Government of India scales.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Grant Proposal Calculator</b>: Integrated costing and manpower budget estimators calibrated to official agency funding tiers.</span>
                   </li>
                 </ul>
 
                 <div className="pt-2">
                   <button
                     onClick={() => onNavigate('ethics')}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-poppins font-semibold shadow-sm transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-poppins font-semibold shadow-sm transition-all"
                   >
-                    Open Postdoc Ethics & Grant Suite
+                    Open Ethics & Grants Suite
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -302,63 +297,63 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
         )}
 
         {/* --------------------------------------------------------- */}
-        {/* C. SCIENTIST / PI SHOWCASE */}
+        {/* C. SCIENTIST SHOWCASE (Abstract, Competitor-Free)         */}
         {/* --------------------------------------------------------- */}
         {selectedPersonaTab === 'scientist' && (
-          <div className="bg-[#1E1D29] rounded-2xl border border-white/10 p-6 md:p-8 shadow-xl animate-in fade-in duration-200">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-[#D7263D]/10 text-[#D7263D] flex items-center justify-center font-bold text-lg">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm animate-in fade-in duration-200">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-lg">
                 🏛️
               </div>
               <div>
-                <h3 className="text-base font-poppins font-bold text-white">
-                  The Principal Investigator & Senior Scientist
+                <h3 className="text-base font-poppins font-bold text-slate-900">
+                  Principal Investigators & Laboratory Directors
                 </h3>
-                <p className="text-xs text-[#8B8A99]">
-                  Models of Care &bull; Pragmatic RCTs &bull; National Replication Consortium &bull; Data Sovereignty
+                <p className="text-xs text-slate-500">
+                  Care Models &bull; Pragmatic RCTs &bull; National Replication &bull; Sovereign Data
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Problem */}
-              <div className="p-5 rounded-xl bg-[#12111A] border border-white/5 space-y-3">
-                <div className="text-xs font-bold text-[#D7263D] uppercase tracking-wider font-poppins">
-                  The Reality Before StimulX
+              {/* Problem (Abstract) */}
+              <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/60 space-y-3">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider font-poppins">
+                  The Empirical Challenge
                 </div>
-                <blockquote className="text-xs text-[#B9B8C6] italic leading-relaxed">
-                  "Our lab runs multi-centre clinical trials adapting stepped care for depression in Indian district hospitals. Western software like Gorilla/Qualtrics charges thousands of dollars and stores patient data on US/EU cloud servers, violating Indian data residency laws. Furthermore, adapting international care models into task-sharing lay-worker models required building custom databases from scratch."
-                </blockquote>
-                <div className="text-[11px] text-[#6B6A75] pt-2 border-t border-white/5">
-                  Result: Recurring grant overheads, legal data compliance vulnerabilities, and fragmented trial registries.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Coordinating multi-centre clinical and behavioural trials involves significant infrastructural overhead. Deploying stepped models of care in community healthcare facilities often requires custom databases, while hosting sensitive patient data on overseas cloud servers presents severe data sovereignty and compliance vulnerabilities under national privacy laws.
+                </p>
+                <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-200">
+                  Impact: High recurring overheads, regulatory audit exposure, and non-standardized multi-site trial reporting.
                 </div>
               </div>
 
-              {/* Solution */}
-              <div className="p-5 rounded-xl bg-white/5 border border-white/10 space-y-3">
-                <div className="text-xs font-bold text-[#D7263D] uppercase tracking-wider font-poppins flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#D7263D]" />
-                  How StimulX Solves It
+              {/* Solution (Abstract) */}
+              <div className="p-5 rounded-xl bg-purple-50/50 border border-purple-100 space-y-3">
+                <div className="text-xs font-bold text-purple-700 uppercase tracking-wider font-poppins flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-purple-600" />
+                  How StimulX Empowers You
                 </div>
-                <ul className="text-xs text-slate-200 space-y-2.5 leading-relaxed">
+                <ul className="text-xs text-slate-700 space-y-2.5 leading-relaxed">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#D7263D] font-bold">&bull;</span>
-                    <span><b>Models of Care & Adaptive RCT Studio</b>: Benchmark global models (Sangath HAP, NHS IAPT, CoCM, Friendship Bench), iterate stepped-care delivery, and auto-generate <b>CONSORT 2010 flow diagrams</b>.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Models of Care & Adaptive RCT Studio</b>: Benchmark evidence-based care architectures, iterate stepped-care tiers for regional clinics, and generate publication-standard <b>CONSORT 2010 flow diagrams</b>.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#D7263D] font-bold">&bull;</span>
-                    <span><b>CTRI Trial Exporter</b>: 1-click clinical trial registration export formatted for the Clinical Trials Registry - India (CTRI) & ClinicalTrials.gov.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Clinical Trial Registry Exporter</b>: 1-click dossier export formatted for national and international clinical trial registries.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#D7263D] font-bold">&bull;</span>
-                    <span><b>100% Indian Data Sovereignty</b>: Built for Mumbai/Indian residency, zero-PII cryptographic participant tokens, and audit-ready ethics logs.</span>
+                    <span className="text-purple-600 font-bold">&bull;</span>
+                    <span><b>Sovereign Data Architecture</b>: Strict domestic data residency with cryptographic tokenized IDs and audit-ready governance trails.</span>
                   </li>
                 </ul>
 
                 <div className="pt-2">
                   <button
                     onClick={() => onNavigate('care_rct')}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#D7263D] hover:bg-[#A81C2E] text-white text-xs font-poppins font-semibold shadow-sm transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-poppins font-semibold shadow-sm transition-all"
                   >
                     Open Models of Care & RCT Studio
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -371,30 +366,29 @@ export function HomeStage({ onNavigate }: HomeStageProps) {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 3. PLATFORM OVERVIEW BANNER                                   */}
-      {/* Surface: #1E1D29                                              */}
+      {/* 3. PLATFORM ARCHITECTURE BANNER (Plain White)                 */}
       {/* ------------------------------------------------------------- */}
       <div className="max-w-5xl mx-auto px-6 pb-16 w-full">
-        <div className="p-6 md:p-8 rounded-2xl bg-[#1E1D29] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1.5">
-            <h3 className="text-base font-poppins font-bold text-white">
+        <div className="p-6 md:p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-1">
+            <h3 className="text-base font-poppins font-bold text-slate-900">
               Ready to design or pilot an experiment?
             </h3>
-            <p className="text-xs text-[#8B8A99] max-w-xl leading-relaxed">
-              StimulX integrates the complete scientific lifecycle: Grant Budgeters, ICMR Ethics, Gorilla-standard Task Builder, Participant Runner, Tidy Data Hub, and Models of Care.
+            <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
+              StimulX unifies the complete empirical research lifecycle: statutory ethics documentation, visual task building, millisecond runtime execution, tidy data export, and clinical care trial modeling.
             </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => onNavigate('builder')}
-              className="px-4 py-2.5 bg-[#D7263D] hover:bg-[#A81C2E] text-white text-xs font-poppins font-semibold rounded-lg shadow-sm transition-all"
+              className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-poppins font-semibold rounded-lg shadow-sm transition-all"
             >
-              Enter Task Studio
+              Enter Experiment Studio
             </button>
             <button
               onClick={() => onNavigate('care_rct')}
-              className="px-4 py-2.5 bg-white/10 hover:bg-white/15 text-white text-xs font-poppins font-medium rounded-lg transition-all"
+              className="px-4 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-poppins font-medium rounded-lg transition-all"
             >
               Care Models & RCTs
             </button>

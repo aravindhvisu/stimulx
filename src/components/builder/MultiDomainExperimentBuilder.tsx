@@ -317,7 +317,7 @@ export function MultiDomainExperimentBuilder({ onToast, onLaunchRunner }: MultiD
               </div>
               <h4 className="text-base font-bold">Ready to collect participant reaction times?</h4>
               <p className="text-xs text-white/70 mt-1 max-w-lg">
-                Stimulx uses low-latency web timestamping (<code className="text-[#e8852b]">performance.now()</code>) verified to match laboratory tachistoscopes and PsychoPy within &lt;2ms variance.
+                Stimulx uses low-latency web timestamping (<code className="text-[#a78bfa]">performance.now()</code>) verified to match dedicated laboratory tachistoscopes within &lt;2ms variance.
               </p>
             </div>
 

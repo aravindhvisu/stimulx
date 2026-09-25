@@ -438,8 +438,8 @@ export function ExperimentTreeBuilder({
               <h2 className="text-sm font-semibold tracking-wide text-white">
                 Experiment Tree Architecture
               </h2>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">
-                Gorilla Flow v2.0
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                Study Flow Canvas v2.0
               </span>
             </div>
             <p className="text-xs text-slate-400">
@@ -1087,7 +1087,7 @@ export function ExperimentTreeBuilder({
             </div>
 
             <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-              <div className="font-semibold text-slate-300 mb-1">Gorilla Architecture</div>
+              <div className="font-semibold text-slate-300 mb-1">Study Flow Architecture</div>
               <p className="text-[11px] text-slate-500">
                 Nodes are evaluated sequentially by the unified participant runtime.
               </p>

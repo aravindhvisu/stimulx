@@ -83,8 +83,8 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
   // Downloads
   const handleExportGorillaRawCsv = () => {
     const csv = generateGorillaLongFormatCSV(liveSessions, legacySessions);
-    downloadFile(`${activeProject.id}_gorilla_raw_trials.csv`, csv, 'text/csv;charset=utf-8');
-    onToast('Downloaded Gorilla standard long-format raw CSV ✓');
+    downloadFile(`${activeProject.id}_raw_trials.csv`, csv, 'text/csv;charset=utf-8');
+    onToast('Downloaded tidy long-format raw CSV ✓');
   };
 
   const handleExportQuestionnairesCsv = () => {
@@ -100,19 +100,19 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
   };
 
   const handleExportR = () => {
-    const r = generateRScript(activeProject.name, `${activeProject.id}_gorilla_raw_trials.csv`);
+    const r = generateRScript(activeProject.name, `${activeProject.id}_raw_trials.csv`);
     downloadFile(`${activeProject.id}_analysis.R`, r, 'text/plain;charset=utf-8');
     onToast('Downloaded reproducible R script (tidyverse / lme4) ✓');
   };
 
   const handleExportSPSS = () => {
-    const spss = generateSPSSSyntax(`${activeProject.id}_gorilla_raw_trials.csv`);
+    const spss = generateSPSSSyntax(`${activeProject.id}_raw_trials.csv`);
     downloadFile(`${activeProject.id}_analysis.sps`, spss, 'text/plain;charset=utf-8');
     onToast('Downloaded SPSS syntax (.sps) ✓');
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#f5f3ef] text-[#1a1633] overflow-y-auto p-6 md:p-8 space-y-6">
+    <div className="flex-1 flex flex-col h-full bg-white text-slate-900 overflow-y-auto p-6 md:p-8 space-y-6">
       {/* Session Inspection Modal */}
       {selectedSessionForInspection && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -171,7 +171,7 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
               {/* Raw Trials Event Table */}
               <div>
                 <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                  Trial-by-Trial Event Log (Gorilla Format)
+                  Trial-by-Trial Event Log (Tidy Long Format)
                 </h4>
                 <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950 max-h-60 overflow-y-auto">
                   <table className="w-full text-left text-xs font-mono">
@@ -194,7 +194,7 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
                         <tr key={idx} className="hover:bg-slate-900/50">
                           <td className="py-1.5 px-3 text-slate-500">{t.trialIndex || idx + 1}</td>
                           <td className="py-1.5 px-3 text-slate-300">{t.displayName || 'Stimulus'}</td>
-                          <td className="py-1.5 px-3 text-amber-400">{t.response || 'none'}</td>
+                          <td className="py-1.5 px-3 text-purple-400">{t.response || 'none'}</td>
                           <td className="py-1.5 px-3">
                             {t.correct ? (
                               <span className="text-emerald-400 font-bold">1 (True)</span>
@@ -224,13 +224,13 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-widest text-[#e8852b] mb-1">
+          <div className="text-[10px] font-bold uppercase tracking-widest text-purple-600 mb-1">
             Data Collection & Participant Engine
           </div>
-          <h2 className="text-2xl font-bold text-[#1a1633]">
-            Gorilla Data Hub & Deployment Center
+          <h2 className="text-2xl font-bold text-slate-900">
+            Research Data Hub & Deployment Center
           </h2>
-          <p className="text-xs text-[#6b6890] mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Generate participant recruitment tokens · Inspect raw trial event streams · Export tidy research data
           </p>
         </div>
@@ -239,9 +239,9 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => simulateParticipants(5)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#1a1633]/15 text-[#1a1633] text-xs font-semibold hover:bg-slate-50 transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-all shadow-sm"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#e8852b]" />
+            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
             Simulate +5 Cohorts
           </button>
 
@@ -313,40 +313,40 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
         </div>
 
         {/* Tokenized Link Generator */}
-        <div className="bg-white rounded-2xl p-5 border border-[#1a1633]/10 shadow-sm space-y-3">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#6b6890]">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Tokenized Recruitment
             </span>
-            <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
-              Gorilla Standard
+            <span className="text-[9px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+              Tidy Standard
             </span>
           </div>
 
           <button
             onClick={handleGenerateNewTokenLink}
-            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200 transition-colors"
+            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold rounded-xl border border-purple-200 transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
             Generate Unique Participant Token
           </button>
 
-          <p className="text-[11px] text-[#6b6890]">
+          <p className="text-[11px] text-slate-500">
             Creates a cryptographic single-use link for paid subject pools.
           </p>
         </div>
       </div>
 
       {/* Export Toolbar */}
-      <div className="bg-[#1a1633] text-white rounded-2xl p-5 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 text-slate-900 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#e8852b]">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">
             Raw Data Export Center
           </span>
-          <h3 className="text-base font-bold text-white mt-0.5">
+          <h3 className="text-base font-bold text-slate-900 mt-0.5">
             Download Tidy Research Datasets
           </h3>
-          <p className="text-xs text-white/70">
+          <p className="text-xs text-slate-500">
             Export microsecond reaction times, trial spreadsheets, and questionnaire logs
           </p>
         </div>
@@ -354,34 +354,34 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleExportGorillaRawCsv}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#e8852b] hover:bg-[#d0731f] text-white text-xs font-bold transition-all shadow"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-all shadow-sm"
           >
             <Download className="w-3.5 h-3.5" />
-            Gorilla Raw CSV
+            Tidy Raw CSV
           </button>
           <button
             onClick={handleExportQuestionnairesCsv}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 transition-all"
           >
             <FileText className="w-3.5 h-3.5" />
             Questionnaires CSV
           </button>
           <button
             onClick={handleExportSummaryCsv}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 transition-all"
           >
             <Users className="w-3.5 h-3.5" />
             Summary CSV
           </button>
           <button
             onClick={handleExportR}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 transition-all"
           >
             R Script (.R)
           </button>
           <button
             onClick={handleExportSPSS}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 transition-all"
           >
             SPSS (.sps)
           </button>

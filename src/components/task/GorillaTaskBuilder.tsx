@@ -548,7 +548,7 @@ export function GorillaTaskBuilder({
             </div>
 
             <div className="p-3 border-t border-slate-800 bg-slate-900/50 text-[11px] text-slate-400">
-              Gorilla executes this display timeline in order for every spreadsheet trial.
+              The runtime engine executes this display timeline in order for every spreadsheet trial.
             </div>
           </div>
 

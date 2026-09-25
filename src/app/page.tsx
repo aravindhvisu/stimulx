@@ -91,12 +91,12 @@ export default function StimulxApp() {
   // 1. Initial hydration guard
   if (!hydrated) {
     return (
-      <div className="flex flex-col h-screen w-screen items-center justify-center bg-[#090d16] text-white">
+      <div className="flex flex-col h-screen w-screen items-center justify-center bg-white text-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-lg bg-[#e8852b] animate-spin flex items-center justify-center p-1 shadow-md">
+          <div className="w-6 h-6 rounded-lg bg-[#7C3AED] animate-spin flex items-center justify-center p-1 shadow-md">
             <div className="w-2 h-2 bg-white rounded-full" />
           </div>
-          <span className="text-xs font-semibold tracking-tight text-slate-400">Loading Stimulx OS...</span>
+          <span className="text-xs font-semibold tracking-tight text-slate-500">Loading StimulX...</span>
         </div>
       </div>
     );
@@ -124,8 +124,8 @@ export default function StimulxApp() {
           }}
         />
         {toastMessage && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1633] text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-2 border border-white/10">
-            <span className="w-2 h-2 rounded-full bg-[#e8852b]" />
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 flex items-center gap-2 border border-slate-700">
+            <span className="w-2 h-2 rounded-full bg-[#7C3AED]" />
             <span>{toastMessage}</span>
           </div>
         )}
@@ -136,7 +136,7 @@ export default function StimulxApp() {
   // 3. Open Access: No visitor is blocked by a static login screen
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#f5f3ef] text-[#1a1633] select-none font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-white text-slate-900 select-none font-sans">
 
       {/* Scale Marketplace Modal */}
       <ScaleMarketplaceModal
@@ -223,8 +223,8 @@ export default function StimulxApp() {
 
       {/* Floating System Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1633] text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-2 border border-white/10">
-          <span className="w-2 h-2 rounded-full bg-[#e8852b]" />
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 flex items-center gap-2 border border-slate-700">
+          <span className="w-2 h-2 rounded-full bg-[#7C3AED]" />
           <span>{toastMessage}</span>
         </div>
       )}

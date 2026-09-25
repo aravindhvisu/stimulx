@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --ink: #1a1633;
-  --ink-mid: #2e2a50;
-  --ink-soft: #6b6890;
-  --ink-faint: #a09ec0;
-  --saffron: #e8852b;
-  --saffron-l: #f9a94e;
-  --saffron-bg: rgba(232, 133, 43, 0.09);
-  --surface: #f5f3ef;
-  --s2: #eceae4;
+  --ink: #0f172a;
+  --ink-mid: #1e293b;
+  --ink-soft: #64748b;
+  --ink-faint: #94a3b8;
+  --saffron: #7C3AED;
+  --saffron-l: #8B5CF6;
+  --saffron-bg: rgba(124, 58, 237, 0.08);
+  --surface: #ffffff;
+  --s2: #f8fafc;
   --white: #ffffff;
-  --bd: rgba(26, 22, 51, 0.08);
-  --bdm: rgba(26, 22, 51, 0.13);
-  --bds: rgba(26, 22, 51, 0.2);
+  --bd: rgba(15, 23, 42, 0.08);
+  --bdm: rgba(15, 23, 42, 0.12);
+  --bds: rgba(15, 23, 42, 0.2);
   --green: #22c55e;
   --gbg: #f0fdf4;
   --gt: #15803d;

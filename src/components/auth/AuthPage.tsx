@@ -137,7 +137,7 @@ export function AuthPage({ onSuccess, onToast }: AuthPageProps) {
             Sign in to your Academic Workspace
           </h1>
           <p className="text-xs md:text-sm text-slate-400 max-w-lg">
-            Gorilla.sc-grade experiment tree builder, ICMR/DPDP ethics pipelines, DST grant calculators, and reproducible data exports.
+            Academic-grade visual experiment tree builder, ICMR/DPDP ethics pipelines, DST grant calculators, and reproducible data exports.
           </p>
         </header>
 

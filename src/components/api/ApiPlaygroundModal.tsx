@@ -186,7 +186,7 @@ print(resp_body_json(resp))`,
               }}
               className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                 selectedEndpoint === 'post_session'
-                  ? 'bg-white border-[#e8852b] shadow-sm ring-2 ring-[#e8852b]/10'
+                  ? 'bg-white border-[#7C3AED] shadow-sm ring-2 ring-[#7C3AED]/10'
                   : 'bg-white/80 border-[#e2ded6] hover:bg-white'
               }`}
             >
@@ -197,7 +197,7 @@ print(resp_body_json(resp))`,
                 <span className="text-xs font-bold font-mono text-[#1a1633]">/studies/{'{id}'}/sessions</span>
               </div>
               <p className="text-[11px] text-[#6e6a82]">
-                Ingest session data from external lab tachistoscopes, PsychoPy, jsPsych, or Qualtrics.
+                Ingest session data from external laboratory hardware, experimental engines, and survey tools.
               </p>
             </div>
           </div>
@@ -212,7 +212,7 @@ print(resp_body_json(resp))`,
                     onClick={() => setActiveLang(lang)}
                     className={`px-3 py-1 rounded-lg text-xs font-mono font-bold uppercase transition-all ${
                       activeLang === lang
-                        ? 'bg-[#e8852b] text-white shadow-sm'
+                        ? 'bg-[#7C3AED] text-white shadow-sm'
                         : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
                     }`}
                   >

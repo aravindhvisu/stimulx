@@ -142,7 +142,7 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const stroopCost = meanIncongruentRT - meanCongruentRT;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#f5f3ef]">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
       {/* Live Participant Runner Modal */}
       {showParticipantRunner && (
         <ParticipantRunner
@@ -155,75 +155,75 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
         />
       )}
 
-      {/* Sub-view Switcher Header */}
-      <div className="h-11 px-6 bg-white border-b border-[#e2ded6] flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2">
+      {/* Clean Segmented View Switcher Header */}
+      <div className="h-12 px-6 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 font-sans">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setSubView("tree")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               subView === "tree"
-                ? "bg-[#1a1633] text-white shadow-sm"
-                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+                ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`}
           >
-            <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Experiment Tree (Gorilla Flow)</span>
+            <GitBranch className="w-3.5 h-3.5 text-purple-600" />
+            <span>Study Flow Canvas</span>
           </button>
 
           <button
             onClick={() => setSubView("builder")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               subView === "builder"
-                ? "bg-[#1a1633] text-white shadow-sm"
-                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+                ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
+            <Layers className="w-3.5 h-3.5 text-purple-600" />
             <span>Task Displays & Spreadsheet</span>
           </button>
 
           <button
             onClick={() => setSubView("questionnaires")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               subView === "questionnaires"
-                ? "bg-[#1a1633] text-white shadow-sm"
-                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+                ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`}
           >
-            <FileText className="w-3.5 h-3.5 text-indigo-400" />
+            <FileText className="w-3.5 h-3.5 text-purple-600" />
             <span>Questionnaires & Scales</span>
           </button>
 
           <button
             onClick={() => setSubView("data")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               subView === "data"
-                ? "bg-[#1a1633] text-white shadow-sm"
-                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+                ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`}
           >
-            <Users className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Data & Deployment</span>
+            <Users className="w-3.5 h-3.5 text-purple-600" />
+            <span>Data Hub & Export</span>
           </button>
 
           <button
             onClick={() => setSubView("simulator")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               subView === "simulator"
-                ? "bg-[#1a1633] text-white shadow-sm"
-                : "text-[#6e6a82] hover:bg-[#f5f3ef] hover:text-[#1a1633]"
+                ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`}
           >
-            <Play className="w-3.5 h-3.5 text-emerald-500" />
+            <Play className="w-3.5 h-3.5 text-purple-600" />
             <span>Task Simulator</span>
           </button>
         </div>
 
         <button
           onClick={copyStudyLink}
-          className="text-xs text-[#e8852b] hover:underline font-semibold flex items-center gap-1"
+          className="text-xs text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-purple-50 transition-colors"
         >
-          <Share2 className="w-3 h-3" />
+          <Share2 className="w-3.5 h-3.5" />
           <span>Copy Study Link</span>
         </button>
       </div>

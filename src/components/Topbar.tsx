@@ -3,24 +3,14 @@
 import React, { useState } from 'react';
 import { StageId, UserPersona } from '@/types';
 import {
-  Check,
-  ChevronRight,
   FolderKanban,
   Plus,
-  Share2,
   PlayCircle,
-  Globe2,
-  Users,
-  BookOpen,
-  FileCheck2,
-  GraduationCap,
-  LogOut,
-  User,
-  ArrowRight,
-  Sparkles,
-  Stethoscope,
   Brain,
+  Stethoscope,
   ShieldCheck,
+  LogOut,
+  ChevronDown,
 } from 'lucide-react';
 import { useStimulxStore } from '@/lib/store';
 
@@ -35,20 +25,6 @@ interface TopbarProps {
   onOpenApiPlayground: () => void;
 }
 
-const STUDY_STAGES: { id: StageId; label: string; num: string }[] = [
-  { id: 'brainstorm', label: 'Brainstorm', num: '0' },
-  { id: 'grants', label: 'Grants', num: '1' },
-  { id: 'ethics', label: 'Ethics', num: '2' },
-  { id: 'design', label: 'Design', num: '3' },
-  { id: 'care_rct', label: 'Care & RCT', num: '🔬' },
-  { id: 'builder', label: 'Task Studio', num: '4' },
-  { id: 'recruit', label: 'Recruit', num: '5' },
-  { id: 'pool', label: 'Data Hub', num: '6' },
-  { id: 'analysis', label: 'Analysis', num: '7' },
-  { id: 'writing', label: 'Manuscript', num: '8' },
-  { id: 'publish', label: 'Publish', num: '9' },
-];
-
 const PERSONA_CONFIG: Record<
   UserPersona,
   { label: string; icon: string; badgeColor: string; description: string }
@@ -56,38 +32,33 @@ const PERSONA_CONFIG: Record<
   student: {
     label: 'Student',
     icon: '🎓',
-    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    badgeColor: 'text-purple-700 bg-purple-50 border-purple-200',
     description: 'Guided study templates, free open scales & mentor matching',
   },
   phd: {
     label: 'PhD Scholar',
     icon: '🔬',
-    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+    badgeColor: 'text-purple-700 bg-purple-50 border-purple-200',
     description: 'Pre-registration, multi-domain experiment builder, thesis data export',
   },
   postdoc: {
     label: 'Postdoc',
     icon: '📑',
-    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+    badgeColor: 'text-purple-700 bg-purple-50 border-purple-200',
     description: 'Grant discovery, DST budgeters, co-author finders, peer review',
   },
   scientist: {
     label: 'Scientist / PI',
     icon: '🏛️',
-    badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    badgeColor: 'text-purple-700 bg-purple-50 border-purple-200',
     description: 'Lab profiles, multi-site replication consortium, PSA India Node',
   },
 };
 
 export function Topbar({
   currentStage,
-  completedStages,
   onNavigate,
-  onAdvance,
-  onSave,
   onOpenRunner,
-  onOpenScaleMarketplace,
-  onOpenApiPlayground,
 }: TopbarProps) {
   const {
     projects,
@@ -116,53 +87,40 @@ export function Topbar({
     setNewStudyHypothesis('');
   };
 
-  const handleCopyLink = () => {
-    const url =
-      typeof window !== 'undefined'
-        ? `${window.location.origin}/?run=${activeProject.id}`
-        : `https://stimulx.in/?run=${activeProject.id}`;
-    navigator.clipboard?.writeText(url);
-    onSave();
-  };
-
-  const isStudyWorkflowStage = currentStage !== 'home';
-
   return (
     <div className="flex flex-col shrink-0 z-40 select-none">
       {/* ============================================================ */}
-      {/* 1. PRIMARY EXECUTIVE NAVIGATION BAR (56px)                   */}
-      {/* Following StimulX Draft Brand Guidelines:                     */}
-      {/* Wordmark only (Stimul in white, X in #D7263D, Poppins font)  */}
-      {/* Surface: #12111A (Ink)                                        */}
+      {/* SINGLE SLIM TOPBAR (56px) — PLAIN WHITE WITH PURPLE ACCENT   */}
+      {/* NO STACKED ROWS. CLEAN, SPACIOUS, UNCLUTTERED.               */}
       {/* ============================================================ */}
-      <header className="h-14 bg-[#12111A] border-b border-[#E4E4E9]/10 px-5 flex items-center justify-between text-white font-sans">
-        {/* Left: Brand Wordmark */}
-        <div className="flex items-center gap-4 shrink-0">
+      <header className="h-14 bg-white border-b border-slate-200 px-6 flex items-center justify-between text-slate-800 font-sans shadow-sm">
+        {/* Left: Pure Brand Wordmark */}
+        <div className="flex items-center gap-3 shrink-0">
           <div
             onClick={() => onNavigate('home')}
-            className="cursor-pointer flex items-baseline gap-0.5 hover:opacity-95 transition-opacity"
-            title="StimulX — Behavioural Research Infrastructure for India"
+            className="cursor-pointer flex items-baseline gap-0.5 hover:opacity-90 transition-opacity"
+            title="StimulX — Behavioural Research Infrastructure"
           >
-            <span className="font-poppins font-bold text-xl tracking-tight text-white">
-              Stimul<span className="text-[#D7263D]">X</span>
+            <span className="font-poppins font-bold text-xl tracking-tight text-slate-900">
+              Stimul<span className="text-[#7C3AED]">X</span>
             </span>
           </div>
 
-          <div className="w-[1px] h-4 bg-white/10 hidden sm:block" />
+          <div className="w-[1px] h-4 bg-slate-200 hidden sm:block" />
 
-          <span className="text-[11px] text-[#8B8A99] font-medium tracking-wide uppercase hidden md:inline">
+          <span className="text-[11px] text-slate-400 font-medium tracking-wide uppercase hidden md:inline font-sans">
             Research Infrastructure
           </span>
         </div>
 
-        {/* Center: The 4 Primary Visitor Pillars (Clean, Spacious, Uncluttered) */}
+        {/* Center: Clean 4 Navigation Pillars (Spacious, Minimalist) */}
         <nav className="flex items-center gap-1 md:gap-2">
           <button
             onClick={() => onNavigate('home')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
               currentStage === 'home'
-                ? 'bg-white/10 text-white font-semibold shadow-sm'
-                : 'text-[#8B8A99] hover:text-white hover:bg-white/5'
+                ? 'bg-purple-50 text-purple-700 font-semibold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
             Overview
@@ -170,56 +128,57 @@ export function Topbar({
 
           <button
             onClick={() => onNavigate('builder')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              currentStage === 'builder' || currentStage === 'design'
-                ? 'bg-white/10 text-white font-semibold shadow-sm'
-                : 'text-[#8B8A99] hover:text-white hover:bg-white/5'
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              currentStage === 'builder' || currentStage === 'design' || currentStage === 'pool'
+                ? 'bg-purple-50 text-purple-700 font-semibold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
-            <Brain className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Study Studio</span>
+            <Brain className="w-3.5 h-3.5 text-purple-600" />
+            <span>Experiment Studio</span>
           </button>
 
           <button
             onClick={() => onNavigate('care_rct')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
               currentStage === 'care_rct'
-                ? 'bg-white/10 text-white font-semibold shadow-sm'
-                : 'text-[#8B8A99] hover:text-white hover:bg-white/5'
+                ? 'bg-purple-50 text-purple-700 font-semibold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
-            <Stethoscope className="w-3.5 h-3.5 text-[#D7263D]" />
+            <Stethoscope className="w-3.5 h-3.5 text-purple-600" />
             <span>Models of Care & RCT</span>
           </button>
 
           <button
             onClick={() => onNavigate('ethics')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
               currentStage === 'ethics' || currentStage === 'grants'
-                ? 'bg-white/10 text-white font-semibold shadow-sm'
-                : 'text-[#8B8A99] hover:text-white hover:bg-white/5'
+                ? 'bg-purple-50 text-purple-700 font-semibold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
             <span>Ethics & Grants</span>
           </button>
         </nav>
 
         {/* Right: Actions, Persona, and Profile */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           {/* Active Study Switcher */}
           <div className="relative">
             <button
               onClick={() => setShowProjectMenu(!showProjectMenu)}
-              className="flex items-center gap-1.5 bg-[#1E1D29] hover:bg-white/10 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 transition-all max-w-[140px]"
-              title="Active Research Study"
+              className="flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 transition-all max-w-[150px]"
+              title="Switch Research Study"
             >
-              <FolderKanban className="w-3.5 h-3.5 text-[#D7263D] shrink-0" />
+              <FolderKanban className="w-3.5 h-3.5 text-purple-600 shrink-0" />
               <span className="truncate font-medium">{activeProject?.name || 'Default Study'}</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {showProjectMenu && (
-              <div className="absolute right-0 top-9 w-64 bg-[#1E1D29] border border-white/15 rounded-xl shadow-2xl p-2 z-50 text-xs">
+              <div className="absolute right-0 top-9 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-50 text-xs">
                 <div className="text-[10px] uppercase font-bold text-slate-400 px-2 py-1">
                   Active Studies ({projects.length})
                 </div>
@@ -233,23 +192,23 @@ export function Topbar({
                       }}
                       className={`w-full text-left px-2.5 py-1.5 rounded-lg truncate transition-colors flex items-center justify-between ${
                         p.id === activeProject.id
-                          ? 'bg-[#D7263D] text-white font-bold'
-                          : 'text-slate-300 hover:bg-white/10'
+                          ? 'bg-purple-50 text-purple-700 font-bold'
+                          : 'text-slate-600 hover:bg-slate-50'
                       }`}
                     >
                       <span className="truncate">{p.name}</span>
-                      <span className="text-[10px] opacity-75 font-mono">N={p.sessions?.length || 0}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">N={p.sessions?.length || 0}</span>
                     </button>
                   ))}
                 </div>
 
-                <div className="border-t border-white/10 mt-2 pt-2">
+                <div className="border-t border-slate-100 mt-2 pt-2">
                   <button
                     onClick={() => {
                       setShowProjectMenu(false);
                       setShowNewModal(true);
                     }}
-                    className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-emerald-400 hover:bg-white/10 font-semibold"
+                    className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-purple-700 hover:bg-purple-50 font-semibold"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Create New Study</span>
@@ -262,10 +221,10 @@ export function Topbar({
           {/* Participant Runner Trigger */}
           <button
             onClick={onOpenRunner}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition-all"
-            title="Launch live participant experiment execution"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-200 text-purple-700 bg-purple-50/70 hover:bg-purple-100 text-xs font-semibold transition-all shadow-sm"
+            title="Launch participant trial execution preview"
           >
-            <PlayCircle className="w-3.5 h-3.5 text-emerald-400" />
+            <PlayCircle className="w-3.5 h-3.5 text-purple-600" />
             <span className="hidden sm:inline">Participant View</span>
           </button>
 
@@ -280,10 +239,11 @@ export function Topbar({
             >
               <span>{PERSONA_CONFIG[activePersona].icon}</span>
               <span className="hidden md:inline">{PERSONA_CONFIG[activePersona].label}</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {showPersonaMenu && (
-              <div className="absolute right-0 top-9 w-60 bg-[#1E1D29] border border-white/15 rounded-xl shadow-2xl p-2 z-50 text-xs">
+              <div className="absolute right-0 top-9 w-60 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-50 text-xs">
                 <div className="text-[10px] uppercase font-bold text-slate-400 px-2 py-1">
                   Switch Persona
                 </div>
@@ -299,13 +259,13 @@ export function Topbar({
                           setShowPersonaMenu(false);
                         }}
                         className={`w-full text-left p-2 rounded-lg transition-colors flex items-start gap-2 ${
-                          isSelected ? 'bg-white/15 text-white font-bold' : 'text-slate-300 hover:bg-white/10'
+                          isSelected ? 'bg-purple-50 text-purple-700 font-bold' : 'text-slate-600 hover:bg-slate-50'
                         }`}
                       >
                         <span className="text-base">{pConf.icon}</span>
                         <div>
-                          <div className="text-xs font-semibold text-white">{pConf.label}</div>
-                          <div className="text-[10px] text-slate-400 leading-tight">{pConf.description}</div>
+                          <div className="text-xs font-semibold text-slate-900">{pConf.label}</div>
+                          <div className="text-[10px] text-slate-500 leading-tight">{pConf.description}</div>
                         </div>
                       </button>
                     );
@@ -319,25 +279,25 @@ export function Topbar({
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="w-8 h-8 rounded-full bg-slate-800 border border-white/15 flex items-center justify-center text-xs font-bold text-white hover:border-[#D7263D] transition-colors"
+              className="w-8 h-8 rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center text-xs font-bold text-purple-700 hover:bg-purple-200 transition-colors"
               title={currentUser?.email || 'User Account'}
             >
               {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 top-10 w-64 bg-[#1E1D29] border border-white/15 rounded-xl shadow-2xl p-3 z-50 text-xs text-white">
-                <div className="font-bold text-sm truncate">{currentUser?.name || 'Researcher'}</div>
-                <div className="text-[11px] text-slate-400 truncate mt-0.5">{currentUser?.email || 'researcher@stimulx.in'}</div>
-                <div className="text-[10px] text-emerald-400 mt-1">DPDP 2023 &bull; Verified Research Node</div>
+              <div className="absolute right-0 top-10 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs text-slate-800">
+                <div className="font-bold text-sm truncate text-slate-900">{currentUser?.name || 'Researcher'}</div>
+                <div className="text-[11px] text-slate-500 truncate mt-0.5">{currentUser?.email || 'researcher@stimulx.in'}</div>
+                <div className="text-[10px] text-purple-700 font-semibold mt-1">DPDP 2023 &bull; Verified Research Node</div>
 
-                <div className="border-t border-white/10 mt-3 pt-2">
+                <div className="border-t border-slate-100 mt-3 pt-2">
                   <button
                     onClick={() => {
                       logout();
                       setShowUserMenu(false);
                     }}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-red-400 hover:bg-white/5 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>Sign Out</span>
@@ -349,104 +309,35 @@ export function Topbar({
         </div>
       </header>
 
-      {/* ============================================================ */}
-      {/* 2. SECONDARY STUDY WORKFLOW SUB-BAR (40px)                   */}
-      {/* Breathable, spacious breadcrumb flow ONLY shown in study view */}
-      {/* Surface: #1E1D29 (Ink 2)                                      */}
-      {/* ============================================================ */}
-      {isStudyWorkflowStage && (
-        <div className="h-10 bg-[#1E1D29] border-b border-[#E4E4E9]/10 px-5 flex items-center justify-between overflow-x-auto no-scrollbar text-xs">
-          {/* Breadcrumb Steps */}
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-2 shrink-0">
-              Study Protocol:
-            </span>
-            {STUDY_STAGES.map((s, idx) => {
-              const isActive = currentStage === s.id;
-              const isDone = completedStages.has(s.id);
-
-              return (
-                <React.Fragment key={s.id}>
-                  {idx > 0 && <span className="text-white/20 mx-1 shrink-0">&rsaquo;</span>}
-                  <button
-                    type="button"
-                    onClick={() => onNavigate(s.id)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all shrink-0 ${
-                      isActive
-                        ? 'bg-white/15 text-white font-bold'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <span
-                      className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                        isDone
-                          ? 'bg-emerald-500 text-white'
-                          : isActive
-                          ? 'bg-[#D7263D] text-white'
-                          : 'bg-white/10 text-slate-400'
-                      }`}
-                    >
-                      {isDone ? <Check className="w-2 h-2" /> : s.num}
-                    </span>
-                    <span>{s.label}</span>
-                  </button>
-                </React.Fragment>
-              );
-            })}
-          </div>
-
-          {/* Right Sub-Bar Controls: Advance Next Stage */}
-          <div className="flex items-center gap-2 pl-4 shrink-0">
-            <button
-              onClick={handleCopyLink}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-[11px] font-medium transition-colors"
-              title="Copy anonymous participant link"
-            >
-              <Share2 className="w-3 h-3" />
-              <span>Share</span>
-            </button>
-
-            <button
-              onClick={onAdvance}
-              className="flex items-center gap-1 px-3 py-1 rounded-md bg-[#D7263D] hover:bg-[#A81C2E] text-white text-[11px] font-bold transition-all shadow-sm"
-              title="Advance to next research stage"
-            >
-              <span>Next</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Modal: Create New Study */}
       {showNewModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#1E1D29] border border-white/20 rounded-2xl max-w-md w-full p-6 text-white shadow-2xl space-y-4">
-            <h3 className="text-base font-bold flex items-center gap-2">
-              <FolderKanban className="w-5 h-5 text-[#D7263D]" />
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 text-slate-800 shadow-2xl space-y-4">
+            <h3 className="text-base font-bold flex items-center gap-2 text-slate-900">
+              <FolderKanban className="w-5 h-5 text-purple-600" />
               Create New Research Study
             </h3>
             <form onSubmit={handleCreate} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Study Title</label>
+                <label className="block text-slate-700 font-semibold mb-1">Study Title</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Bilingual Cognitive Flexibility in Indian Youth"
                   value={newStudyName}
                   onChange={(e) => setNewStudyName(e.target.value)}
-                  className="w-full bg-[#12111A] border border-white/20 rounded-lg p-2.5 text-white outline-none focus:border-[#D7263D]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-900 outline-none focus:border-purple-600"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Primary Hypothesis</label>
+                <label className="block text-slate-700 font-semibold mb-1">Primary Hypothesis</label>
                 <textarea
                   rows={3}
                   placeholder="State the core experimental hypothesis or research question..."
                   value={newStudyHypothesis}
                   onChange={(e) => setNewStudyHypothesis(e.target.value)}
-                  className="w-full bg-[#12111A] border border-white/20 rounded-lg p-2.5 text-white outline-none focus:border-[#D7263D]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-900 outline-none focus:border-purple-600"
                 />
               </div>
 
@@ -454,13 +345,13 @@ export function Topbar({
                 <button
                   type="button"
                   onClick={() => setShowNewModal(false)}
-                  className="px-3 py-1.5 rounded-lg border border-white/20 text-slate-400 hover:bg-white/10"
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#D7263D] hover:bg-[#A81C2E] text-white font-bold"
+                  className="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-bold"
                 >
                   Create Study
                 </button>
