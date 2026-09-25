@@ -9,25 +9,30 @@ module.exports = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#1a1633",
-          mid: "#2e2a50",
-          soft: "#6b6890",
-          faint: "#a09ec0",
+          DEFAULT: "#12111A",
+          dark: "#12111A",
+          2: "#1E1D29",
+          mid: "#1E1D29",
+          soft: "#6B6A75",
         },
-        saffron: {
-          DEFAULT: "#e8852b",
-          light: "#f9a94e",
-          bg: "rgba(232, 133, 43, 0.09)",
+        red: {
+          DEFAULT: "#D7263D",
+          dark: "#A81C2E",
+          hover: "#A81C2E",
         },
-        surface: {
-          DEFAULT: "#f5f3ef",
-          secondary: "#eceae4",
+        paper: {
+          DEFAULT: "#FFFFFF",
+          2: "#F5F5F7",
         },
+        line: "#E4E4E9",
+        text: "#1B1A22",
+        muted: "#6B6A75",
       },
       fontFamily: {
-        sans: ["var(--font-dm-sans)", "sans-serif"],
-        mono: ["var(--font-dm-mono)", "monospace"],
-        serif: ["var(--font-playfair)", "serif"],
+        sans: ["Inter", "sans-serif"],
+        heading: ["Poppins", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
+        mono: ["monospace"],
       },
     },
   },
