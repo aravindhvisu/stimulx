@@ -39,6 +39,7 @@ const STAGES: { id: StageId; label: string; num: string }[] = [
   { id: 'grants', label: 'Grants', num: '1' },
   { id: 'ethics', label: 'Ethics', num: '2' },
   { id: 'design', label: 'Design', num: '3' },
+  { id: 'care_rct', label: 'Care Models & RCT', num: '🔬' },
   { id: 'builder', label: 'Experiment Studio', num: '4' },
   { id: 'recruit', label: 'Recruit', num: '5' },
   { id: 'pool', label: 'Data Hub', num: '6' },

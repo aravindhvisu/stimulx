@@ -18,6 +18,7 @@ export type StageId =
   | 'grants'
   | 'ethics'
   | 'design'
+  | 'care_rct'
   | 'recruit'
   | 'builder'
   | 'pool'
@@ -522,5 +523,95 @@ export interface LiveParticipantSession {
   rawTrialLogs: GorillaRawTrialLog[];
   questionnaireLogs: QuestionnaireResponseLog[];
   overallScores?: Record<string, number>;
+}
+
+// ----------------------------------------------------
+// Care Models & Adaptive Randomized Controlled Trials (RCT)
+// ----------------------------------------------------
+
+export type CareArchitecture =
+  | 'stepped_care'
+  | 'collaborative_care'
+  | 'task_sharing'
+  | 'digital_blended'
+  | 'hub_and_spoke';
+
+export interface CareModelStep {
+  stepNumber: number;
+  title: string;
+  intensity: 'low' | 'medium' | 'high' | 'crisis';
+  providerRole: string;
+  deliveryFormat: 'in_person' | 'telephonic' | 'digital_app' | 'hybrid';
+  sessionCount: number;
+  sessionDurationMinutes: number;
+  treatmentManual: string;
+  escalationCriteria: string;
+}
+
+export interface CareModelAdaptation {
+  version: string;
+  adaptedFromCountry: string;
+  targetContext: string;
+  rationale: string;
+  changesMade: string[];
+  evidenceSource: string;
+  date: string;
+}
+
+export interface CareModel {
+  id: string;
+  name: string;
+  targetCondition: string;
+  originCountry: string;
+  flag: string;
+  architecture: CareArchitecture;
+  version: string;
+  citations: string[];
+  evidenceEffectSize: string;
+  remissionRatePercent: number;
+  costPerPatientUSD: number;
+  screeningCriteria: {
+    scale: string;
+    cutoffScore: number;
+    triggerDesc: string;
+  };
+  steps: CareModelStep[];
+  adaptationLog: CareModelAdaptation[];
+  vernacularSupport: string[];
+}
+
+export interface RCTTrialDesign {
+  id: string;
+  title: string;
+  acronym: string;
+  trialPhase: 'Phase II (Feasibility)' | 'Phase III (Efficacy)' | 'Pragmatic Effectiveness' | 'Implementation Trial';
+  designType: 'parallel_2_arm' | 'parallel_3_arm' | 'stepped_wedge' | 'cluster_rct' | 'smart';
+  primaryOutcome: string;
+  primaryTimepointWeeks: number;
+  secondaryOutcomes: string[];
+  targetSampleN: number;
+  alphaLevel: number;
+  targetPowerPercent: number;
+  anticipatedEffectSizeCohenD: number;
+  careModelInterventionId: string;
+  comparatorArmName: string;
+  comparatorDesc: string;
+  interimAnalysisPlan: string;
+  ctriRegistrationCode: string;
+  consortData: {
+    assessed: number;
+    excludedNotMeeting: number;
+    excludedDeclined: number;
+    excludedOther: number;
+    randomized: number;
+    allocatedArmA: number;
+    allocatedArmB: number;
+    lostFollowUpArmA: number;
+    lostFollowUpArmB: number;
+    discontinuedArmA: number;
+    discontinuedArmB: number;
+    analyzedArmA: number;
+    analyzedArmB: number;
+  };
 }
 

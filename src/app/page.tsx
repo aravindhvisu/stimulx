@@ -23,6 +23,7 @@ import { ApiPlaygroundModal } from '@/components/api/ApiPlaygroundModal';
 import { ParticipantRunner } from '@/components/runner/ParticipantRunner';
 import { GorillaDataHub } from '@/components/data/GorillaDataHub';
 import { AuthPage } from '@/components/auth/AuthPage';
+import { CareModelRCTStudio } from '@/components/care_rct/CareModelRCTStudio';
 import { useStimulxStore } from '@/lib/store';
 
 const STAGE_FLOW: StageId[] = [
@@ -31,6 +32,7 @@ const STAGE_FLOW: StageId[] = [
   'grants',
   'ethics',
   'design',
+  'care_rct',
   'builder',
   'recruit',
   'pool',
@@ -194,6 +196,9 @@ export default function StimulxApp() {
         )}
         {currentStage === 'design' && (
           <DesignStage onAdvance={handleAdvance} onToast={showToast} />
+        )}
+        {currentStage === 'care_rct' && (
+          <CareModelRCTStudio onAdvance={handleAdvance} onToast={showToast} />
         )}
         {currentStage === 'builder' && (
           <ExperimentStage onAdvance={handleAdvance} onToast={showToast} />
