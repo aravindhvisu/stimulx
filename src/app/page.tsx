@@ -133,25 +133,7 @@ export default function StimulxApp() {
     );
   }
 
-  // 3. Researcher Authentication Guard (Prompt login when not authenticated)
-  if (!currentUser.isAuthenticated) {
-    return (
-      <div className="flex flex-col min-h-screen w-screen overflow-hidden bg-[#090d16]">
-        <AuthPage
-          onSuccess={(user) => {
-            showToast(`Welcome back, ${user.name}! Authenticated ✓`);
-          }}
-          onToast={showToast}
-        />
-        {toastMessage && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1633] text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-2 border border-white/10">
-            <span className="w-2 h-2 rounded-full bg-[#e8852b]" />
-            <span>{toastMessage}</span>
-          </div>
-        )}
-      </div>
-    );
-  }
+  // 3. Open Access: No visitor is blocked by a static login screen
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#f5f3ef] text-[#1a1633] select-none font-sans">

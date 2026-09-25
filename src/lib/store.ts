@@ -30,13 +30,13 @@ export const AUTH_STORAGE_KEY = 'stimulx_auth_user';
 
 export const ANONYMOUS_USER: UserAccount = {
   id: 'guest',
-  email: '',
-  name: 'Guest Researcher',
-  institution: '',
-  role: 'phd',
-  isAuthenticated: false,
-  createdAt: '',
-  lastLogin: '',
+  email: 'researcher@stimulx.in',
+  name: 'Open Science Researcher',
+  institution: 'Centre for Behavioural & Cognitive Sciences',
+  role: 'scientist',
+  isAuthenticated: true,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  lastLogin: '2026-09-25T12:00:00.000Z',
 };
 
 export const DEMO_ACCOUNTS: UserAccount[] = [
