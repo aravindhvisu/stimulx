@@ -113,11 +113,17 @@ Buildathon is where the Google Cloud backend and the Gemini features get built.
   behavioural economics researchers and students at Indian universities and
   hospitals; later, other low- and middle-income countries with the same
   cost and language barriers.
-- **Free tier:** students and unfunded academic studies.
-- **Paid:** institutional licences for departments and hospitals; per-study
-  pricing for funded grants (budgetable under DST/ICSSR/ICMR); commercial
-  plans for market research, UX research, ed-tech and clinical research
-  organisations; paid participant recruitment through the opt-in pool.
+- **Business model: subscription (SaaS), priced in rupees, three tiers.**
+  - **University:** annual campus or department licence covering all staff
+    and students, with admin controls and institutional ethics templates.
+  - **Lab:** annual subscription per lab, covering the principal investigator
+    and their scholars, with shared studies and data.
+  - **Researcher:** monthly or annual individual subscription for a single
+    researcher or student.
+- Subscriptions can be budgeted as a line item in DST, ICSSR and ICMR grants,
+  and are paid in rupees rather than foreign currency.
+- [Prices per tier: add your figures, or leave as "to be validated with pilot
+  labs".]
 - **Reach:** direct to labs through pilot partnerships and research-methods
   courses; each published study that cites the platform brings the next lab.
 - [Market size: add a figure only if you have a source for it.]
