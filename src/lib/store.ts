@@ -27,6 +27,10 @@ import {
 
 const STORAGE_KEY = 'stimulx_vault_v3';
 export const AUTH_STORAGE_KEY = 'stimulx_auth_user';
+const VAULT_SYNC_EVENT = 'stimulx:vault-sync';
+// The vault as last loaded or saved by any component in this tab. A component that mounts
+// later starts from this, not from the built-in defaults, so it can never save defaults over real work.
+let sharedVault: unknown = null;
 
 export const ANONYMOUS_USER: UserAccount = {
   id: 'guest',
@@ -477,7 +481,7 @@ interface VaultData {
 }
 
 export function useStimulxStore() {
-  const [vault, setVault] = useState<VaultData>({
+  const [vault, setVault] = useState<VaultData>(() => (sharedVault as VaultData | null) ?? {
     projects: [INITIAL_PROJECT],
     activeProjectId: INITIAL_PROJECT.id,
     activePersona: 'phd',
@@ -501,7 +505,7 @@ export function useStimulxStore() {
     ],
   });
   const [currentUser, setCurrentUser] = useState<UserAccount>(ANONYMOUS_USER);
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrated, setHydrated] = useState(() => sharedVault !== null);
 
   const normalizeProject = (p: StudyProject): StudyProject => {
     // Merge missing default tasks so new library paradigms are available
@@ -551,6 +555,7 @@ export function useStimulxStore() {
             ...parsed,
             projects: parsed.projects.map(normalizeProject),
           };
+          sharedVault = migratedVault;
           setVault(migratedVault);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(migratedVault));
         }
@@ -648,13 +653,28 @@ export function useStimulxStore() {
   };
 
   const persistVault = (newVault: VaultData) => {
+    sharedVault = newVault;
     setVault(newVault);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newVault));
     } catch (e) {
       console.warn('Stimulx vault persist warning:', e);
     }
+    // Every component calling this hook holds its own copy of the vault.
+    // Broadcast writes so the others do not keep, and later save, a stale copy.
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(VAULT_SYNC_EVENT, { detail: newVault }));
+    }
   };
+
+  useEffect(() => {
+    const onSync = (e: Event) => {
+      const next = (e as CustomEvent<VaultData>).detail;
+      if (next) setVault(next);
+    };
+    window.addEventListener(VAULT_SYNC_EVENT, onSync);
+    return () => window.removeEventListener(VAULT_SYNC_EVENT, onSync);
+  }, []);
 
   const activeProject =
     vault.projects.find((p) => p.id === vault.activeProjectId) || vault.projects[0];
@@ -690,15 +710,19 @@ export function useStimulxStore() {
   };
 
   const updateActiveProject = (updater: (prev: StudyProject) => StudyProject) => {
-    const updated = updater(activeProject);
-    const newProjects = vault.projects.map((p) => (p.id === activeProject.id ? updated : p));
-    persistVault({ ...vault, projects: newProjects });
+    // Start from the latest saved vault, not this render's copy, so two updates made
+    // back to back (e.g. finishing a session, then adding its summary) both survive.
+    const base = (sharedVault as VaultData | null) ?? vault;
+    const current = base.projects.find((p) => p.id === base.activeProjectId) || base.projects[0];
+    const updated = updater(current);
+    const newProjects = base.projects.map((p) => (p.id === current.id ? updated : p));
+    persistVault({ ...base, projects: newProjects });
   };
 
   const addParticipantSession = (session: ParticipantSession) => {
     updateActiveProject((prev) => ({
       ...prev,
-      sessions: [session, ...prev.sessions],
+      sessions: [session, ...prev.sessions.filter((x) => x.id !== session.id)],
       updatedAt: new Date().toISOString(),
     }));
   };

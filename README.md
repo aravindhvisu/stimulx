@@ -69,6 +69,39 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## ✨ Stimulx Copilot (Gemini)
+
+In **Experiment Studio → AI Copilot**, describe a study in plain words. Gemini drafts the participant flow, the full trial list and any new questions; Stimulx turns that into a runnable experiment tree.
+
+- The Gemini API key stays on the server (`/api/copilot`); it is never sent to the browser.
+- Consent is always first and the debrief with helplines always last; this is enforced in code.
+- PHQ-9 and GAD-7 come from the built-in library and are scored by fixed rules, never by the model.
+
+### Run it locally
+```bash
+npm install
+npm run build
+GEMINI_API_KEY=your-key npm start      # http://localhost:8080
+```
+Get a key from [Google AI Studio](https://aistudio.google.com/api-keys). Optional: `GEMINI_MODEL` (default `gemini-3.8-flash`).
+
+For live-reload development, run `GEMINI_API_KEY=your-key npm run api` in one terminal and `npm run dev` in another.
+
+### Deploy to Google Cloud Run (Mumbai)
+```bash
+gcloud run deploy stimulx --source . --region asia-south1 --allow-unauthenticated \
+  --set-env-vars GEMINI_API_KEY=your-key
+```
+
+### Deploy to the existing Cloudflare Worker
+```bash
+npm run build
+npx wrangler secret put GEMINI_API_KEY
+npx wrangler deploy
+```
+
+---
+
 ## 🔗 Linking to GitHub
 
 To push this repository to your GitHub account:

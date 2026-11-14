@@ -28,6 +28,7 @@ import { ExperimentTreeBuilder } from "@/components/tree/ExperimentTreeBuilder";
 import { GorillaTaskBuilder } from "@/components/task/GorillaTaskBuilder";
 import { GorillaQuestionnaireBuilder } from "@/components/questionnaire/GorillaQuestionnaireBuilder";
 import { GorillaDataHub } from "@/components/data/GorillaDataHub";
+import { CopilotPanel } from "@/components/copilot/CopilotPanel";
 
 interface ExperimentStageProps {
   onAdvance: () => void;
@@ -53,7 +54,7 @@ const SAMPLE_TRIALS: StroopTrial[] = [
 
 export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const { activeProject, updateActiveProject, addParticipantSession } = useStimulxStore();
-  const [subView, setSubView] = useState<"tree" | "builder" | "questionnaires" | "data" | "simulator">("tree");
+  const [subView, setSubView] = useState<"copilot" | "tree" | "builder" | "questionnaires" | "data" | "simulator">("tree");
   const [targetTaskId, setTargetTaskId] = useState<string | undefined>();
   const [targetQuestionnaireId, setTargetQuestionnaireId] = useState<string | undefined>();
   const [showParticipantRunner, setShowParticipantRunner] = useState(false);
@@ -159,6 +160,18 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
       <div className="h-12 px-6 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 font-sans">
         <div className="flex items-center gap-1.5">
           <button
+            onClick={() => setSubView("copilot")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              subView === "copilot"
+                ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+            <span>AI Copilot</span>
+          </button>
+
+          <button
             onClick={() => setSubView("tree")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               subView === "tree"
@@ -228,7 +241,13 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
         </button>
       </div>
 
-      {subView === "tree" ? (
+      {subView === "copilot" ? (
+        <CopilotPanel
+          onToast={onToast}
+          onLoaded={() => setSubView("tree")}
+          onPreview={() => setShowParticipantRunner(true)}
+        />
+      ) : subView === "tree" ? (
         <ExperimentTreeBuilder
           onOpenTaskBuilder={(taskId) => {
             setTargetTaskId(taskId);

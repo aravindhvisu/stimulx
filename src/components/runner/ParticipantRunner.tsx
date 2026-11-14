@@ -423,9 +423,11 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
     } else {
       // End of this trial!
       if (currentTrialIdx + 1 < trialRows.length) {
-        // Next trial row
+        // Next trial row. Instructions are shown once, before the first trial only.
+        const startsWithInstructions =
+          activeTask.displays.length > 1 && /instruction/i.test(activeTask.displays[0].name);
         setCurrentTrialIdx(currentTrialIdx + 1);
-        setCurrentDisplayIdx(0);
+        setCurrentDisplayIdx(startsWithInstructions ? 1 : 0);
         setTrialFeedback(null);
       } else {
         // All trials completed for this task!

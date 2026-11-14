@@ -1,8 +1,15 @@
 // Cloudflare Worker Handler for Stimulx (stimulx.in)
-// Mode: Full Live Application Service
+// Serves the static app and the Stimulx Copilot API.
+// Set the key with: wrangler secret put GEMINI_API_KEY
+
+import { handleCopilot } from './server/copilot.mjs';
 
 export default {
   async fetch(request, env) {
+    const { pathname } = new URL(request.url);
+    if (pathname === '/api/copilot') {
+      return handleCopilot(request, env);
+    }
     try {
       return await env.ASSETS.fetch(request);
     } catch (err) {
