@@ -1,5 +1,6 @@
-// Stimulx server for Google Cloud Run (and local use).
-// Serves the static build in ./out and the Stimulx Copilot API at /api/copilot.
+// Stimulx Node server (local use, a VM, or any container host with a persistent disk).
+// Serves the static build in ./out, the study hosting API at /api/studies and the
+// Stimulx Copilot API at /api/copilot. Study data is kept in SQLite under DATA_DIR (default ./data).
 //
 //   npm run build && GEMINI_API_KEY=... node server.mjs
 
@@ -7,11 +8,24 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { mkdirSync } from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
 import { handleCopilot } from './src/server/copilot.mjs';
+import { handleStudies } from './src/server/studies.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'out');
 const PORT = Number(process.env.PORT || 8080);
-const MAX_BODY_BYTES = 64 * 1024;
+const MAX_BODY_BYTES = 2 * 1024 * 1024;
+
+const DATA_DIR = path.resolve(process.env.DATA_DIR || 'data');
+mkdirSync(DATA_DIR, { recursive: true });
+const sqlite = new DatabaseSync(path.join(DATA_DIR, 'stimulx.db'));
+sqlite.exec('PRAGMA journal_mode = WAL');
+const db = {
+  run: async (sql, params) => sqlite.prepare(sql).run(...params),
+  first: async (sql, params) => sqlite.prepare(sql).get(...params) || null,
+  all: async (sql, params) => sqlite.prepare(sql).all(...params),
+};
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -51,7 +65,8 @@ async function serveApi(req, res) {
     }
   }
   const request = new Request(`http://localhost${req.url}`, { method: req.method, headers: req.headers, body });
-  const response = await handleCopilot(request, process.env);
+  const isStudies = /^\/api\/studies(\/|$|\?)/.test(req.url);
+  const response = isStudies ? await handleStudies(request, db) : await handleCopilot(request, process.env);
   res.writeHead(response.status, Object.fromEntries(response.headers));
   res.end(Buffer.from(await response.arrayBuffer()));
 }
@@ -92,7 +107,9 @@ async function serveStatic(req, res) {
 
 http
   .createServer((req, res) => {
-    const handler = req.url.split('?')[0] === '/api/copilot' ? serveApi : serveStatic;
+    const pathname = req.url.split('?')[0];
+    const isApi = pathname === '/api/copilot' || pathname === '/api/studies' || pathname.startsWith('/api/studies/');
+    const handler = isApi ? serveApi : serveStatic;
     handler(req, res).catch((err) => {
       console.error(err);
       if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -101,5 +118,6 @@ http
   })
   .listen(PORT, () => {
     console.log(`Stimulx listening on http://localhost:${PORT}`);
+    console.log(`Study data: ${path.join(DATA_DIR, 'stimulx.db')}`);
     console.log(process.env.GEMINI_API_KEY ? 'Copilot: Gemini key found.' : 'Copilot: GEMINI_API_KEY is not set; AI generation is disabled.');
   });

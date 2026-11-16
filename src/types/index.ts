@@ -233,6 +233,21 @@ export interface StudyProject {
   tasks?: TaskDefinition[];
   questionnaires?: QuestionnaireDefinition[];
   liveSessions?: LiveParticipantSession[];
+  published?: PublishedStudyInfo;
+}
+
+// A study published to the Stimulx server so participants on other devices can take it.
+// ownerKey is the only credential that can download its responses; it lives in this browser.
+export interface PublishedStudyInfo {
+  id: string;
+  ownerKey: string;
+  version: number;
+  status: 'open' | 'closed';
+  publishedAt: string;
+  updatedAt?: string;
+  lastSyncAt?: string;
+  // Fingerprint of the definition last sent to the server, to tell when the builder has moved on
+  contentHash?: string;
 }
 
 export interface CollaborationPost {
@@ -523,6 +538,10 @@ export interface LiveParticipantSession {
   rawTrialLogs: GorillaRawTrialLog[];
   questionnaireLogs: QuestionnaireResponseLog[];
   overallScores?: Record<string, number>;
+  // Set on sessions downloaded from the Stimulx server
+  source?: 'remote';
+  studyVersion?: number;
+  receivedAt?: string;
 }
 
 // ----------------------------------------------------

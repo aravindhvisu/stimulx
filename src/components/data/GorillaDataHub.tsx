@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { StudyProject, LiveParticipantSession, GorillaRawTrialLog } from '@/types';
 import { useStimulxStore } from '@/lib/store';
+import { PublishStudyPanel } from '@/components/publish/PublishStudyPanel';
 import {
   downloadFile,
   generateGorillaLongFormatCSV,
@@ -257,6 +258,8 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
         </div>
       </div>
 
+      <PublishStudyPanel onToast={onToast} />
+
       {/* Recruitment & Distribution Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Sample Target Progress */}
@@ -287,10 +290,10 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
         <div className="bg-white rounded-2xl p-5 border border-[#1a1633]/10 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#6b6890]">
-              Public Participant Link
+              Preview Link
             </span>
-            <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-              Live & Active
+            <span className="text-[9px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              This browser only
             </span>
           </div>
 
@@ -308,7 +311,7 @@ export function GorillaDataHub({ onToast, onLaunchRunner }: GorillaDataHubProps)
           </div>
 
           <p className="text-[11px] text-[#6b6890]">
-            Distribute via WhatsApp, SMS, or university mailing lists.
+            Opens your draft study in this browser so you can test it. For participants, use the participant link above.
           </p>
         </div>
 

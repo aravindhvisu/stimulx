@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 
 import { useStimulxStore } from "@/lib/store";
+import { PublishStudyPanel } from "@/components/publish/PublishStudyPanel";
+import { participantLink } from "@/lib/studyApi";
 import { ParticipantRunner } from "@/components/runner/ParticipantRunner";
 import { MultiDomainExperimentBuilder } from "@/components/builder/MultiDomainExperimentBuilder";
 import { ExperimentTreeBuilder } from "@/components/tree/ExperimentTreeBuilder";
@@ -67,13 +69,16 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
   const [testComplete, setTestComplete] = useState(false);
   const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
 
-  const studyUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/?run=${activeProject.id}`
-    : `https://stimulx.in/?run=${activeProject.id}`;
+  const publishedStudy = activeProject.published;
+  const studyUrl = publishedStudy ? participantLink(publishedStudy.id) : '';
 
   const copyStudyLink = () => {
+    if (!publishedStudy) {
+      onToast("Publish the study first: open the data tab and choose Publish study.");
+      return;
+    }
     navigator.clipboard?.writeText(studyUrl);
-    onToast("Copied participant study URL to clipboard! Share across India ✓");
+    onToast("Participant link copied.");
   };
 
   const currentTrial = SAMPLE_TRIALS[trialIndex];
@@ -279,21 +284,19 @@ export function ExperimentStage({ onAdvance, onToast }: ExperimentStageProps) {
       ) : (
         <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-5">
           {/* Shareable Study Link Banner */}
+          <PublishStudyPanel onToast={onToast} />
+
           <div className="bg-gradient-to-r from-[#1a1633] to-[#2b2457] rounded-2xl p-5 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/10">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-ping" />
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#4ade80]">
-                  Active Participant Link Ready
+                  Test your study
                 </span>
               </div>
-              <h3 className="text-base font-bold text-white">Distribute Study to Participants Across India</h3>
+              <h3 className="text-base font-bold text-white">Run it yourself as a participant</h3>
               <p className="text-xs text-white/70 mt-0.5">
-                Share this link via WhatsApp, Email, or Institutional Slack. Collects zero-PII millisecond reaction times.
+                A test run stays in this browser. {publishedStudy ? 'Participants use the link above.' : 'Publish above when you are ready for participants.'}
               </p>
-              <div className="mt-3 flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl px-3 py-1.5 max-w-lg">
-                <span className="text-xs font-mono text-[#e8852b] truncate select-all">{studyUrl}</span>
-              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">

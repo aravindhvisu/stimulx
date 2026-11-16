@@ -24,6 +24,7 @@ import { ParticipantRunner } from '@/components/runner/ParticipantRunner';
 import { GorillaDataHub } from '@/components/data/GorillaDataHub';
 import { AuthPage } from '@/components/auth/AuthPage';
 import { CareModelRCTStudio } from '@/components/care_rct/CareModelRCTStudio';
+import { PublicStudyRunner } from '@/components/publish/PublicStudyRunner';
 import { useStimulxStore } from '@/lib/store';
 
 const STAGE_FLOW: StageId[] = [
@@ -50,13 +51,16 @@ export default function StimulxApp() {
   const [showScaleModal, setShowScaleModal] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
 
-  // Detect participant mode via URL query (e.g. ?run=proj-001)
+  // undefined until the URL has been read, so a participant never sees the researcher app flash by
+  const [publicStudyId, setPublicStudyId] = useState<string | null | undefined>(undefined);
+
+  // ?study=<id> is a published study for a real participant; ?run= previews the local study.
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has('run') || params.has('study')) {
-        setShowGlobalRunner(true);
-      }
+    const params = new URLSearchParams(window.location.search);
+    const study = params.get('study');
+    setPublicStudyId(study || null);
+    if (!study && params.has('run')) {
+      setShowGlobalRunner(true);
     }
   }, []);
 
@@ -88,8 +92,12 @@ export default function StimulxApp() {
     showToast('Project state securely saved in India (Mumbai) vault ✓');
   };
 
+  if (publicStudyId) {
+    return <PublicStudyRunner studyId={publicStudyId} />;
+  }
+
   // 1. Initial hydration guard
-  if (!hydrated) {
+  if (!hydrated || publicStudyId === undefined) {
     return (
       <div className="flex flex-col h-screen w-screen items-center justify-center bg-white text-slate-800">
         <div className="flex items-center gap-2.5">

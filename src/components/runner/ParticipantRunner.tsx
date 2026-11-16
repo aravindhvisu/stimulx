@@ -40,16 +40,44 @@ interface ParticipantRunnerProps {
   project: StudyProject;
   onComplete?: (session: ParticipantSession) => void;
   onClose: () => void;
+  // Set when a real participant is taking a published study: nothing is written to this
+  // browser's researcher workspace, and the finished session is uploaded instead.
+  remote?: { onSubmit: (session: LiveParticipantSession) => Promise<void> };
 }
 
-export function ParticipantRunner({ project, onComplete, onClose }: ParticipantRunnerProps) {
-  const {
-    createLiveSession,
-    recordLiveTrialLog,
-    recordLiveQuestionnaireResponse,
-    completeLiveSession,
-    addParticipantSession,
-  } = useStimulxStore();
+// Sizes are authored for a ~900px wide canvas; on a narrower canvas they shrink in proportion.
+const scaledFont = (px: number) => `min(${px}px, ${(px / 9).toFixed(2)}cqw)`;
+
+type UploadState = 'idle' | 'saving' | 'saved' | 'failed';
+
+export function ParticipantRunner({ project, onComplete, onClose, remote }: ParticipantRunnerProps) {
+  const store = useStimulxStore();
+  const isRemote = !!remote;
+  const [uploadState, setUploadState] = useState<UploadState>('idle');
+  const pendingUploadRef = useRef<LiveParticipantSession | null>(null);
+
+  const uploadSession = async (finished: LiveParticipantSession) => {
+    if (!remote) return;
+    pendingUploadRef.current = finished;
+    setUploadState('saving');
+    try {
+      await remote.onSubmit(finished);
+      setUploadState('saved');
+    } catch {
+      setUploadState('failed');
+    }
+  };
+
+  // Warn before leaving while responses exist only in this tab
+  useEffect(() => {
+    if (!isRemote || uploadState === 'saved') return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [isRemote, uploadState]);
 
   // Load Tree, Tasks, and Questionnaires from project with defaults fallback
   const tree = project.tree && project.tree.nodes.length > 0 ? project.tree : DEFAULT_EXPERIMENT_TREE;
@@ -92,6 +120,8 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
   const displayOnsetRef = useRef<number>(0);
   const timerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const accumulatedRawLogsRef = useRef<GorillaRawTrialLog[]>([]);
+  const accumulatedQuestionnaireLogsRef = useRef<QuestionnaireResponseLog[]>([]);
+  const visitedNodeIdsRef = useRef<string[]>([]);
   const accumulatedLegacyTrialsRef = useRef<ParticipantTrialRecord[]>([]);
 
   // Detect mobile vs desktop
@@ -107,12 +137,28 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
     const startNode = tree.nodes.find((n) => n.type === 'start') || tree.nodes[0];
     const firstActiveNodeId = startNode.next || tree.nodes[1]?.id || startNode.id;
 
-    const newSess = createLiveSession(project.id, {
-      device: deviceType,
-      state: demographics.state,
-      age: demographics.ageGroup,
-      primaryLanguage: demographics.primaryLanguage,
-    });
+    const isMobile = window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent);
+    const newSess: LiveParticipantSession = isRemote
+      ? {
+          // Only what was actually observed: the participant's own answers supply demographics.
+          id: `sess_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`,
+          studyId: project.id,
+          participantToken: `PT-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+          status: 'in_progress',
+          startedAt: new Date().toISOString(),
+          currentNodeId: firstActiveNodeId,
+          visitedNodeIds: [firstActiveNodeId],
+          demographics: { device: isMobile ? 'mobile' : 'desktop' },
+          rawTrialLogs: [],
+          questionnaireLogs: [],
+        }
+      : store.createLiveSession(project.id, {
+          device: deviceType,
+          state: demographics.state,
+          age: demographics.ageGroup,
+          primaryLanguage: demographics.primaryLanguage,
+        });
+    visitedNodeIdsRef.current = [firstActiveNodeId];
 
     setSession(newSess);
     setCurrentNodeId(firstActiveNodeId);
@@ -203,6 +249,7 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
 
     // Setup state for next node type
     setCurrentNodeId(targetNodeId);
+    visitedNodeIdsRef.current.push(targetNodeId);
 
     if (nextNode.type === 'questionnaire') {
       setQPageIndex(0);
@@ -261,7 +308,8 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
           score,
           answeredAtIso: new Date().toISOString(),
         };
-        recordLiveQuestionnaireResponse(session.id, log);
+        accumulatedQuestionnaireLogsRef.current.push(log);
+        if (!isRemote) store.recordLiveQuestionnaireResponse(session.id, log);
       });
     }
 
@@ -398,7 +446,7 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
     };
 
     accumulatedRawLogsRef.current.push(rawLog);
-    recordLiveTrialLog(session.id, rawLog);
+    if (!isRemote) store.recordLiveTrialLog(session.id, rawLog);
 
     // Also populate legacy trial record for backward compatibility
     accumulatedLegacyTrialsRef.current.push({
@@ -463,8 +511,22 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
   const handleSessionFinish = (finishNode: ExperimentTreeNode) => {
     if (!session) return;
 
+    if (isRemote) {
+      void uploadSession({
+        ...session,
+        status: 'completed',
+        completedAt: new Date().toISOString(),
+        currentNodeId: finishNode.id,
+        visitedNodeIds: [...visitedNodeIdsRef.current],
+        rawTrialLogs: [...accumulatedRawLogsRef.current],
+        questionnaireLogs: [...accumulatedQuestionnaireLogsRef.current],
+        overallScores: session.overallScores,
+      });
+      return;
+    }
+
     // Finalize live session
-    completeLiveSession(session.id, session.overallScores);
+    store.completeLiveSession(session.id, session.overallScores);
 
     // Compute legacy session summary for full ecosystem backward compatibility
     const trials = accumulatedLegacyTrialsRef.current;
@@ -506,7 +568,7 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
       },
     };
 
-    addParticipantSession(legacySession);
+    store.addParticipantSession(legacySession);
     if (onComplete) {
       onComplete(legacySession);
     }
@@ -534,6 +596,8 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
           </span>
         </div>
 
+        {!isRemote && (
+          <>
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -542,6 +606,8 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
         >
           <X className="w-4 h-4" />
         </button>
+          </>
+        )}
       </div>
 
       {/* Main Execution View Switcher */}
@@ -730,9 +796,11 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
 
                 {/* 16:10 Task Display Canvas */}
                 <div
-                  className="w-full aspect-[16/10] rounded-2xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col justify-center items-center select-none"
+                  className="w-full aspect-[4/5] md:aspect-[16/10] rounded-2xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col justify-center items-center select-none"
                   style={{
                     backgroundColor: currentDisplay?.backgroundColor || '#090d16',
+                    // Lets text sizes below shrink with the canvas on phones (cqw units)
+                    containerType: 'inline-size',
                   }}
                 >
                   {currentDisplay?.zones.map((zone) => {
@@ -754,7 +822,7 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
                       >
                         {zone.type === 'fixation' && (
                           <span
-                            style={{ fontSize: `${zone.fontSizePx || 48}px`, color }}
+                            style={{ fontSize: scaledFont(zone.fontSizePx || 48), color }}
                             className="font-mono font-bold leading-none select-none drop-shadow"
                           >
                             {content || '+'}
@@ -763,7 +831,7 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
 
                         {zone.type === 'text' && (
                           <span
-                            style={{ fontSize: `${zone.fontSizePx || 36}px`, color }}
+                            style={{ fontSize: scaledFont(zone.fontSizePx || 36), color }}
                             className="font-bold text-center leading-snug whitespace-pre-line tracking-wide drop-shadow-md select-none"
                           >
                             {content}
@@ -783,9 +851,9 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
                                   type="button"
                                   key={k}
                                   onClick={() => handleParticipantInput(k)}
-                                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-600 text-xs font-mono font-bold text-slate-200 shadow transition-all cursor-pointer"
+                                  className="min-w-11 min-h-11 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-600 text-xs font-mono font-bold text-slate-200 shadow transition-all cursor-pointer"
                                 >
-                                  {k.toUpperCase()}
+                                  {k === ' ' ? 'SPACE / TAP' : k.toUpperCase()}
                                 </button>
                               ))}
                             </div>
@@ -838,7 +906,53 @@ export function ParticipantRunner({ project, onComplete, onClose }: ParticipantR
         )}
 
         {/* Render Finish Node */}
-        {currentNode?.type === 'finish' && (
+        {/* Finish for a real participant: only say it is saved once the upload succeeded */}
+        {currentNode?.type === 'finish' && isRemote && (
+          <div className="w-full max-w-md bg-[#0f172a] border border-emerald-500/30 rounded-2xl p-8 shadow-2xl text-center space-y-6">
+            {uploadState === 'saved' ? (
+              <>
+                <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Thank you</h2>
+                  <p className="text-sm text-slate-300 mt-2 leading-relaxed">
+                    {currentNode.finishSettings?.message || 'Your responses have been saved.'}
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                  <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Your completion code</div>
+                  <div className="text-lg font-mono font-bold text-emerald-400 mt-1 select-all">
+                    {currentNode.finishSettings?.completionCode || session?.participantToken}
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400">You can close this tab now.</p>
+              </>
+            ) : uploadState === 'failed' ? (
+              <>
+                <h2 className="text-xl font-bold text-white">Your responses are not saved yet</h2>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  We could not reach the server. Please check your internet connection and try again. Keep this tab open so your responses are not lost.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => pendingUploadRef.current && uploadSession(pendingUploadRef.current)}
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-sm text-white"
+                >
+                  Try again
+                </button>
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
+                <h2 className="text-xl font-bold text-white">Saving your responses…</h2>
+                <p className="text-sm text-slate-300">Please keep this tab open.</p>
+              </>
+            )}
+          </div>
+        )}
+
+        {currentNode?.type === 'finish' && !isRemote && (
           <div className="w-full max-w-md bg-[#0f172a] border border-emerald-500/30 rounded-2xl p-8 shadow-2xl text-center space-y-6">
             <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto">
               <Award className="w-8 h-8" />
