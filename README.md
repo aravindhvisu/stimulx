@@ -69,6 +69,22 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## 🌐 Study hosting (collect responses online)
+
+A researcher publishes a study from **Experiment Studio → Data Hub & Export → Publish study** and gets a participant link (`/?study=<id>`). Participants open it on their own phone or computer; their finished session is uploaded, and the researcher pulls it in with **Download new responses**. Exports (CSV, R, SPSS) then include those sessions.
+
+- API: `src/server/studies.mjs` (`/api/studies`), shared by the Cloudflare Worker and `server.mjs`.
+- Storage: Cloudflare D1 on the Worker (see the commented block in `wrangler.toml`), a SQLite file in `./data` with `npm start`.
+- Access: publishing returns a researcher key. Only its hash is stored on the server; the key itself lives in the researcher's browser and is the only way to download responses. There are no accounts yet.
+- A closed study stops accepting responses; "Delete from server" erases the study and its stored responses.
+- Not yet built: accounts and team sharing, rate limiting, saving partial (abandoned) sessions.
+
+Run locally:
+
+```bash
+npm install && npm run build && npm start
+```
+
 ## ✨ Stimulx Copilot (Gemini)
 
 In **Experiment Studio → AI Copilot**, describe a study in plain words. Gemini drafts the participant flow, the full trial list and any new questions; Stimulx turns that into a runnable experiment tree.
